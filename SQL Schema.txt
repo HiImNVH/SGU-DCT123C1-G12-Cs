@@ -33,3 +33,45 @@ D. Bảng TrackingLog (Lịch sử) Dùng để báo cáo cho chủ cửa hàng/
 - PoiId (FK): Địa điểm đã ghé.
 - Action (String): "Trigger_Enter" (Vào vùng), "Play_Audio" (Đã nghe), "Scan_QR".
 - Timestamp: Thời gian.
+
+#BẢNG QUAN HỆ
+A. Quan hệ: POI và Nội dung đa ngôn ngữ
++ Đây là quan hệ quan trọng nhất để ứng dụng đổi ngôn ngữ linh hoạt.
++ Quan hệ: 1 - n (Một - Nhiều)
++ Mô tả: 1 POI (địa điểm vật lý) có n POI_Content (phiên bản nội dung).
+Ví dụ: POI "Chợ Bến Thành" sẽ có 1 record trong bảng POI, nhưng có 3 record trong bảng POI_Content (1 bản tiếng Việt, 1 bản tiếng Anh, 1 bản tiếng Hàn).
++ Phụ thuộc (Dependencies):
+  - Bảng POI_Content phụ thuộc hoàn toàn vào bảng POI.
+  - Khóa ngoại (FK): POI_Content.PoiId tham chiếu tới POI.Id.
+  - Ràng buộc: ON DELETE CASCADE (Nếu xóa địa điểm Chợ Bến Thành, toàn bộ nội dung Anh/Việt/Hàn của nó cũng phải mất theo).
+
+B. Quan hệ: Ngôn ngữ và Nội dung
++ Quan hệ: 1 - n (Một - Nhiều)
++ Mô tả: 1 Language được dùng cho n POI_Content.
++ Phụ thuộc:
+  - Bảng POI_Content phụ thuộc vào bảng Language.
+  - Khóa ngoại (FK): POI_Content.LanguageId tham chiếu tới Language.Id.
+  - Business Logic: Đảm bảo không thể thêm nội dung cho một ngôn ngữ mà hệ thống chưa hỗ trợ.
+
+C. Quan hệ: Tour và POI (Quản lý Tour)
++ Dựa vào hình ảnh bạn cung cấp ("Quản lý tour"), một địa điểm có thể thuộc nhiều tour khác nhau (VD: Nhà thờ Đức Bà vừa thuộc "City Tour" vừa thuộc "Tour Kiến Trúc").
++ Quan hệ: n - n (Nhiều - Nhiều)
++ Mô tả:
+  - 1 Tour chứa n POI.
+  - 1 POI có thể nằm trong n Tour.
++ Giải pháp: Dùng bảng trung gian Tour_POI.
++ Phụ thuộc:
+  - Bảng Tour_POI phụ thuộc vào cả Tour và POI.
+  - Khóa ngoại 1: Tour_POI.TourId tham chiếu tới Tour.Id.
+  - Khóa ngoại 2: Tour_POI.PoiId tham chiếu tới POI.Id.
+  - Thuộc tính bổ sung: OrderIndex (Số thứ tự của điểm đó trong Tour - Điểm 1, Điểm 2...).
+
+D. Quan hệ: Thiết bị (User) và Lịch sử (Logs)
++ Quan hệ: 1 - n (Một - Nhiều)
++ Mô tả: 1 Device/User tạo ra n TrackingLog.
++ Phụ thuộc: Bảng TrackingLog phụ thuộc định danh người dùng (DeviceId hoặc UserId).
+
+E. Quan hệ: POI và Lịch sử (Logs)
++ Quan hệ: 1 - n (Một - Nhiều)
++ Mô tả: 1 POI xuất hiện trong n TrackingLog (nhiều người ghé thăm hoặc 1 người ghé nhiều lần).
++ Phụ thuộc: Bảng TrackingLog chứa khóa ngoại PoiId.
