@@ -1,18 +1,18 @@
 # Thiết kế Database (Schema)
 Thiết kế Database sao cho hỗ trợ đa ngôn ngữ và đồng bộ offline.
 + Server (SQL Server): Chứa dữ liệu gốc, quản lý lịch sử.
-+ Client (SQLite): Một bản sao rút gọn của Server để query cực nhanh khi không có mạng.
++ Client (SQLite): Một bản sao rút gọn của Server để query .
 
 # Các bảng chính (Tables)
 A. Bảng POI (Point of Interest - Địa điểm) Chứa thông tin vật lý/kỹ thuật để Geofence Engine xử lý.
 - Id (Guid/Int): Khóa chính.
 - Latitude (Double): Vĩ độ.
 - Longitude (Double): Kinh độ.
-- TriggerRadius (Int): Bán kính kích hoạt (mét). Ví dụ: 50m.
+- TriggerRadius (Int): Bán kính kích hoạt (mét).
 - Priority (Int): Mức ưu tiên (1-10). Nếu đứng giữa 2 vùng, vùng nào cao hơn sẽ phát.
 - Type (Enum): Sightseeing (Cảnh điểm) hoặc Shop (Cửa hàng).
-- Status (Int): Active/Inactive (để ẩn địa điểm mà không cần xóa).
-- LastModified (DateTime): Quan trọng - Dùng để App biết khi nào cần update lại data này.
+- Status (Int): Active/Inactive (để ẩn địa điểm).
+- LastModified (DateTime): Dùng để App biết khi nào cần update lại data .
 
 B. Bảng Language (Ngôn ngữ)
 - Id (String): "vi-VN", "en-US"
@@ -22,14 +22,14 @@ C. Bảng POI_Content (Nội dung đa ngôn ngữ) Tách riêng nội dung khỏ
 - Id (Guid): Khóa chính.
 - PoiId (FK): Trỏ về bảng POI.
 - LanguageId (FK): Trỏ về bảng Language.
-- Name (String): Tên địa điểm hiển thị (VD: "Bến Nhà Rồng" hoặc "Ho Chi Minh Museum").
+- Name (String): Tên địa điểm hiển thị.
 -  Description (Text): Văn bản dùng để đọc (TTS Script).
 - AudioUrl (String): Link file MP3 (nếu có thu âm sẵn, không dùng TTS).
-- AudioHash (String): Mã Hash của file audio (để App biết file có thay đổi không mà tải lại).
+- AudioHash (String): Mã Hash của file audio .
 
 D. Bảng TrackingLog (Lịch sử) Dùng để báo cáo cho chủ cửa hàng/admin.
 - Id: Khóa chính.
-- DeviceId (String): Định danh người dùng ẩn danh.
+- DeviceId (String): Định danh thiết bị người dùng.
 - PoiId (FK): Địa điểm đã ghé.
 - Action (String): "Trigger_Enter" (Vào vùng), "Play_Audio" (Đã nghe), "Scan_QR".
 - Timestamp: Thời gian.
