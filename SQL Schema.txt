@@ -15,8 +15,8 @@ A. Bảng POI (Point of Interest - Địa điểm) Chứa thông tin vật lý/k
 - LastModified (DateTime): Quan trọng - Dùng để App biết khi nào cần update lại data này.
 
 B. Bảng Language (Ngôn ngữ)
-- Id (String): "vi-VN", "en-US", "ko-KR".
-- Name: Tiếng Việt, English, Korean.
+- Id (String): "vi-VN", "en-US"
+- Name: Tiếng Việt, English
 
 C. Bảng POI_Content (Nội dung đa ngôn ngữ) Tách riêng nội dung khỏi địa điểm để 1 địa điểm có thể có N ngôn ngữ.
 - Id (Guid): Khóa chính.
