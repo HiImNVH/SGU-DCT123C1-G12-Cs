@@ -3,7 +3,7 @@
 # 3123411221 - PHẠM NGUYÊN PHÁT
 
 
-Mô tả dự án: Xây dựng hệ thống tự động thuyết minh thông tin du lịch (đa ngôn ngữ) khi người dùng di chuyển đến gần địa điểm (POI) hoặc quét mã QR, hoạt động tốt ngay cả khi offline (mất mạng).
+Mô tả dự án: Xây dựng hệ thống tự động thuyết minh thông tin du lịch (đa ngôn ngữ) khi người dùng di chuyển đến gần địa điểm (POI) hoặc quét mã QR, hoạt động tốt ngay cả khi offline (không có mạng).
 
 Hướng phát triển:
 - 🟡 1: Thiết kế & Setup DATABASE SCHEMA (SQL Schema.txt và Drawio version) 
@@ -17,3 +17,4 @@ Hướng phát triển:
 - 🔴 9: Thử nghiệm và đánh giá
 
 LƯU Ý: CÁC BƯỚC PHÍA TRÊN KHÔNG PHẢI LÀ HƯỚNG ĐI CHÍNH, CHỈ NHẰM MỤC ĐÍCH ĐỊNH HƯỚNG BAN ĐẦU VÀ SẼ THAY ĐỔI VỀ SAU.
+
