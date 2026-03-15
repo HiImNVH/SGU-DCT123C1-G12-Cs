@@ -1,0 +1,199 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TravelGuide.HomePage"
+             BackgroundColor="#F5F5F5">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+        <!-- HEADER -->
+        <Grid Padding="20" ColumnDefinitions="*,Auto">
+
+            <VerticalStackLayout>
+                <Label
+                    Text="Hi Traveler"
+                    FontSize="26"
+                    FontAttributes="Bold"/>
+
+                <Label
+                    Text="Explore beautiful places"
+                    FontSize="14"
+                    TextColor="Gray"/>
+            </VerticalStackLayout>
+        </Grid>
+
+
+        <!-- SEARCH BAR -->
+        <Frame Grid.Row="1"
+               Margin="20,0"
+               Padding="10"
+               CornerRadius="12"
+               BackgroundColor="White">
+
+            <Grid ColumnDefinitions="Auto,*">
+
+                <Image
+                    Source="search.png"
+                    WidthRequest="20"
+                    HeightRequest="20"/>
+
+                <Entry
+                    Grid.Column="1"
+                    Placeholder="Search location"
+                    BackgroundColor="Transparent"/>
+
+            </Grid>
+
+        </Frame>
+
+
+        <!-- LOCATION LIST -->
+        <VerticalStackLayout Grid.Row="2" Padding="20">
+
+            <Grid ColumnDefinitions="*,Auto">
+
+                <Label
+                    Text="Địa điểm gần bạn"
+                    FontSize="22"
+                    FontAttributes="Bold"/>
+
+                <Label
+                    Text="Xem thêm"
+                    Grid.Column="1"
+                    TextColor="Gray"/>
+            </Grid>
+
+
+            <!-- LIST -->
+            <CollectionView HeightRequest="220"
+                            Margin="0,15,0,0">
+
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal"/>
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.ItemTemplate>
+
+                    <DataTemplate>
+
+                        <Frame WidthRequest="180"
+                               HeightRequest="200"
+                               CornerRadius="15"
+                               Padding="0"
+                               Margin="0,0,15,0">
+
+                            <Grid>
+
+                                <Image
+                                    Source="{Binding image_url}"
+                                    Aspect="AspectFill"/>
+
+                                <Grid VerticalOptions="End"
+                                      Padding="10"
+                                      BackgroundColor="#66000000">
+
+                                    <VerticalStackLayout>
+
+                                        <Label
+                                            Text="{Binding location_name}"
+                                            TextColor="White"
+                                            FontSize="16"
+                                            FontAttributes="Bold"/>
+
+                                        <Label
+                                            Text="{Binding city}"
+                                            TextColor="White"
+                                            FontSize="12"/>
+
+                                    </VerticalStackLayout>
+
+                                </Grid>
+
+                            </Grid>
+
+                        </Frame>
+
+                    </DataTemplate>
+
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+
+        </VerticalStackLayout>
+
+
+        <!-- BOTTOM NAVIGATION -->
+        <Grid Grid.Row="3"
+              BackgroundColor="White"
+              Padding="10"
+              ColumnDefinitions="*,*,*">
+
+            <!-- HOME -->
+            <VerticalStackLayout HorizontalOptions="Center">
+
+                <Image
+                    Source="home.png"
+                    WidthRequest="25"
+                    HeightRequest="25"/>
+
+                <Label
+                    Text="Trang chủ"
+                    FontSize="12"/>
+
+            </VerticalStackLayout>
+
+
+            <!-- LOCATION -->
+            <VerticalStackLayout Grid.Column="1"
+                                 HorizontalOptions="Center">
+
+                <Image
+                    Source="location.png"
+                    WidthRequest="25"
+                    HeightRequest="25"/>
+
+                <Label
+                    Text="Địa điểm"
+                    FontSize="12"/>
+
+            </VerticalStackLayout>
+
+
+            <!-- PROFILE -->
+            <VerticalStackLayout Grid.Column="2"
+                                 HorizontalOptions="Center">
+
+                <Image
+                    Source="user.png"
+                    WidthRequest="25"
+                    HeightRequest="25"/>
+
+                <Label
+                    Text="Cá nhân"
+                    FontSize="12"/>
+
+            </VerticalStackLayout>
+
+        </Grid>
+        <ImageButton
+    Source="map.png"
+    WidthRequest="48"
+    HeightRequest="48"
+    CornerRadius="38"
+    BackgroundColor="White"
+    Grid.RowSpan="3"
+    HorizontalOptions="End"
+    VerticalOptions="End"
+    Margin="20"
+    Clicked="OnMapClicked">
+
+            <ImageButton.Shadow>
+                <Shadow Brush="Black"
+                Opacity="0.3"
+                Offset="0,4"
+                Radius="10"/>
+            </ImageButton.Shadow>
+
+        </ImageButton>
+    </Grid>
+
+</ContentPage>

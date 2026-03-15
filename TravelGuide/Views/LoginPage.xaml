@@ -1,0 +1,46 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TravelGuide.LoginPage"
+             BackgroundColor="#F5F5F5">
+
+	<ScrollView>
+		<VerticalStackLayout Padding="30" Spacing="20">
+
+			<Label
+                Text="Travel Guide"
+                FontSize="32"
+                FontAttributes="Bold"
+                HorizontalOptions="Center"/>
+
+			<Label
+                Text="Welcome Back!"
+                FontSize="20"
+                HorizontalOptions="Center"/>
+
+			<Entry
+                x:Name="EmailEntry"
+                Placeholder="Email"
+                Keyboard="Email"/>
+
+			<Entry
+                x:Name="PasswordEntry"
+                Placeholder="Password"
+                IsPassword="True"/>
+
+			<Button
+                Text="Login"
+                BackgroundColor="#2196F3"
+                TextColor="White"
+                Clicked="OnLoginClicked"/>
+            
+
+            <Button
+                Text="Sign Up"
+                BackgroundColor="Transparent"
+                TextColor="Blue"
+                Clicked="OnSignupClicked"/> 
+
+        </VerticalStackLayout>
+	</ScrollView>
+
+</ContentPage>
