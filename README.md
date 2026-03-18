@@ -18,3 +18,4 @@ Hướng phát triển:
 
 LƯU Ý: CÁC BƯỚC PHÍA TRÊN KHÔNG PHẢI LÀ HƯỚNG ĐI CHÍNH, CHỈ NHẰM MỤC ĐÍCH ĐỊNH HƯỚNG BAN ĐẦU VÀ SẼ THAY ĐỔI VỀ SAU.
 
+Note: ứng dụng nằm ở branch Master
