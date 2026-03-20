@@ -1,0 +1,152 @@
+========================================
+        SQL SCHEMA - HỆ THỐNG DU LỊCH
+========================================
+
+Mô tả:
+Hệ thống quản lý người dùng, địa điểm du lịch, đánh giá và đặt tour.
+
+Cơ sở dữ liệu: MySQL
+========================================
+
+
+-- =====================================
+-- 1. TẠO DATABASE
+-- =====================================
+
+CREATE DATABASE IF NOT EXISTS TravelApp;
+USE TravelApp;
+
+
+-- =====================================
+-- 2. BẢNG USERS (Người dùng)
+-- =====================================
+
+CREATE TABLE Users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    phone VARCHAR(15),
+    role ENUM('USER', 'ADMIN') DEFAULT 'USER',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Giải thích:
+-- user_id: khóa chính
+-- email: không được trùng (UNIQUE)
+-- role: phân quyền USER hoặc ADMIN
+-- created_at: tự động lưu thời gian tạo tài khoản
+
+
+-- =====================================
+-- 3. BẢNG LOCATIONS (Địa điểm du lịch)
+-- =====================================
+
+CREATE TABLE Locations (
+    location_id INT AUTO_INCREMENT PRIMARY KEY,
+    location_name VARCHAR(150) NOT NULL,
+    description TEXT,
+    address VARCHAR(255),
+    city VARCHAR(100),
+    price DECIMAL(10,2),
+    image_url VARCHAR(255),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Giải thích:
+-- price: giá vé hoặc chi phí tham quan
+-- image_url: lưu đường dẫn hình ảnh
+-- description: mô tả chi tiết địa điểm
+
+
+-- =====================================
+-- 4. BẢNG TOURS (Tour du lịch)
+-- =====================================
+
+CREATE TABLE Tours (
+    tour_id INT AUTO_INCREMENT PRIMARY KEY,
+    tour_name VARCHAR(150) NOT NULL,
+    description TEXT,
+    price DECIMAL(10,2) NOT NULL,
+    duration_days INT,
+    location_id INT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (location_id) REFERENCES Locations(location_id)
+        ON DELETE SET NULL
+);
+
+-- Giải thích:
+-- Một tour thuộc về một địa điểm
+-- Nếu xóa địa điểm thì location_id sẽ thành NULL
+
+
+-- =====================================
+-- 5. BẢNG BOOKINGS (Đặt tour)
+-- =====================================
+
+CREATE TABLE Bookings (
+    booking_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    tour_id INT NOT NULL,
+    booking_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    number_of_people INT NOT NULL,
+    total_price DECIMAL(10,2),
+
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (tour_id) REFERENCES Tours(tour_id)
+        ON DELETE CASCADE
+);
+
+-- Giải thích:
+-- Một người dùng có thể đặt nhiều tour
+-- Nếu xóa user hoặc tour thì booking liên quan sẽ bị xóa
+
+
+-- =====================================
+-- 6. BẢNG REVIEWS (Đánh giá)
+-- =====================================
+
+CREATE TABLE Reviews (
+    review_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    location_id INT NOT NULL,
+    rating INT CHECK (rating BETWEEN 1 AND 5),
+    comment TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (location_id) REFERENCES Locations(location_id)
+        ON DELETE CASCADE
+);
+
+-- Giải thích:
+-- rating: điểm đánh giá từ 1 đến 5
+-- Một user có thể đánh giá nhiều địa điểm
+
+
+-- =====================================
+-- 7. DỮ LIỆU MẪU (OPTIONAL)
+-- =====================================
+
+INSERT INTO Users (full_name, email, password, role)
+VALUES
+('Nguyen Van A', 'a@gmail.com', '123456', 'USER'),
+('Admin', 'admin@gmail.com', 'admin123', 'ADMIN');
+
+INSERT INTO Locations (location_name, description, city, price)
+VALUES
+('Vịnh Hạ Long', 'Danh lam thắng cảnh nổi tiếng', 'Quảng Ninh', 200000),
+('Đà Lạt', 'Thành phố ngàn hoa', 'Lâm Đồng', 150000);
+
+INSERT INTO Tours (tour_name, description, price, duration_days, location_id)
+VALUES
+('Tour Hạ Long 2 ngày 1 đêm', 'Tham quan vịnh', 1500000, 2, 1);
+
+-- =====================================
+-- KẾT THÚC FILE
+-- =====================================
