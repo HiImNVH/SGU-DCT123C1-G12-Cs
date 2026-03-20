@@ -143,17 +143,22 @@
 
 
             <!-- LOCATION -->
-            <VerticalStackLayout Grid.Column="1"
-                                 HorizontalOptions="Center">
+            <VerticalStackLayout 
+    Grid.Column="1"
+    HorizontalOptions="Center">
+
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnPlaceTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
 
                 <Image
-                    Source="location.png"
-                    WidthRequest="25"
-                    HeightRequest="25"/>
+        Source="location.png"
+        WidthRequest="25"
+        HeightRequest="25"/>
 
                 <Label
-                    Text="Địa điểm"
-                    FontSize="12"/>
+        Text="Địa điểm"
+        FontSize="12"/>
 
             </VerticalStackLayout>
 
@@ -161,6 +166,9 @@
             <!-- PROFILE -->
             <VerticalStackLayout Grid.Column="2"
                                  HorizontalOptions="Center">
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnUserTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
 
                 <Image
                     Source="user.png"

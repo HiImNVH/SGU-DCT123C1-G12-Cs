@@ -1,0 +1,83 @@
+﻿<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="TravelGuide.Views.UserPage"
+	BackgroundColor="#F2F2F2"
+    Title="Cá nhân">
+
+	<Grid RowDefinitions="*,Auto">
+
+		<!-- MAIN CONTENT -->
+		<ScrollView Grid.Row="0">
+			<VerticalStackLayout Padding="20" Spacing="20">
+
+				<!-- Avatar -->
+				<Frame
+                    WidthRequest="120"
+                    HeightRequest="120"
+                    CornerRadius="60"
+                    HorizontalOptions="Center"
+                    HasShadow="True">
+
+					<Image Source="user.png" Aspect="AspectFill"/>
+				</Frame>
+
+				<!-- Username -->
+				<Label Text="Tên người dùng" FontSize="14" TextColor="Gray"/>
+
+				<Frame CornerRadius="10" Padding="12">
+					<Label x:Name="UsernameLabel"
+                           FontSize="16"
+                           FontAttributes="Bold"/>
+				</Frame>
+
+				<!-- Email -->
+				<Label Text="Email" FontSize="14" TextColor="Gray"/>
+
+				<Frame CornerRadius="10" Padding="12">
+					<Label x:Name="EmailLabel"
+                           FontSize="16"/>
+				</Frame>
+
+				<!-- Logout -->
+				<Button
+                    Text="Đăng xuất"
+                    BackgroundColor="Red"
+                    TextColor="White"
+                    Clicked="OnLogoutClicked"/>
+
+			</VerticalStackLayout>
+		</ScrollView>
+
+		<!-- BOTTOM MENU -->
+		<Grid Grid.Row="1"
+              BackgroundColor="White"
+              Padding="10"
+              ColumnDefinitions="*,*,*">
+
+			<VerticalStackLayout HorizontalOptions="Center">
+				<Image Source="home.png" WidthRequest="25"/>
+				<Label Text="Trang chủ" FontSize="12"/>
+				<VerticalStackLayout.GestureRecognizers>
+					<TapGestureRecognizer Tapped="HomePageTapped"/>
+				</VerticalStackLayout.GestureRecognizers>
+			</VerticalStackLayout>
+
+			<VerticalStackLayout Grid.Column="1" HorizontalOptions="Center">
+				<VerticalStackLayout.GestureRecognizers>
+					<TapGestureRecognizer Tapped="OnPlaceTapped"/>
+				</VerticalStackLayout.GestureRecognizers>
+				<Image Source="location.png" WidthRequest="25"/>
+				<Label Text="Địa điểm" FontSize="12"/>
+			</VerticalStackLayout>
+
+			<VerticalStackLayout Grid.Column="2" HorizontalOptions="Center">
+				<Image Source="user.png" WidthRequest="25"/>
+				<Label Text="Cá nhân" FontSize="12"/>
+			</VerticalStackLayout>
+
+		</Grid>
+
+	</Grid>
+
+</ContentPage>
