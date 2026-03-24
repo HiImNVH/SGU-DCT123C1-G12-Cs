@@ -1,68 +1,45 @@
 1. Tổng quan dự án
-Tên ứng dụng: Travel Guide.
-
-Mục tiêu: Cung cấp nền tảng hỗ trợ người dùng khám phá các địa điểm du lịch, di tích lịch sử và tiện ích xung quanh dựa trên vị trí địa lý.
-
-Đối tượng khách hàng: Khách du lịch nội địa và quốc tế muốn tìm hiểu thông tin điểm đến tại Việt Nam.
+- Tên ứng dụng: Travel Guide.
+- Mục tiêu: Cung cấp nền tảng hỗ trợ người dùng khám phá các địa điểm du lịch, di tích lịch sử và tiện ích xung quanh dựa trên vị trí địa lý.
+- Đối tượng khách hàng: Khách du lịch nội địa và quốc tế muốn tìm hiểu thông tin điểm đến tại Việt Nam.
 
 2. Luồng người dùng (User Flow)
-Đăng nhập/Đăng ký: Người dùng tạo tài khoản để cá nhân hóa trải nghiệm.
-
-Khám phá (Trang chủ): Xem các địa điểm gợi ý gần vị trí hiện tại.
-
-Tìm kiếm & Lọc: Tìm kiếm địa điểm cụ thể hoặc theo danh mục.
-
-Bản đồ: Xem vị trí trực quan và nhận hướng dẫn di chuyển.
-
-Chi tiết địa điểm: Xem ảnh, mô tả và thông tin lịch sử.
-
-Cá nhân: Quản lý thông tin và cài đặt ứng dụng.
+a. Đăng nhập/Đăng ký: Người dùng tạo tài khoản để cá nhân hóa trải nghiệm.
+b. Khám phá (Trang chủ): Xem các địa điểm gợi ý gần vị trí hiện tại.
+c. Tìm kiếm & Lọc: Tìm kiếm địa điểm cụ thể hoặc theo danh mục.
+d. Bản đồ: Xem vị trí trực quan và nhận hướng dẫn di chuyển.
+e. Chi tiết địa điểm: Xem ảnh, mô tả và thông tin lịch sử.
+f. Cá nhân: Quản lý thông tin và cài đặt ứng dụng.
 
 3. Danh sách tính năng (Feature List)
 3.1. Nhóm tính năng Xác thực (Auth)
-Đăng nhập (Login): Bằng Email và Mật khẩu.
-
-Đăng ký (Sign up): Nhập Họ tên, Email, SĐT, Mật khẩu.
-
-Quên mật khẩu: (Tính năng đề xuất thêm vì chưa có trong ảnh).
+- Đăng nhập (Login): Bằng Email và Mật khẩu.
+- Đăng ký (Sign up): Nhập Họ tên, Email, SĐT, Mật khẩu.
+- Quên mật khẩu: (Tính năng đề xuất thêm).
 
 3.2. Nhóm tính năng Khám phá (Discovery)
-Trang chủ (Home): Hiển thị lời chào cá nhân hóa, thanh tìm kiếm nhanh và danh sách "Địa điểm gần bạn" dạng thẻ (card).
-
-Danh sách địa điểm (Destinations): Hiển thị danh sách các địa điểm nổi tiếng (Chợ Bến Thành, Nhà thờ Đức Bà, Landmark 81...) kèm mô tả ngắn gọn.
-
-Chi tiết địa điểm: Hình ảnh header lớn, tên địa điểm, khu vực (TP.HCM) và nội dung mô tả chi tiết.
+- Trang chủ (Home): Hiển thị lời chào cá nhân hóa, thanh tìm kiếm nhanh và danh sách "Địa điểm gần bạn" dạng thẻ (card).
+- Danh sách địa điểm (Destinations): Hiển thị danh sách các địa điểm nổi tiếng (Chợ Bến Thành, Nhà thờ Đức Bà, Landmark 81...) kèm mô tả ngắn gọn.
+- Chi tiết địa điểm: Hình ảnh header lớn, tên địa điểm, khu vực (TP.HCM) và nội dung mô tả chi tiết.
 
 3.3. Nhóm tính năng Bản đồ (Mapping)
-Bản đồ tương tác: Hiển thị các marker (ghim) vị trí địa điểm trên nền bản đồ (sử dụng Goong.io hoặc Google Maps).
-
-Thông tin nhanh (Pop-up): Nhấp vào ghim để xem tên địa điểm ngay trên bản đồ.
-
-Lưu ý từ ảnh 5: Hiện tại có lỗi "undefined" ở phần mô tả trên bản đồ, cần khắc phục lỗi data này.
+- Bản đồ tương tác: Hiển thị các marker (ghim) vị trí địa điểm trên nền bản đồ (sử dụng Goong.io hoặc Google Maps).
+- Thông tin nhanh (Pop-up): Nhấp vào ghim để xem tên địa điểm ngay trên bản đồ.
+- Lưu ý: Hiện tại có lỗi "undefined" ở phần mô tả trên bản đồ, cần khắc phục lỗi data này.
 
 3.4. Nhóm tính năng Cá nhân (Profile)
-Thông tin cá nhân: Xem/Chỉnh sửa avatar, tên, email.
-
-Cài đặt: Tùy chỉnh ứng dụng (Ngôn ngữ, thông báo).
-
-Đăng xuất: Thoát tài khoản khỏi thiết bị.
+- Thông tin cá nhân: Xem/Chỉnh sửa avatar, tên, email.
+- Cài đặt: Tùy chỉnh ứng dụng (Ngôn ngữ, thông báo).
+- Đăng xuất: Thoát tài khoản khỏi thiết bị.
 
 4. Yêu cầu kỹ thuật & Giao diện (UI/UX)
-Ngôn ngữ: Hỗ trợ đa ngôn ngữ (Ảnh cho thấy có cả Tiếng Anh và Tiếng Việt).
-
-Giao diện: * Tông màu chủ đạo: Trắng, Xanh dương (Login), Xanh lá (Register), Hồng/Tím (Bottom Nav).
-
-Điều hướng: Bottom Navigation Bar với 3 mục chính: Trang chủ, Địa điểm, Cá nhân.
-
-Hiệu năng: Tải dữ liệu hình ảnh mượt mà, định vị GPS chính xác trong bán kính 10-20m.
+- Ngôn ngữ: Hỗ trợ đa ngôn ngữ.
+- Giao diện: Tông màu chủ đạo: Trắng, Xanh dương (Login), Xanh lá (Register), Hồng/Tím (Bottom Nav).
+- Điều hướng: Bottom Navigation Bar với 3 mục chính: Trang chủ, Địa điểm, Cá nhân.
+- Hiệu năng: Tải dữ liệu hình ảnh mượt mà, định vị GPS chính xác trong bán kính 10-20m.
 
 5. Đề xuất cải thiện (Backlog)
-Dựa trên ảnh chụp, mình thấy có một vài điểm có thể tối ưu thêm:
-
-Xử lý lỗi Data: Sửa lỗi hiển thị undefined trên pop-up bản đồ (Ảnh 5).
-
-Đồng bộ ngôn ngữ: Một số màn hình dùng tiếng Anh (Login/Sign up), một số dùng tiếng Việt (Trang chủ). Nên để người dùng chọn ngôn ngữ đồng nhất.
-
-Thêm tính năng "Yêu thích": Cho phép người dùng lưu lại các địa điểm muốn đi.
-
-Chỉ đường: Tích hợp nút "Chỉ đường" từ vị trí hiện tại đến địa điểm trong màn hình chi tiết.
+- Xử lý lỗi Data: Sửa lỗi hiển thị undefined trên pop-up bản đồ.
+- Đồng bộ ngôn ngữ: Một số màn hình dùng tiếng Anh (Login/Sign up), một số dùng tiếng Việt (Trang chủ). Nên để người dùng chọn ngôn ngữ đồng nhất.
+- Thêm tính năng "Yêu thích": Cho phép người dùng lưu lại các địa điểm muốn đi.
+- Chỉ đường: Tích hợp nút "Chỉ đường" từ vị trí hiện tại đến địa điểm trong màn hình chi tiết.
