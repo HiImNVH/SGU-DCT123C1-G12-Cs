@@ -1,0 +1,22 @@
+<Shell
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:TravelGuide"
+    x:Class="TravelGuide.AppShell">
+
+
+
+    <ShellContent
+        Route="login"
+        ContentTemplate="{DataTemplate local:LoginPage}" />
+
+    <TabBar Route="main">
+        <ShellContent  Title="Trang chủ" Route="home"   Icon="home.png"
+                      ContentTemplate="{DataTemplate local:HomePage}" />
+        <ShellContent     Title="Địa điểm" Route="places"  Icon="location.png"
+                      ContentTemplate="{DataTemplate local:PlaceListPage}" />
+        <ShellContent      Title="Cá nhân" Route="profile"  Icon="user.png"
+                      ContentTemplate="{DataTemplate local:ProfilePage}" />
+    </TabBar>
+
+</Shell>

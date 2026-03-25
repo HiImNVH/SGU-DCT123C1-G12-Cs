@@ -1,0 +1,50 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TravelGuide.PlaceDetailPage"
+             BackgroundColor="#F5F5F5">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- HEADER IMAGE -->
+        <Grid HeightRequest="250">
+            <Image Source="{Binding image_url}"
+                   Aspect="AspectFill"/>
+
+            <!-- Back button -->
+            <ImageButton Source="back.png"
+                         WidthRequest="30"
+                         HeightRequest="30"
+                         BackgroundColor="Transparent"
+                         Margin="15"
+                         HorizontalOptions="Start"
+                         VerticalOptions="Start"
+                         />
+        </Grid>
+
+        <!-- CONTENT -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20" Spacing="15">
+
+                <Label Text="{Binding location_name}"
+                       FontSize="24"
+                       FontAttributes="Bold"/>
+
+                <Label Text="{Binding city}"
+                       FontSize="16"
+                       TextColor="Gray"/>
+
+                <BoxView HeightRequest="1" Color="#E0E0E0"/>
+
+                <Label Text="Mô tả"
+                       FontSize="18"
+                       FontAttributes="Bold"/>
+
+                <Label Text="{Binding description}"
+                       FontSize="14"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>

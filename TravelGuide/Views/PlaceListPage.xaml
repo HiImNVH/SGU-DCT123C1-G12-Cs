@@ -1,0 +1,87 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TravelGuide.PlaceListPage"
+             BackgroundColor="#F5F5F5" 
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+        <!-- HEADER -->
+        <VerticalStackLayout Padding="20">
+            <Label Text="Khám phá địa điểm"
+                   FontSize="26"
+                   FontAttributes="Bold"/>
+
+            <Label Text="Find your next destination"
+                   FontSize="14"
+                   TextColor="Gray"/>
+        </VerticalStackLayout>
+
+        <!-- SEARCH -->
+        <Frame Grid.Row="1"
+               Margin="20,0"
+               Padding="10"
+               CornerRadius="12"
+               BackgroundColor="White"
+               InputTransparent="False">
+
+            <Grid ColumnDefinitions="Auto,*">
+                <Image Source="search.png" WidthRequest="20"/>
+                <Entry Grid.Column="1"
+                       Placeholder="Tìm địa điểm..."
+                       BackgroundColor="Transparent"/>
+            </Grid>
+
+        </Frame>
+
+        <!-- LIST -->
+        <CollectionView Grid.Row="2"
+                        Margin="20,10"
+                        ItemsSource="{Binding Places}"
+                        SelectionMode="Single">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+
+                    <Frame CornerRadius="15"
+           Margin="0,0,0,15"
+           Padding="0">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnItemTapped"/>
+                        </Frame.GestureRecognizers>
+                        <Grid ColumnDefinitions="120,*">
+
+                            <!-- IMAGE -->
+                            <Image Source="{Binding image_url}"
+                   Aspect="AspectFill"
+                   HeightRequest="100"/>
+
+                            <!-- INFO -->
+                            <VerticalStackLayout Grid.Column="1"
+                                 Padding="10"
+                                 Spacing="5">
+
+                                <Label Text="{Binding location_name}"
+                       FontSize="16"
+                       FontAttributes="Bold"/>
+
+                                <Label Text="{Binding city}"
+                       FontSize="12"
+                       TextColor="Gray"/>
+
+                                <Label Text="{Binding description}"
+                       FontSize="12"
+                       LineBreakMode="TailTruncation"
+                       MaxLines="2"/>
+
+                            </VerticalStackLayout>
+
+                        </Grid>
+
+                    </Frame>
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+    </Grid>
+</ContentPage>

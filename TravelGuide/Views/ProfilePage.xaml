@@ -1,0 +1,62 @@
+﻿<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="TravelGuide.ProfilePage"
+    BackgroundColor="#F5F5F5"
+     Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- CONTENT -->
+        <ScrollView Grid.Row="0">
+
+            <VerticalStackLayout Padding="20" Spacing="20">
+
+                <!-- AVATAR -->
+                <VerticalStackLayout HorizontalOptions="Center">
+
+                    <Frame WidthRequest="100"
+                           HeightRequest="100"
+                           CornerRadius="50"
+                           BackgroundColor="#E0E0E0"
+                           HorizontalOptions="Center">
+
+                        <Image Source="user.png"/>
+
+                    </Frame>
+
+                    <Label Text="Nguyễn Văn A"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"/>
+
+                    <Label Text="example@gmail.com"
+                           FontSize="12"
+                           TextColor="Gray"
+                           HorizontalOptions="Center"/>
+
+                </VerticalStackLayout>
+
+                <!-- MENU -->
+                <VerticalStackLayout Spacing="10">
+
+                    <Frame CornerRadius="12" Padding="15">
+                        <Label Text="Thông tin cá nhân"/>
+                    </Frame>
+                    <Frame CornerRadius="12" Padding="15">
+                        <Label Text="Cài đặt"/>
+                    </Frame>
+
+                    <Frame CornerRadius="12" Padding="15">
+                        <Label Text="Đăng xuất" TextColor="Red"/>
+                    </Frame>
+
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+    </Grid>
+
+
+</ContentPage>
