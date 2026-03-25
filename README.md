@@ -15,12 +15,12 @@ Travel Guide là một ứng dụng nền tảng di động (Mobile Application)
 
 2. Kiến trúc hệ thống và Công nghệ (Tech Stack)
 Để đảm bảo tính mở rộng và hiệu suất, dự án được đề xuất xây dựng trên các công nghệ sau:
-- Frontend: Xaml
-- Backend: C#
-- Database: MySql/MsSql
+- Frontend: C#/Xaml + html
+- Backend: html (chưa phát triển)
+- Database: MySql/MsSql (chưa phát triển)
 - Maps Integration: Goong.io api
 
-3. Luồng nghiệp vụ (Business Logic & User Flow)
+3. Luồng nghiệp vụ (Business Logic & User Flow) (đang phát triển)
 3.1. Quy trình Xác thực (Authentication Flow)
 a. Người dùng khởi tạo tài khoản qua Email và số điện thoại.
 b. Hệ thống xác thực thông tin và cấp quyền truy cập.
