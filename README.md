@@ -60,8 +60,9 @@ c. Hiển thị danh sách địa điểm theo thứ tự ưu tiên khoảng cá
 6.1. Ưu tiên cấp thiết (High Priority)
 - Data Integrity: Khắc phục lỗi logic truyền dữ liệu gây hiển thị giá trị undefined trên các Pop-up bản đồ.
 - Localization: Chuẩn hóa toàn bộ chuỗi ký tự (Strings) sang hệ thống đa ngôn ngữ hoàn chỉnh, tránh tình trạng trộn lẫn ngôn ngữ giữa các màn hình.
+- Completion: Hoàn thiện các logic mapping.
 
-6.2. Tính năng mở rộng (Future Features)
-- Navigation: Tích hợp tính năng chỉ đường thời gian thực (Turn-by-turn navigation).
-- Bookmark System: Phát triển module lưu trữ các địa điểm yêu thích vào kho lưu trữ cá nhân (Favorites).
-- Offline Mode: Hỗ trợ lưu trữ dữ liệu bản đồ ngoại tuyến cho các khu vực sóng yếu.
+6.2. Tính năng cần phát triển
+- Giao diện và logic admin
+- TTS (Text to speech)
+- Nâng cấp UX/UI
