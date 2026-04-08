@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="xml:space" use="fixed" value="preserve" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter</value></resheader>
+
+  <!-- ===== AUTH ===== -->
+  <data name="Login_Title" xml:space="preserve"><value>Connexion</value></data>
+  <data name="Login_Subtitle" xml:space="preserve"><value>Connectez-vous pour explorer</value></data>
+  <data name="Login_Username" xml:space="preserve"><value>Nom d'utilisateur</value></data>
+  <data name="Login_Password" xml:space="preserve"><value>Mot de passe</value></data>
+  <data name="Login_Button" xml:space="preserve"><value>Se connecter</value></data>
+  <data name="Login_NoAccount" xml:space="preserve"><value>Pas encore de compte ?</value></data>
+  <data name="Login_SignUp" xml:space="preserve"><value>S'inscrire maintenant</value></data>
+  <data name="Login_Failed" xml:space="preserve"><value>Échec de la connexion</value></data>
+  <data name="Login_EmptyFields" xml:space="preserve"><value>Veuillez remplir tous les champs</value></data>
+
+  <data name="Register_Title" xml:space="preserve"><value>Créer un compte</value></data>
+  <data name="Register_FullName" xml:space="preserve"><value>Nom complet</value></data>
+  <data name="Register_Username" xml:space="preserve"><value>Nom d'utilisateur *</value></data>
+  <data name="Register_Email" xml:space="preserve"><value>E-mail</value></data>
+  <data name="Register_Password" xml:space="preserve"><value>Mot de passe *</value></data>
+  <data name="Register_Button" xml:space="preserve"><value>S'inscrire</value></data>
+  <data name="Register_BackToLogin" xml:space="preserve"><value>← Retour à la connexion</value></data>
+  <data name="Register_Failed" xml:space="preserve"><value>Échec de l'inscription</value></data>
+  <data name="Register_EmptyFields" xml:space="preserve"><value>Veuillez remplir tous les champs obligatoires</value></data>
+
+  <!-- ===== HOME ===== -->
+  <data name="Home_Welcome" xml:space="preserve"><value>Bonjour</value></data>
+  <data name="Home_Subtitle" xml:space="preserve"><value>Découvrez les merveilles autour de vous</value></data>
+  <data name="Home_SearchPlaceholder" xml:space="preserve"><value>Rechercher un lieu...</value></data>
+  <data name="Home_Nearby" xml:space="preserve"><value>Sites touristiques à proximité</value></data>
+  <data name="Home_MapError" xml:space="preserve"><value>Impossible de charger la carte</value></data>
+  <data name="Home_AutoPlay" xml:space="preserve"><value>Vous êtes près de ce lieu. Lecture du guide audio...</value></data>
+
+  <!-- ===== MAP ===== -->
+  <data name="Map_Title" xml:space="preserve"><value>Carte</value></data>
+  <data name="Map_YourLocation" xml:space="preserve"><value>Votre position</value></data>
+  <data name="Map_ListenButton" xml:space="preserve"><value>🔊 Lire le guide audio</value></data>
+  <data name="Map_LoadError" xml:space="preserve"><value>Impossible de charger la carte</value></data>
+
+  <!-- ===== PLACE LIST ===== -->
+  <data name="PlaceList_Title" xml:space="preserve"><value>Explorer les lieux</value></data>
+  <data name="PlaceList_Subtitle" xml:space="preserve"><value>Trouvez votre prochaine destination</value></data>
+  <data name="PlaceList_SearchPlaceholder" xml:space="preserve"><value>Rechercher un lieu...</value></data>
+
+  <!-- ===== PLACE DETAIL ===== -->
+  <data name="Detail_Listen" xml:space="preserve"><value>▶ Lire le guide audio</value></data>
+  <data name="Detail_Stop" xml:space="preserve"><value>■ Arrêter</value></data>
+  <data name="Detail_NoContent" xml:space="preserve"><value>Aucun contenu de guide audio disponible</value></data>
+  <data name="Detail_Notice" xml:space="preserve"><value>Avis</value></data>
+
+  <!-- ===== PROFILE ===== -->
+  <data name="Profile_Title" xml:space="preserve"><value>Informations personnelles</value></data>
+  <data name="Profile_Tourist" xml:space="preserve"><value>Touriste</value></data>
+  <data name="Profile_Admin" xml:space="preserve"><value>Administrateur</value></data>
+  <data name="Profile_FullName" xml:space="preserve"><value>Nom complet :</value></data>
+  <data name="Profile_Email" xml:space="preserve"><value>E-mail :</value></data>
+  <data name="Profile_Language" xml:space="preserve"><value>Langue :</value></data>
+  <data name="Profile_Settings" xml:space="preserve"><value>Paramètres</value></data>
+  <data name="Profile_ChangeLanguage" xml:space="preserve"><value>Langue du guide audio</value></data>
+  <data name="Profile_EditInfo" xml:space="preserve"><value>Modifier le profil</value></data>
+  <data name="Profile_Logout" xml:space="preserve"><value>Se déconnecter</value></data>
+  <data name="Profile_LogoutConfirm" xml:space="preserve"><value>Voulez-vous vraiment vous déconnecter ?</value></data>
+  <data name="Profile_LogoutTitle" xml:space="preserve"><value>Déconnexion</value></data>
+  <data name="Profile_EditTitle" xml:space="preserve"><value>Modifier</value></data>
+  <data name="Profile_EditPrompt" xml:space="preserve"><value>Entrez votre nouveau nom :</value></data>
+  <data name="Profile_UpdateSuccess" xml:space="preserve"><value>Profil mis à jour avec succès</value></data>
+  <data name="Profile_LanguageChanged" xml:space="preserve"><value>Basculé vers</value></data>
+
+  <!-- ===== LANGUAGE SELECTION ===== -->
+  <data name="Lang_Title" xml:space="preserve"><value>Choisir une langue</value></data>
+  <data name="Lang_Select" xml:space="preserve"><value>Choisissez la langue du guide audio</value></data>
+
+  <!-- ===== COMMON ===== -->
+  <data name="Common_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="Common_Cancel" xml:space="preserve"><value>Annuler</value></data>
+  <data name="Common_Error" xml:space="preserve"><value>Erreur</value></data>
+  <data name="Common_Success" xml:space="preserve"><value>Succès</value></data>
+  <data name="Common_Loading" xml:space="preserve"><value>Chargement...</value></data>
+  <data name="Common_Logout" xml:space="preserve"><value>Se déconnecter</value></data>
+
+  <!-- AppResources.fr.resx (Français) -->
+<data name="Tab_Home"    xml:space="preserve"><value>Accueil</value></data>
+<data name="Tab_Places"  xml:space="preserve"><value>Lieux</value></data>
+<data name="Tab_Profile" xml:space="preserve"><value>Profil</value></data>
+</root>

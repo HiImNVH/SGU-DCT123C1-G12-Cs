@@ -1,0 +1,48 @@
+﻿@inherits LayoutComponentBase
+@inject IAdminApiService ApiService
+@inject NavigationManager Nav
+@rendermode InteractiveServer
+
+@if (!_isInitialized)
+{
+    <div style="display:flex;justify-content:center;align-items:center;min-height:100vh;background:#F5F5F5;">
+        <p style="color:#2E7D32;font-size:16px;">⏳ Đang tải...</p>
+    </div>
+}
+else
+{
+    @if (ApiService.IsLoggedIn())
+    {
+        <div style="display:flex; min-height:100vh;">
+            <NavMenu/>
+            <main style="flex:1; padding:24px; background:#F5F5F5; overflow-y:auto;">
+                @Body
+            </main>
+        </div>
+    }
+    else
+    {
+        <main>@Body</main>
+    }
+}
+
+@code {
+    private bool _isInitialized = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        await ApiService.InitializeAsync();
+        _isInitialized = true;
+
+        // Redirect nếu chưa đăng nhập và không ở trang login
+        var currentPath = new Uri(Nav.Uri).AbsolutePath.ToLower();
+        if (!ApiService.IsLoggedIn() && currentPath != "/login")
+        {
+            Nav.NavigateTo("/login", true);
+        }
+
+        StateHasChanged();
+    }
+}

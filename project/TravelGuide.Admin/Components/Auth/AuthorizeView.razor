@@ -1,0 +1,40 @@
+@inject IAdminApiService ApiService
+@inject NavigationManager Nav
+
+@if (_isChecking)
+{
+    <div style="padding:40px;text-align:center;">
+        <p style="color:#2E7D32;">⏳ Đang kiểm tra quyền truy cập...</p>
+    </div>
+}
+else if (_isAuthorized)
+{
+    @ChildContent
+}
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    private bool _isChecking = true;
+    private bool _isAuthorized = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        await ApiService.InitializeAsync();
+
+        _isAuthorized = ApiService.IsLoggedIn();
+        _isChecking = false;
+
+        if (!_isAuthorized)
+        {
+            Nav.NavigateTo("/login", true);
+        }
+        else
+        {
+            StateHasChanged();
+        }
+    }
+}

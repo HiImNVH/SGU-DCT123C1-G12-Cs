@@ -1,11 +1,16 @@
 [
   {
-    "Name": "New Profile",
+    "Name": "Both",
     "Projects": [
       {
-        "Path": "TravelGuide\\TravelGuide.csproj",
+        "Path": "TravelGuide.API\\TravelGuide.API.csproj",
         "Action": "Start",
-        "DebugTarget": "Pixel 7 - API 35 (Android 15.0 - API 35)"
+        "DebugTarget": "http"
+      },
+      {
+        "Path": "TravelGuide.Admin\\TravelGuide.Admin.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
       }
     ]
   }

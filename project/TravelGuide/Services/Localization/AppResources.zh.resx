@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="xml:space" use="fixed" value="preserve" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter</value></resheader>
+
+  <!-- ===== AUTH ===== -->
+  <data name="Login_Title" xml:space="preserve"><value>登录</value></data>
+  <data name="Login_Subtitle" xml:space="preserve"><value>登录开始探索</value></data>
+  <data name="Login_Username" xml:space="preserve"><value>用户名</value></data>
+  <data name="Login_Password" xml:space="preserve"><value>密码</value></data>
+  <data name="Login_Button" xml:space="preserve"><value>登录</value></data>
+  <data name="Login_NoAccount" xml:space="preserve"><value>还没有账号？</value></data>
+  <data name="Login_SignUp" xml:space="preserve"><value>立即注册</value></data>
+  <data name="Login_Failed" xml:space="preserve"><value>登录失败</value></data>
+  <data name="Login_EmptyFields" xml:space="preserve"><value>请填写所有信息</value></data>
+
+  <data name="Register_Title" xml:space="preserve"><value>创建新账号</value></data>
+  <data name="Register_FullName" xml:space="preserve"><value>全名</value></data>
+  <data name="Register_Username" xml:space="preserve"><value>用户名 *</value></data>
+  <data name="Register_Email" xml:space="preserve"><value>电子邮件</value></data>
+  <data name="Register_Password" xml:space="preserve"><value>密码 *</value></data>
+  <data name="Register_Button" xml:space="preserve"><value>注册</value></data>
+  <data name="Register_BackToLogin" xml:space="preserve"><value>← 返回登录</value></data>
+  <data name="Register_Failed" xml:space="preserve"><value>注册失败</value></data>
+  <data name="Register_EmptyFields" xml:space="preserve"><value>请填写所有必填项</value></data>
+
+  <!-- ===== HOME ===== -->
+  <data name="Home_Welcome" xml:space="preserve"><value>你好</value></data>
+  <data name="Home_Subtitle" xml:space="preserve"><value>探索周边的美丽景点</value></data>
+  <data name="Home_SearchPlaceholder" xml:space="preserve"><value>搜索地点...</value></data>
+  <data name="Home_Nearby" xml:space="preserve"><value>附近景点</value></data>
+  <data name="Home_MapError" xml:space="preserve"><value>无法加载地图</value></data>
+  <data name="Home_AutoPlay" xml:space="preserve"><value>您正在此景点附近。正在播放语音导览...</value></data>
+
+  <!-- ===== MAP ===== -->
+  <data name="Map_Title" xml:space="preserve"><value>地图</value></data>
+  <data name="Map_YourLocation" xml:space="preserve"><value>您的位置</value></data>
+  <data name="Map_ListenButton" xml:space="preserve"><value>🔊 播放语音导览</value></data>
+  <data name="Map_LoadError" xml:space="preserve"><value>无法加载地图</value></data>
+
+  <!-- ===== PLACE LIST ===== -->
+  <data name="PlaceList_Title" xml:space="preserve"><value>探索景点</value></data>
+  <data name="PlaceList_Subtitle" xml:space="preserve"><value>寻找您的下一个目的地</value></data>
+  <data name="PlaceList_SearchPlaceholder" xml:space="preserve"><value>搜索景点...</value></data>
+
+  <!-- ===== PLACE DETAIL ===== -->
+  <data name="Detail_Listen" xml:space="preserve"><value>▶ 播放语音导览</value></data>
+  <data name="Detail_Stop" xml:space="preserve"><value>■ 停止</value></data>
+  <data name="Detail_NoContent" xml:space="preserve"><value>暂无语音导览内容</value></data>
+  <data name="Detail_Notice" xml:space="preserve"><value>提示</value></data>
+
+  <!-- ===== PROFILE ===== -->
+  <data name="Profile_Title" xml:space="preserve"><value>个人信息</value></data>
+  <data name="Profile_Tourist" xml:space="preserve"><value>游客</value></data>
+  <data name="Profile_Admin" xml:space="preserve"><value>管理员</value></data>
+  <data name="Profile_FullName" xml:space="preserve"><value>姓名：</value></data>
+  <data name="Profile_Email" xml:space="preserve"><value>邮箱：</value></data>
+  <data name="Profile_Language" xml:space="preserve"><value>语言：</value></data>
+  <data name="Profile_Settings" xml:space="preserve"><value>设置</value></data>
+  <data name="Profile_ChangeLanguage" xml:space="preserve"><value>语音导览语言</value></data>
+  <data name="Profile_EditInfo" xml:space="preserve"><value>编辑个人信息</value></data>
+  <data name="Profile_Logout" xml:space="preserve"><value>退出登录</value></data>
+  <data name="Profile_LogoutConfirm" xml:space="preserve"><value>确定要退出登录吗？</value></data>
+  <data name="Profile_LogoutTitle" xml:space="preserve"><value>退出登录</value></data>
+  <data name="Profile_EditTitle" xml:space="preserve"><value>编辑</value></data>
+  <data name="Profile_EditPrompt" xml:space="preserve"><value>请输入新的姓名：</value></data>
+  <data name="Profile_UpdateSuccess" xml:space="preserve"><value>个人信息已更新</value></data>
+  <data name="Profile_LanguageChanged" xml:space="preserve"><value>已切换至</value></data>
+
+  <!-- ===== LANGUAGE SELECTION ===== -->
+  <data name="Lang_Title" xml:space="preserve"><value>选择语言</value></data>
+  <data name="Lang_Select" xml:space="preserve"><value>请选择语音导览语言</value></data>
+
+  <!-- ===== COMMON ===== -->
+  <data name="Common_OK" xml:space="preserve"><value>确定</value></data>
+  <data name="Common_Cancel" xml:space="preserve"><value>取消</value></data>
+  <data name="Common_Error" xml:space="preserve"><value>错误</value></data>
+  <data name="Common_Success" xml:space="preserve"><value>成功</value></data>
+  <data name="Common_Loading" xml:space="preserve"><value>加载中...</value></data>
+  <data name="Common_Logout" xml:space="preserve"><value>退出登录</value></data>
+  <!-- AppResources.zh.resx (中文) -->
+<data name="Tab_Home"    xml:space="preserve"><value>首页</value></data>
+<data name="Tab_Places"  xml:space="preserve"><value>景点</value></data>
+<data name="Tab_Profile" xml:space="preserve"><value>我的</value></data>
+</root>

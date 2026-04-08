@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.37027.9
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11626.88
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelGuide", "TravelGuide\TravelGuide.csproj", "{84647AD0-FD2E-4B14-8C0C-E9749A7A0AC7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelGuide.API", "TravelGuide.API\TravelGuide.API.csproj", "{21700E91-8B3A-4887-97C0-9EB3B08CE747}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelGuide.Admin", "TravelGuide.Admin\TravelGuide.Admin.csproj", "{123FD8A0-6E54-4CA8-B862-5299EEF10002}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,6 +20,14 @@ Global
 		{84647AD0-FD2E-4B14-8C0C-E9749A7A0AC7}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{84647AD0-FD2E-4B14-8C0C-E9749A7A0AC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84647AD0-FD2E-4B14-8C0C-E9749A7A0AC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21700E91-8B3A-4887-97C0-9EB3B08CE747}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21700E91-8B3A-4887-97C0-9EB3B08CE747}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21700E91-8B3A-4887-97C0-9EB3B08CE747}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21700E91-8B3A-4887-97C0-9EB3B08CE747}.Release|Any CPU.Build.0 = Release|Any CPU
+		{123FD8A0-6E54-4CA8-B862-5299EEF10002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{123FD8A0-6E54-4CA8-B862-5299EEF10002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{123FD8A0-6E54-4CA8-B862-5299EEF10002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{123FD8A0-6E54-4CA8-B862-5299EEF10002}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

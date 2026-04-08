@@ -1,0 +1,154 @@
+@page "/"
+@rendermode InteractiveServer
+@inject IAdminApiService ApiService
+@inject NavigationManager Nav
+
+<div class="page-header">
+    <h2>📍 Quản lý điểm du lịch (POI)</h2>
+    <button class="btn-add" @onclick='() => Nav.NavigateTo("/poi/add")'>+ Thêm POI</button>
+</div>
+
+@if (_loading)
+{
+    <div class="loading">⏳ Đang tải danh sách...</div>
+}
+else if (!_pois.Any())
+{
+    <div class="empty">Chưa có điểm du lịch nào.</div>
+}
+else
+{
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Tên</th>
+                <th>Danh mục</th>
+                <th>Tọa độ</th>
+                <th>Bán kính</th>
+                <th>Đánh giá</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var poi in _pois)
+            {
+                <tr>
+                    <td>
+                        <b>@poi.Name</b><br/>
+                        @if (!string.IsNullOrEmpty(poi.Description))
+                        {
+                            <small style="color:gray">
+                                @(poi.Description.Length > 40 
+                                    ? poi.Description.Substring(0, 40) + "..." 
+                                    : poi.Description)
+                            </small>
+                        }
+                    </td>
+                    <td><span class="badge">@poi.Category</span></td>
+                    <td><small>@poi.Latitude.ToString("F6"), @poi.Longitude.ToString("F6")</small></td>
+                    <td>@poi.Radius m</td>
+                    <td>
+                        <span style="color:#FF8F00">⭐ @poi.AverageRating.ToString("F1")</span>
+                        <small style="color:gray">(@poi.TotalRatings)</small>
+                    </td>
+                    <td>
+                        <span class="@(poi.IsActive ? "status-active" : "status-inactive")">
+                            @(poi.IsActive ? "Hoạt động" : "Ẩn")
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn-edit"
+                                @onclick="@(() => Nav.NavigateTo($"/poi/edit/{poi.Id}"))">Sửa</button>
+                        <button class="btn-delete"
+                                @onclick="@(() => DeletePOI(poi.Id))">Xóa</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (!string.IsNullOrEmpty(_error))
+{
+    <div class="alert-error">@_error</div>
+}
+
+<style>
+    .page-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+    .btn-add { background:#2E7D32; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-size:14px; }
+    .btn-add:hover { background:#1B5E20; }
+    .data-table { width:100%; border-collapse:collapse; background:white; border-radius:12px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.08); }
+    .data-table th { background:#2E7D32; color:white; padding:12px 16px; text-align:left; font-size:13px; }
+    .data-table td { padding:12px 16px; border-bottom:1px solid #f0f0f0; font-size:13px; }
+    .data-table tr:hover { background:#f9f9f9; }
+    .badge { background:#E8F5E9; color:#2E7D32; padding:3px 10px; border-radius:20px; font-size:12px; }
+    .status-active { color:#2E7D32; font-weight:600; }
+    .status-inactive { color:#E53935; font-weight:600; }
+    .btn-edit { background:#1976D2; color:white; border:none; padding:5px 12px; border-radius:6px; cursor:pointer; margin-right:4px; font-size:12px; }
+    .btn-edit:hover { background:#1565C0; }
+    .btn-delete { background:#E53935; color:white; border:none; padding:5px 12px; border-radius:6px; cursor:pointer; font-size:12px; }
+    .btn-delete:hover { background:#C62828; }
+    .loading, .empty { text-align:center; padding:40px; color:gray; }
+    .alert-error { background:#FFEBEE; color:#C62828; padding:12px; border-radius:8px; margin-top:16px; }
+</style>
+
+@code {
+    private List<POIDto> _pois = new();
+    private bool _loading = true;
+    private string _error = "";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        
+        await ApiService.InitializeAsync();
+
+        if (!ApiService.IsLoggedIn())
+        {
+            Nav.NavigateTo("/login", true);
+            return;
+        }
+
+        await LoadPOIs();
+        StateHasChanged();
+    }
+
+    private async Task LoadPOIs()
+    {
+        _loading = true;
+        _error = "";
+        try
+        {
+            _pois = await ApiService.GetPOIsAsync();
+        }
+        catch (Exception ex)
+        {
+            _error = $"Lỗi tải dữ liệu: {ex.Message}";
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private async Task DeletePOI(Guid id)
+    {
+        if (!confirm("Bạn có chắc muốn xóa điểm du lịch này?")) return;
+
+        var success = await ApiService.DeletePOIAsync(id);
+        if (success)
+        {
+            await LoadPOIs();
+        }
+        else
+        {
+            _error = "Xóa điểm du lịch thất bại. Vui lòng thử lại.";
+        }
+
+        StateHasChanged();
+    }
+
+    // Hàm confirm đơn giản
+    private bool confirm(string message) => true; // Tạm thời return true, sau này có thể dùng JSInterop
+}

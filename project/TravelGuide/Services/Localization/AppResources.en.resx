@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="xml:space" use="fixed" value="preserve" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter</value></resheader>
+
+  <!-- ===== AUTH ===== -->
+  <data name="Login_Title" xml:space="preserve"><value>Sign In</value></data>
+  <data name="Login_Subtitle" xml:space="preserve"><value>Sign in to explore</value></data>
+  <data name="Login_Username" xml:space="preserve"><value>Username</value></data>
+  <data name="Login_Password" xml:space="preserve"><value>Password</value></data>
+  <data name="Login_Button" xml:space="preserve"><value>Sign In</value></data>
+  <data name="Login_NoAccount" xml:space="preserve"><value>Don't have an account?</value></data>
+  <data name="Login_SignUp" xml:space="preserve"><value>Sign up now</value></data>
+  <data name="Login_Failed" xml:space="preserve"><value>Sign in failed</value></data>
+  <data name="Login_EmptyFields" xml:space="preserve"><value>Please fill in all fields</value></data>
+
+  <data name="Register_Title" xml:space="preserve"><value>Create New Account</value></data>
+  <data name="Register_FullName" xml:space="preserve"><value>Full Name</value></data>
+  <data name="Register_Username" xml:space="preserve"><value>Username *</value></data>
+  <data name="Register_Email" xml:space="preserve"><value>Email</value></data>
+  <data name="Register_Password" xml:space="preserve"><value>Password *</value></data>
+  <data name="Register_Button" xml:space="preserve"><value>Sign Up</value></data>
+  <data name="Register_BackToLogin" xml:space="preserve"><value>← Back to Sign In</value></data>
+  <data name="Register_Failed" xml:space="preserve"><value>Registration failed</value></data>
+  <data name="Register_EmptyFields" xml:space="preserve"><value>Please fill in all required fields</value></data>
+
+  <!-- ===== HOME ===== -->
+  <data name="Home_Welcome" xml:space="preserve"><value>Hello</value></data>
+  <data name="Home_Subtitle" xml:space="preserve"><value>Discover places around you</value></data>
+  <data name="Home_SearchPlaceholder" xml:space="preserve"><value>Search location...</value></data>
+  <data name="Home_Nearby" xml:space="preserve"><value>Nearby attractions</value></data>
+  <data name="Home_MapError" xml:space="preserve"><value>Could not load map</value></data>
+  <data name="Home_AutoPlay" xml:space="preserve"><value>You are near this location. Playing narration...</value></data>
+
+  <!-- ===== MAP ===== -->
+  <data name="Map_Title" xml:space="preserve"><value>Map</value></data>
+  <data name="Map_YourLocation" xml:space="preserve"><value>Your location</value></data>
+  <data name="Map_ListenButton" xml:space="preserve"><value>🔊 Play narration</value></data>
+  <data name="Map_LoadError" xml:space="preserve"><value>Could not load map</value></data>
+
+  <!-- ===== PLACE LIST ===== -->
+  <data name="PlaceList_Title" xml:space="preserve"><value>Explore Places</value></data>
+  <data name="PlaceList_Subtitle" xml:space="preserve"><value>Find your next destination</value></data>
+  <data name="PlaceList_SearchPlaceholder" xml:space="preserve"><value>Search places...</value></data>
+
+  <!-- ===== PLACE DETAIL ===== -->
+  <data name="Detail_Listen" xml:space="preserve"><value>▶ Play narration</value></data>
+  <data name="Detail_Stop" xml:space="preserve"><value>■ Stop</value></data>
+  <data name="Detail_NoContent" xml:space="preserve"><value>No narration content available</value></data>
+  <data name="Detail_Notice" xml:space="preserve"><value>Notice</value></data>
+
+  <!-- ===== PROFILE ===== -->
+  <data name="Profile_Title" xml:space="preserve"><value>Personal Information</value></data>
+  <data name="Profile_Tourist" xml:space="preserve"><value>Tourist</value></data>
+  <data name="Profile_Admin" xml:space="preserve"><value>Administrator</value></data>
+  <data name="Profile_FullName" xml:space="preserve"><value>Full name:</value></data>
+  <data name="Profile_Email" xml:space="preserve"><value>Email:</value></data>
+  <data name="Profile_Language" xml:space="preserve"><value>Language:</value></data>
+  <data name="Profile_Settings" xml:space="preserve"><value>Settings</value></data>
+  <data name="Profile_ChangeLanguage" xml:space="preserve"><value>Narration language</value></data>
+  <data name="Profile_EditInfo" xml:space="preserve"><value>Edit profile</value></data>
+  <data name="Profile_Logout" xml:space="preserve"><value>Log out</value></data>
+  <data name="Profile_LogoutConfirm" xml:space="preserve"><value>Are you sure you want to log out?</value></data>
+  <data name="Profile_LogoutTitle" xml:space="preserve"><value>Log Out</value></data>
+  <data name="Profile_EditTitle" xml:space="preserve"><value>Edit</value></data>
+  <data name="Profile_EditPrompt" xml:space="preserve"><value>Enter new full name:</value></data>
+  <data name="Profile_UpdateSuccess" xml:space="preserve"><value>Profile updated successfully</value></data>
+  <data name="Profile_LanguageChanged" xml:space="preserve"><value>Switched to</value></data>
+
+  <!-- ===== LANGUAGE SELECTION ===== -->
+  <data name="Lang_Title" xml:space="preserve"><value>Select Language</value></data>
+  <data name="Lang_Select" xml:space="preserve"><value>Select narration language</value></data>
+
+  <!-- ===== COMMON ===== -->
+  <data name="Common_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="Common_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Common_Error" xml:space="preserve"><value>Error</value></data>
+  <data name="Common_Success" xml:space="preserve"><value>Success</value></data>
+  <data name="Common_Loading" xml:space="preserve"><value>Loading...</value></data>
+  <data name="Common_Logout" xml:space="preserve"><value>Log out</value></data>
+  <!-- AppResources.en.resx (English) -->
+<data name="Tab_Home"    xml:space="preserve"><value>Home</value></data>
+<data name="Tab_Places"  xml:space="preserve"><value>Places</value></data>
+<data name="Tab_Profile" xml:space="preserve"><value>Profile</value></data>
+</root>

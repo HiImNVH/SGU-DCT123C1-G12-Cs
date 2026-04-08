@@ -1,0 +1,35 @@
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:TravelGuide"
+       xmlns:views="clr-namespace:TravelGuide.Views"
+       x:Class="TravelGuide.AppShell"
+       Shell.TabBarTitleColor="#2E7D32"
+       Shell.TabBarUnselectedColor="Gray">
+
+    <Shell.Resources>
+        <Style TargetType="TabBar">
+            <Setter Property="Shell.TabBarBackgroundColor" Value="White"/>
+        </Style>
+    </Shell.Resources>
+
+    <!-- Auth flow -->
+    <ShellContent Route="login"    ContentTemplate="{DataTemplate local:LoginPage}" />
+    <ShellContent Route="register" ContentTemplate="{DataTemplate local:RegisterPage}" />
+    <ShellContent Route="language" ContentTemplate="{DataTemplate local:LanguageSelectionPage}" />
+
+    <!-- Main app -->
+    <TabBar Route="main">
+
+        <!-- 🔥 Title để placeholder, sẽ bị override bằng code -->
+        <ShellContent Route="home" Title="..." Icon="home.png"
+                      ContentTemplate="{DataTemplate local:HomePage}" />
+
+        <ShellContent Route="places" Title="..." Icon="location.png"
+                      ContentTemplate="{DataTemplate local:PlaceListPage}" />
+
+        <ShellContent Route="profile" Title="..." Icon="user.png"
+                      ContentTemplate="{DataTemplate local:ProfilePage}" />
+
+    </TabBar>
+
+</Shell>

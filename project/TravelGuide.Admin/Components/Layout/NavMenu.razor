@@ -1,0 +1,36 @@
+﻿@inject IAdminApiService ApiService
+@inject NavigationManager Nav
+
+<nav class="sidebar">
+    <div class="sidebar-header">
+        <span>🗺️ TravelGuide</span>
+        <small>Admin Portal</small>
+    </div>
+    <ul>
+        <li><a href="/">📍 Quản lý POI</a></li>
+        <li><a href="/users">👥 Người dùng</a></li>
+        <li>
+            <a href="#" @onclick="HandleLogout" @onclick:preventDefault>
+                🚪 Đăng xuất
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<style>
+    .sidebar { width:220px; min-height:100vh; background:#1B5E20; color:white; padding:0; }
+    .sidebar-header { padding:24px 16px 16px; border-bottom:1px solid #2E7D32; }
+    .sidebar-header span { font-size:18px; font-weight:700; display:block; }
+    .sidebar-header small { color:#A5D6A7; font-size:12px; }
+    .sidebar ul { list-style:none; margin:0; padding:12px 0; }
+    .sidebar ul li a { display:block; padding:12px 20px; color:white; text-decoration:none; font-size:14px; transition:background 0.2s; cursor:pointer; }
+    .sidebar ul li a:hover { background:#2E7D32; }
+</style>
+
+@code {
+    private async Task HandleLogout()
+    {
+        await ApiService.Logout();
+        Nav.NavigateTo("/login", forceLoad: true);
+    }
+}
