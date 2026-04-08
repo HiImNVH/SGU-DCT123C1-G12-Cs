@@ -11,6 +11,11 @@
         "Path": "TravelGuide.Admin\\TravelGuide.Admin.csproj",
         "Action": "Start",
         "DebugTarget": "https"
+      },
+      {
+        "Path": "TravelGuide\\TravelGuide.csproj",
+        "Action": "Start",
+        "DebugTarget": "Pixel 7 - API 35.0 (Android 15.0 - API 35)"
       }
     ]
   }
