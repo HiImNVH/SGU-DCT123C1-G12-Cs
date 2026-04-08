@@ -50,19 +50,42 @@ public partial class HomePage : ContentPage
         try
         {
             var location = await _locationService.GetCurrentLocationAsync();
-            List<POI> pois;
+            var pois = await _poiService.GetAllAsync();
 
             if (location != null)
-                pois = await _poiService.GetNearbyAsync(
-                    location.Latitude, location.Longitude, 5000);
-            else
-                pois = await _poiService.GetAllAsync();
+            {
+                var userLocation = new Location(location.Latitude, location.Longitude);
 
-            NearbyPlaces.Clear();
-            foreach (var p in pois.Take(5))
-                NearbyPlaces.Add(p);
+                var sorted = pois
+                    .Select(p => new
+                    {
+                        POI = p,
+                        Distance = Location.CalculateDistance(
+                            userLocation,
+                            new Location((double)p.Latitude, (double)p.Longitude),
+                            DistanceUnits.Kilometers)
+                    })
+                    .OrderBy(x => x.Distance)
+                    .Take(5)
+                    .Select(x => x.POI)
+                    .ToList();
+
+                NearbyPlaces.Clear();
+                foreach (var p in sorted)
+                    NearbyPlaces.Add(p);
+            }
+            else
+            {
+                // fallback
+                NearbyPlaces.Clear();
+                foreach (var p in pois.Take(5))
+                    NearbyPlaces.Add(p);
+            }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 
     private async Task StartGeofencing()
