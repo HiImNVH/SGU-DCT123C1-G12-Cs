@@ -1,3 +1,4 @@
+using System.Globalization;
 using TravelGuide.Models;
 using TravelGuide.Services;
 
@@ -30,11 +31,15 @@ public partial class MapPage : ContentPage
             double userLat = location?.Latitude ?? 10.776889;
             double userLng = location?.Longitude ?? 106.700806;
 
+            // Dùng InvariantCulture để đảm bảo dấu chấm thập phân
+            var lat = userLat.ToString(CultureInfo.InvariantCulture);
+            var lng = userLng.ToString(CultureInfo.InvariantCulture);
+
             var poiJs = BuildPOIJavaScript(pois);
 
-            // Dùng string thường thay vì interpolated để tránh lỗi escape
-            string html = "<!DOCTYPE html><html><head>" +
-                "<meta name='viewport' content='width=device-width, initial-scale=1.0'>" +
+            string html =
+                "<!DOCTYPE html><html><head>" +
+                "<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes'>" +
                 "<script src='https://cdn.jsdelivr.net/npm/@goongmaps/goong-js@1.0.9/dist/goong-js.js'></script>" +
                 "<link href='https://cdn.jsdelivr.net/npm/@goongmaps/goong-js@1.0.9/dist/goong-js.css' rel='stylesheet'/>" +
                 "<style>" +
@@ -51,13 +56,14 @@ public partial class MapPage : ContentPage
                 "var map=new goongjs.Map({" +
                 "container:'map'," +
                 "style:'https://tiles.goong.io/assets/goong_map_web.json?api_key=POdfxjueKxYZ09MjbKKLCKkxeNLfhFpsXaOfT3Rn'," +
-                $"center:[{userLng},{userLat}]," +
+                // Dùng biến lat/lng đã convert InvariantCulture
+                $"center:[{lng},{lat}]," +
                 "zoom:13" +
                 "});" +
                 "map.on('load',function(){" +
                 "var userEl=document.createElement('div');" +
                 "userEl.style.cssText='width:16px;height:16px;background:#2196F3;border:3px solid white;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,0.4)';" +
-                $"new goongjs.Marker({{element:userEl}}).setLngLat([{userLng},{userLat}]).setPopup(new goongjs.Popup().setHTML('<b>Vi tri cua ban</b>')).addTo(map);" +
+                $"new goongjs.Marker({{element:userEl}}).setLngLat([{lng},{lat}]).setPopup(new goongjs.Popup().setHTML('<b>Vi tri cua ban</b>')).addTo(map);" +
                 $"var places={poiJs};" +
                 "places.forEach(function(p){" +
                 "var el=document.createElement('div');" +
@@ -94,16 +100,19 @@ public partial class MapPage : ContentPage
     {
         if (pois == null || !pois.Any()) return "[]";
 
+        // Dùng InvariantCulture cho tất cả số thực
         var items = pois.Select(p =>
-            $"{{id:'{p.Id}'," +
+            "{" +
+            $"id:'{p.Id}'," +
             $"name:'{EscapeJs(p.Name)}'," +
             $"category:'{EscapeJs(p.Category)}'," +
             $"description:'{EscapeJs(p.Description)}'," +
-            $"lat:{p.Latitude}," +
-            $"lng:{p.Longitude}," +
-            $"radius:{p.Radius}}}");
+            $"lat:{p.Latitude.ToString(CultureInfo.InvariantCulture)}," +
+            $"lng:{p.Longitude.ToString(CultureInfo.InvariantCulture)}," +
+            $"radius:{p.Radius}" +
+            "}");
 
-        return $"[{string.Join(",", items)}]";
+        return "[" + string.Join(",", items) + "]";
     }
 
     private string EscapeJs(string s) =>
