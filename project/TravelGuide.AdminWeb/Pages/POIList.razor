@@ -1,0 +1,195 @@
+@page "/"
+@rendermode InteractiveServer
+@using TravelGuide.AdminWeb.Services
+@using TravelGuide.Core.DTOs
+@inject IPOIManagementService POIService
+@inject IAdminAuthService AuthService
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+<MudText Typo="Typo.h5" Class="mb-4">📍 Quản lý điểm tham quan (POI)</MudText>
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary"
+           StartIcon="@Icons.Material.Filled.Add"
+           OnClick="@(() => Navigation.NavigateTo("/poi/create"))"
+           Class="mb-4">
+    Thêm POI mới
+</MudButton>
+
+@if (_isLoading)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+}
+else if (_pois.Count == 0)
+{
+    <MudAlert Severity="Severity.Info">Chưa có dữ liệu POI nào.</MudAlert>
+}
+else
+{
+    <MudTable Items="_pois" Hover="true" Striped="true" Dense="true" Elevation="2">
+        <HeaderContent>
+            <MudTh>Tên</MudTh>
+            <MudTh>Danh mục</MudTh>
+            <MudTh>Trạng thái</MudTh>
+            <MudTh>Thao tác</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Tên">
+                @* ✅ Gạch ngang tên nếu đã xóa *@
+                @if (!context.IsActive)
+                {
+                    <span style="text-decoration: line-through; color: #999;">@context.Name</span>
+                }
+                else
+                {
+                    @context.Name
+                }
+            </MudTd>
+            <MudTd DataLabel="Danh mục">@context.Category</MudTd>
+            <MudTd DataLabel="Trạng thái">
+                @if (context.IsActive)
+                {
+                    <MudChip T="string" Color="Color.Success" Size="Size.Small">
+                        Hoạt động
+                    </MudChip>
+                }
+                else
+                {
+                    <MudChip T="string" Color="Color.Error" Size="Size.Small"
+                             Icon="@Icons.Material.Filled.Delete">
+                        Đã xóa
+                    </MudChip>
+                }
+            </MudTd>
+            <MudTd DataLabel="Thao tác">
+                <MudTooltip Text="Chỉnh sửa POI">
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                   Color="Color.Primary" Size="Size.Small"
+                                   Disabled="!context.IsActive"
+                                   OnClick="@(() => ConfirmEdit(context.Id, context.Name))" />
+                </MudTooltip>
+                <MudTooltip Text="Tạo QR Code">
+                    <MudIconButton Icon="@Icons.Material.Filled.QrCode"
+                                   Color="Color.Secondary" Size="Size.Small"
+                                   Disabled="!context.IsActive"
+                                   OnClick="@(() => Navigation.NavigateTo($"/poi/qr/{context.Id}"))" />
+                </MudTooltip>
+                @if (context.IsActive)
+                {
+                    <MudTooltip Text="Xóa POI">
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       Color="Color.Error" Size="Size.Small"
+                                       OnClick="@(() => ConfirmDelete(context.Id, context.Name))" />
+                    </MudTooltip>
+                }
+                else
+                {
+                    <MudTooltip Text="Khôi phục POI">
+                        <MudIconButton Icon="@Icons.Material.Filled.RestoreFromTrash"
+                                       Color="Color.Success" Size="Size.Small"
+                                       OnClick="@(() => RestorePOI(context.Id, context.Name))" />
+                    </MudTooltip>
+                }
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+}
+
+@code {
+    private List<POISummaryDto> _pois = new();
+    private bool _isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!AuthService.GetSession().IsLoggedIn)
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        _isLoading = true;
+        // ✅ Load cả POI đã xóa để hiển thị trạng thái
+        _pois = await POIService.GetAllAsync(AuthService.GetSession().Token);
+        _isLoading = false;
+    }
+
+    private async Task ConfirmEdit(Guid id, string name)
+    {
+        var result = await DialogService.ShowMessageBox(
+            title: "✏️ Chỉnh sửa POI",
+            message: $"Bạn muốn chỉnh sửa POI \"{name}\"?",
+            yesText: "Chỉnh sửa",
+            cancelText: "Hủy");
+
+        if (result == true)
+            Navigation.NavigateTo($"/poi/edit/{id}");
+    }
+
+    private async Task ConfirmDelete(Guid id, string name)
+    {
+        var result = await DialogService.ShowMessageBox(
+            title: "⚠️ Xác nhận xóa",
+            message: $"Bạn có chắc muốn xóa POI \"{name}\"?\nPOI sẽ bị ẩn khỏi app nhưng vẫn hiển thị trong danh sách này với trạng thái \"Đã xóa\".",
+            yesText: "Xóa",
+            cancelText: "Hủy");
+
+        if (result != true) return;
+
+        var success = await POIService.DeleteAsync(id, AuthService.GetSession().Token);
+        if (success)
+        {
+            // ✅ Chỉ cập nhật IsActive = false trong list, không xóa khỏi UI
+            var poi = _pois.FirstOrDefault(p => p.Id == id);
+            if (poi != null)
+            {
+                poi.IsActive = false;
+                StateHasChanged();
+            }
+            Snackbar.Add($"✅ Đã xóa POI \"{name}\". POI hiển thị trạng thái \"Đã xóa\".", Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add($"❌ Xóa POI \"{name}\" thất bại!", Severity.Error);
+        }
+    }
+
+    private async Task RestorePOI(Guid id, string name)
+    {
+        var result = await DialogService.ShowMessageBox(
+            title: "♻️ Khôi phục POI",
+            message: $"Khôi phục POI \"{name}\" về trạng thái hoạt động?",
+            yesText: "Khôi phục",
+            cancelText: "Hủy");
+
+        if (result != true) return;
+
+        // Goi API update IsActive = true
+        var success = await POIService.UpdateAsync(id, new Core.DTOs.UpdatePOIDto
+        {
+            Name = name,
+            IsActive = true,
+            Category = _pois.FirstOrDefault(p => p.Id == id)?.Category ?? "",
+            Latitude = 0, Longitude = 0
+        }, AuthService.GetSession().Token);
+
+        if (success)
+        {
+            var poi = _pois.FirstOrDefault(p => p.Id == id);
+            if (poi != null)
+            {
+                poi.IsActive = true;
+                StateHasChanged();
+            }
+            Snackbar.Add($"✅ Đã khôi phục POI \"{name}\"!", Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add($"❌ Khôi phục thất bại!", Severity.Error);
+        }
+    }
+}

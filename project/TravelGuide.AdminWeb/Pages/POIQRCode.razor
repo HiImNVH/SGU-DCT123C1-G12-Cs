@@ -1,0 +1,138 @@
+@page "/poi/qr/{Id:guid}"
+@rendermode InteractiveServer
+@using TravelGuide.AdminWeb.Services
+@inject IQRManagementService QRService
+@inject IPOIManagementService POIService
+@inject IAdminAuthService AuthService
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject IJSRuntime JS
+
+<MudText Typo="Typo.h5" Class="mb-4">🔲 Tạo mã QR</MudText>
+
+@if (_isLoading)
+{
+    <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+}
+else
+{
+    <MudPaper Class="pa-6" Elevation="2" Style="max-width: 480px;">
+        <MudText Typo="Typo.h6" Class="mb-1">@_poiName</MudText>
+        <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-4">ID: @Id</MudText>
+
+        @if (_qrResult != null)
+        {
+            <div style="text-align:center; margin-bottom: 16px;">
+                <img src="@_qrResult.DataUri"
+                     alt="QR Code"
+                     style="width:280px; height:280px; border:1px solid #eee; padding:8px;" />
+            </div>
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Download"
+                       OnClick="DownloadQR"
+                       FullWidth="true"
+                       Class="mb-2"
+                       Disabled="_isDownloading">
+                @(_isDownloading ? "Đang tải..." : "Tải xuống PNG")
+            </MudButton>
+        }
+
+        <MudButton Variant="Variant.Outlined"
+                   Color="Color.Secondary"
+                   OnClick="GenerateQR"
+                   Disabled="_isGenerating"
+                   FullWidth="true"
+                   Class="mb-2">
+            @(_isGenerating ? "Đang tạo..." : (_qrResult != null ? "Tạo lại QR" : "Tạo QR"))
+        </MudButton>
+
+        <MudButton Variant="Variant.Text"
+                   OnClick="@(() => Navigation.NavigateTo("/"))">
+            ← Quay lại danh sách
+        </MudButton>
+    </MudPaper>
+}
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+
+    private QRResult? _qrResult;
+    private string _poiName = string.Empty;
+    private bool _isLoading = true;
+    private bool _isGenerating = false;
+    private bool _isDownloading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!AuthService.GetSession().IsLoggedIn)
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
+
+        var token = AuthService.GetSession().Token;
+        var poi = await POIService.GetByIdAsync(Id, token);
+        _poiName = poi?.Name ?? $"POI {Id}";
+        _isLoading = false;
+
+        await GenerateQR();
+    }
+
+    private async Task GenerateQR()
+    {
+        _isGenerating = true;
+        StateHasChanged();
+
+        try
+        {
+            _qrResult = await QRService.GenerateQRAsync(Id, AuthService.GetSession().Token);
+            if (_qrResult == null)
+                Snackbar.Add("❌ Tạo QR thất bại!", Severity.Error);
+            else
+                Snackbar.Add("✅ Đã tạo QR thành công!", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"❌ Lỗi tạo QR: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isGenerating = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task DownloadQR()
+    {
+        if (_qrResult == null || string.IsNullOrEmpty(_qrResult.QrImageBase64))
+        {
+            Snackbar.Add("⚠️ Chưa có QR để tải!", Severity.Warning);
+            return;
+        }
+
+        _isDownloading = true;
+        StateHasChanged();
+
+        try
+        {
+            var fileName = $"QR_POI_{Id:N}.png";
+            // ✅ Truyền đúng 3 tham số: base64, mimeType, fileName
+            await JS.InvokeVoidAsync("downloadBase64File",
+                _qrResult.QrImageBase64,
+                "image/png",
+                fileName);
+            Snackbar.Add($"✅ Đã tải xuống {fileName}", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"❌ Lỗi tải xuống: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isDownloading = false;
+            StateHasChanged();
+        }
+    }
+}
