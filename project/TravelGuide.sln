@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelGuide.Core", "TravelG
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelGuide.AdminWeb", "TravelGuide.AdminWeb\TravelGuide.AdminWeb.csproj", "{FDF5AE17-5CDB-4391-B67D-D726EF58FE18}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelGuide", "TravelGuide\TravelGuide.csproj", "{B76B7487-2B48-C930-765E-1A9C3D6E78A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,12 @@ Global
 		{FDF5AE17-5CDB-4391-B67D-D726EF58FE18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDF5AE17-5CDB-4391-B67D-D726EF58FE18}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDF5AE17-5CDB-4391-B67D-D726EF58FE18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B76B7487-2B48-C930-765E-1A9C3D6E78A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B76B7487-2B48-C930-765E-1A9C3D6E78A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B76B7487-2B48-C930-765E-1A9C3D6E78A9}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{B76B7487-2B48-C930-765E-1A9C3D6E78A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B76B7487-2B48-C930-765E-1A9C3D6E78A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B76B7487-2B48-C930-765E-1A9C3D6E78A9}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

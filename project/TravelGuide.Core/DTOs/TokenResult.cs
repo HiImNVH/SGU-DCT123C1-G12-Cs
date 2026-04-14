@@ -38,3 +38,13 @@ public class UpdateLanguageRequest
     /// <summary>Ma ngon ngu theo BCP-47: vi, en, zh, ja, ko, fr</summary>
     public string LanguageCode { get; set; } = string.Empty;
 }
+
+/// <summary>
+/// POST /api/auth/register - request body
+/// </summary>
+public class RegisterRequest
+{
+    public string Username { get; set; } = "";
+    public string Password { get; set; } = "";
+    public string? PreferredLanguage { get; set; } = "vi";
+}
