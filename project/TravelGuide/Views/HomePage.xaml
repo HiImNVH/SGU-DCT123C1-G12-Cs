@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TravelGuide.Views.HomePage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F5F5F5">
+
+    <RefreshView IsRefreshing="{Binding IsRefreshing}"
+                 Command="{Binding RefreshCommand}"
+                 RefreshColor="#2E7D32">
+        <ScrollView>
+            <StackLayout Spacing="0">
+
+                <!-- ── Header ── -->
+                <Grid BackgroundColor="#2E7D32"
+                      Padding="20,50,20,24"
+                      RowDefinitions="Auto,Auto">
+
+                    <StackLayout Grid.Row="0"
+                                 Orientation="Horizontal"
+                                 HorizontalOptions="Fill">
+                        <StackLayout HorizontalOptions="FillAndExpand">
+                            <Label x:Name="GreetingLabel"
+                                   TextColor="#C8E6C9"
+                                   FontSize="13"/>
+                            <Label x:Name="UserNameLabel"
+                                   Text="Du khách"
+                                   TextColor="White"
+                                   FontSize="20"
+                                   FontAttributes="Bold"/>
+                        </StackLayout>
+                        <Frame WidthRequest="44"
+                               HeightRequest="44"
+                               CornerRadius="22"
+                               BackgroundColor="#4CAF50"
+                               BorderColor="Transparent"
+                               Padding="0"
+                               HorizontalOptions="End"
+                               VerticalOptions="Center">
+                            <Label Text="👤"
+                                   FontSize="22"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+                        </Frame>
+                    </StackLayout>
+
+                    <!-- Quick scan button -->
+                    <Frame Grid.Row="1"
+                           Margin="0,16,0,0"
+                           BackgroundColor="White"
+                           CornerRadius="14"
+                           HasShadow="False"
+                           Padding="16,14">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <Label Grid.Column="0"
+                                   Text="📷"
+                                   FontSize="24"
+                                   VerticalOptions="Center"/>
+                            <StackLayout Grid.Column="1" Margin="12,0,0,0">
+                                <Label x:Name="ScanCardTitleLabel"
+                                       FontSize="15"
+                                       FontAttributes="Bold"
+                                       TextColor="#1B5E20"/>
+                                <Label x:Name="ScanCardHintLabel"
+                                       FontSize="12"
+                                       TextColor="#888"/>
+                            </StackLayout>
+                            <Label Grid.Column="2"
+                                   Text="›"
+                                   FontSize="22"
+                                   TextColor="#2E7D32"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnScanTapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+                </Grid>
+
+                <!-- ── Nearby POI ── -->
+                <StackLayout Padding="16,20,16,0">
+                    <Label x:Name="NearbyTitleLabel"
+                           FontSize="17"
+                           FontAttributes="Bold"
+                           TextColor="#212121"
+                           Margin="0,0,0,12"/>
+
+                    <!-- Loading -->
+                    <ActivityIndicator IsVisible="{Binding IsLoading}"
+                                       IsRunning="{Binding IsLoading}"
+                                       Color="#2E7D32"
+                                       HorizontalOptions="Center"
+                                       Margin="0,20"/>
+
+                    <!-- Empty state -->
+                    <StackLayout IsVisible="{Binding IsEmpty}"
+                                 HorizontalOptions="Center"
+                                 Padding="0,20">
+                        <Label Text="🗺️"
+                               FontSize="48"
+                               HorizontalOptions="Center"/>
+                        <Label x:Name="EmptyLabel"
+                               FontSize="14"
+                               TextColor="#888"
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+
+                    <!-- POI Cards -->
+                    <CollectionView ItemsSource="{Binding NearbyPlaces}"
+                                    SelectionMode="None">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame Margin="0,0,0,12"
+                                       CornerRadius="14"
+                                       BackgroundColor="White"
+                                       HasShadow="True"
+                                       Padding="0">
+                                    <Grid ColumnDefinitions="100,*" HeightRequest="100">
+                                        <Image Grid.Column="0"
+                                               Source="{Binding ImageUrl}"
+                                               Aspect="AspectFill"
+                                               HorizontalOptions="Fill"
+                                               VerticalOptions="Fill"/>
+                                        <StackLayout Grid.Column="1"
+                                                     Padding="14,12"
+                                                     VerticalOptions="Center"
+                                                     Spacing="4">
+                                            <Label Text="{Binding Name}"
+                                                   FontSize="15"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#212121"
+                                                   LineBreakMode="TailTruncation"/>
+                                            <Label Text="{Binding Category}"
+                                                   FontSize="12"
+                                                   TextColor="#2E7D32"/>
+                                            <!-- Label "Nhấn để xem chi tiết" dùng x:Name 
+                                                 không được trong DataTemplate → dùng binding -->
+                                            <Label Text="{Binding ., StringFormat='📍 Xem chi tiết'}"
+                                                   FontSize="11"
+                                                   TextColor="#BDBDBD"/>
+                                        </StackLayout>
+                                    </Grid>
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer CommandParameter="{Binding .}"
+                                                              Tapped="OnPOICardTapped"/>
+                                    </Frame.GestureRecognizers>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+
+                <BoxView HeightRequest="24"/>
+            </StackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>

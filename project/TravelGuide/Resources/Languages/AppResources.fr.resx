@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter</value></resheader>
+
+  <data name="Tab_Home" xml:space="preserve"><value>Accueil</value></data>
+  <data name="Tab_Scan" xml:space="preserve"><value>Scanner QR</value></data>
+  <data name="Tab_Map" xml:space="preserve"><value>Carte</value></data>
+  <data name="Tab_Profile" xml:space="preserve"><value>Profil</value></data>
+
+  <data name="Common_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="Common_Cancel" xml:space="preserve"><value>Annuler</value></data>
+  <data name="Common_Error" xml:space="preserve"><value>Erreur</value></data>
+  <data name="Common_Success" xml:space="preserve"><value>Succès</value></data>
+  <data name="Common_Loading" xml:space="preserve"><value>Chargement...</value></data>
+  <data name="Common_Retry" xml:space="preserve"><value>Réessayer</value></data>
+
+  <data name="Scan_Title" xml:space="preserve"><value>Scanner le QR Code</value></data>
+  <data name="Scan_Instruction" xml:space="preserve"><value>Pointez la caméra sur le QR Code du stand</value></data>
+  <data name="Scan_Loading" xml:space="preserve"><value>Chargement des informations...</value></data>
+  <data name="Scan_InvalidQR" xml:space="preserve"><value>Impossible d'identifier le stand. Veuillez réessayer.</value></data>
+  <data name="Scan_NotFound" xml:space="preserve"><value>Informations du stand introuvables.</value></data>
+  <data name="Scan_Offline" xml:space="preserve"><value>Hors ligne - aucune donnée. Veuillez vous connecter.</value></data>
+  <data name="Scan_Again" xml:space="preserve"><value>Scanner un autre stand</value></data>
+  <data name="Scan_OpenCamera" xml:space="preserve"><value>📷 Ouvrir la caméra</value></data>
+
+  <data name="TTS_Play" xml:space="preserve"><value>▶ Lire le guide</value></data>
+  <data name="TTS_Pause" xml:space="preserve"><value>⏸ Pause</value></data>
+  <data name="TTS_Resume" xml:space="preserve"><value>▶ Reprendre</value></data>
+  <data name="TTS_Stop" xml:space="preserve"><value>⏹</value></data>
+  <data name="TTS_Playing" xml:space="preserve"><value>🎵 Lecture du guide...</value></data>
+  <data name="TTS_NoContent" xml:space="preserve"><value>Aucun contenu de guide disponible</value></data>
+  <data name="TTS_Section" xml:space="preserve"><value>🎙 Guide audio</value></data>
+
+  <data name="Login_Title" xml:space="preserve"><value>Connexion</value></data>
+  <data name="Login_Username" xml:space="preserve"><value>Nom d'utilisateur</value></data>
+  <data name="Login_Password" xml:space="preserve"><value>Mot de passe</value></data>
+  <data name="Login_Button" xml:space="preserve"><value>Se connecter</value></data>
+  <data name="Login_Guest" xml:space="preserve"><value>Continuer sans connexion</value></data>
+  <data name="Login_Failed" xml:space="preserve"><value>Connexion échouée</value></data>
+  <data name="Login_EmptyFields" xml:space="preserve"><value>Veuillez entrer vos identifiants.</value></data>
+
+  <data name="Lang_Select" xml:space="preserve"><value>Sélectionner la langue du guide</value></data>
+  <data name="Lang_Skip" xml:space="preserve"><value>Passer, continuer en vietnamien</value></data>
+
+  <data name="Profile_Title" xml:space="preserve"><value>Profil</value></data>
+  <data name="Profile_Language" xml:space="preserve"><value>Langue du guide</value></data>
+  <data name="Profile_ChangeLanguage" xml:space="preserve"><value>Changer</value></data>
+  <data name="Profile_Logout" xml:space="preserve"><value>Déconnexion</value></data>
+  <data name="Profile_LogoutConfirm" xml:space="preserve"><value>Voulez-vous vraiment vous déconnecter ?</value></data>
+  <data name="Profile_Tourist" xml:space="preserve"><value>Touriste</value></data>
+  <data name="Profile_Admin" xml:space="preserve"><value>Administrateur</value></data>
+  <data name="Profile_Guest" xml:space="preserve"><value>Invité (non connecté)</value></data>
+
+  <data name="Map_Title" xml:space="preserve"><value>Carte</value></data>
+  <data name="Map_ErrorLoad" xml:space="preserve"><value>Impossible de charger la carte. Réessayez.</value></data>
+  <data name="Map_UserLocation" xml:space="preserve"><value>Votre position</value></data>
+  <data name="Map_ViewDetail" xml:space="preserve"><value>📖 Voir les détails</value></data>
+
+  <data name="Home_Greeting" xml:space="preserve"><value>Bonjour 👋</value></data>
+  <data name="Home_Nearby" xml:space="preserve"><value>Stands à proximité</value></data>
+  <data name="Home_Empty" xml:space="preserve"><value>Aucun stand trouvé</value></data>
+  <data name="Home_ScanHint" xml:space="preserve"><value>Appuyez pour scanner</value></data>
+</root>

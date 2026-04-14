@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:views="clr-namespace:TravelGuide.Views"
+       x:Class="TravelGuide.AppShell"
+       Shell.NavBarIsVisible="False">
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- AUTH ROUTES (không có TabBar)                 -->
+    <!-- ══════════════════════════════════════════════ -->
+    <ShellContent Route="login"
+                  ContentTemplate="{DataTemplate views:LoginPage}"
+                  Shell.NavBarIsVisible="False"/>
+
+    <ShellContent Route="language"
+                  ContentTemplate="{DataTemplate views:LanguageSelectionPage}"
+                  Shell.NavBarIsVisible="False"/>
+    <ShellContent Route="register"
+              ContentTemplate="{DataTemplate views:RegisterPage}"
+              Shell.NavBarIsVisible="False"/>
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- MAIN APP (có TabBar)                          -->
+    <!-- ══════════════════════════════════════════════ -->
+    <TabBar Route="main">
+
+        <!-- Tab: Trang chủ -->
+        <Tab Title="Trang chủ" Icon="home.png">
+            <ShellContent Route="home"
+                          ContentTemplate="{DataTemplate views:HomePage}"/>
+        </Tab>
+
+        <!-- Tab: Quét QR -->
+        <Tab Title="Quét QR" Icon="scan.png">
+            <ShellContent Route="scan"
+                          ContentTemplate="{DataTemplate views:ScanPage}"/>
+        </Tab>
+
+        <!-- Tab: Bản đồ -->
+        <Tab Title="Bản đồ" Icon="map.png">
+            <ShellContent Route="map"
+                          ContentTemplate="{DataTemplate views:MapPage}"/>
+        </Tab>
+
+        <!-- Tab: Hồ sơ -->
+        <Tab Title="Hồ sơ" Icon="profile.png">
+            <ShellContent Route="profile"
+                          ContentTemplate="{DataTemplate views:ProfilePage}"/>
+        </Tab>
+
+    </TabBar>
+
+</Shell>

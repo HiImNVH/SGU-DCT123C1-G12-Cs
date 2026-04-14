@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TravelGuide.Views.LanguageSelectionPage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F5F5F5">
+
+    <Grid RowDefinitions="*, Auto" Padding="0">
+
+        <ScrollView Grid.Row="0">
+            <StackLayout Padding="28,60,28,24" Spacing="0">
+
+                <!-- Logo / Icon -->
+                <Label Text="🌏"
+                       FontSize="64"
+                       HorizontalOptions="Center"
+                       Margin="0,0,0,16"/>
+
+                <Label Text="Chào mừng đến với"
+                       FontSize="16"
+                       TextColor="#666"
+                       HorizontalOptions="Center"/>
+
+                <Label Text="Travel Guide"
+                       FontSize="30"
+                       FontAttributes="Bold"
+                       TextColor="#1B5E20"
+                       HorizontalOptions="Center"
+                       Margin="0,4,0,8"/>
+
+                <!-- FIX 1: thêm x:Name -->
+                <Label x:Name="TitleLabel"
+                       Text="Chọn ngôn ngữ thuyết minh"
+                       FontSize="15"
+                       TextColor="#888"
+                       HorizontalOptions="Center"
+                       Margin="0,0,0,36"/>
+
+                <!-- Language Grid -->
+                <CollectionView ItemsSource="{Binding Languages}"
+                                SelectionMode="None">
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Vertical"
+                                         Span="2"
+                                         HorizontalItemSpacing="12"
+                                         VerticalItemSpacing="12"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BackgroundColor="White"
+                                   CornerRadius="14"
+                                   HasShadow="True"
+                                   Padding="14,16">
+                                <StackLayout Spacing="6" HorizontalOptions="Center">
+                                    <Label Text="{Binding Flag}"
+                                           FontSize="32"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding NativeName}"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="#212121"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding Name}"
+                                           FontSize="11"
+                                           TextColor="#888"
+                                           HorizontalOptions="Center"/>
+                                </StackLayout>
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer CommandParameter="{Binding Code}"
+                                                          Tapped="OnLanguageTapped"/>
+                                </Frame.GestureRecognizers>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </StackLayout>
+        </ScrollView>
+
+        <!-- FIX 2: thêm x:Name -->
+        <Button x:Name="SkipBtn"
+                Grid.Row="1"
+                Text="Bỏ qua, tiếp tục bằng Tiếng Việt"
+                Clicked="OnSkipClicked"
+                BackgroundColor="Transparent"
+                TextColor="#888"
+                FontSize="13"
+                Margin="0,0,0,16"/>
+    </Grid>
+</ContentPage>
