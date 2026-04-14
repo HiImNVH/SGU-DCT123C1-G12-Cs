@@ -1,129 +1,152 @@
+// Views/ProfilePage.xaml.cs
 using TravelGuide.Services;
-using TravelGuide.Models;
-namespace TravelGuide;
 
-public partial class ProfilePage : ContentPage
+namespace TravelGuide.Views
 {
-    private readonly IAuthService _authService;
-    private static LocalizationService L => LocalizationService.Instance;
-
-    private readonly Dictionary<string, string> _languageNames = new()
+    public partial class ProfilePage : ContentPage
     {
-        { "vi", "Tiếng Việt" },
-        { "en", "English" },
-        { "ja", "日本語" },
-        { "ko", "한국어" },
-        { "zh", "中文" },
-        { "fr", "Français" }
-    };
+        private readonly AuthService _auth;
+        private static LocalizationService L => LocalizationService.Instance;
 
-    public ProfilePage(IAuthService authService)
-    {
-        InitializeComponent();
-        _authService = authService;
-    }
+        private readonly Dictionary<string, string> _langNames = new()
+        {
+            { "vi", "Tiếng Việt" }, { "en", "English" }, { "ja", "日本語" },
+            { "ko", "한국어" },       { "zh", "中文" },     { "fr", "Français" }
+        };
 
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
-        LoadProfile();
-    }
+        public ProfilePage(AuthService auth)
+        {
+            InitializeComponent();
+            _auth = auth;
 
-    private void LoadProfile()
-    {
-        var user = _authService.GetCurrentUser();
-        if (user == null) return;
+            // Đổi ngôn ngữ → refresh UI ngay lập tức
+            L.PropertyChanged += (_, _) =>
+                MainThread.BeginInvokeOnMainThread(RefreshUIText);
+        }
 
-        FullNameLabel.Text = user.FullName ?? user.Username;
-        EmailLabel.Text = user.Email ?? "";
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            Console.WriteLine("[log] - Mo trang Ho so");
+            RefreshUIText();
+            LoadProfile();
+        }
 
-        RoleLabel.Text = user.Role.ToString() == "Admin"
-            ? L["Profile_Admin"]
-            : L["Profile_Tourist"];
+        // ── Refresh toàn bộ text theo ngôn ngữ hiện tại ─────────────────
+        private void RefreshUIText()
+        {
+            Title = L["Profile_Title"];
 
-        InfoFullName.Text = user.FullName ?? user.Username;
-        InfoEmail.Text = user.Email ?? "";
+            if (LanguageSectionLabel != null) LanguageSectionLabel.Text = "Cài đặt ngôn ngữ";
+            if (LanguageNarrLabel != null) LanguageNarrLabel.Text = L["Profile_Language"];
+            if (ChangeLanguageBtn != null) ChangeLanguageBtn.Text = L["Profile_ChangeLanguage"];
+            if (AccountInfoLabel != null) AccountInfoLabel.Text = "Thông tin tài khoản";
+            if (UsernameFieldLabel != null) UsernameFieldLabel.Text = "Tên đăng nhập";
+            if (RoleFieldLabel != null) RoleFieldLabel.Text = "Quyền";
+            if (LogoutBtn != null) LogoutBtn.Text = L["Profile_Logout"];
 
-        var lang = user.PreferredLanguage ?? "vi";
-        InfoLanguage.Text = _languageNames.GetValueOrDefault(lang, lang);
-        CurrentLanguageLabel.Text = _languageNames.GetValueOrDefault(lang, lang);
-    }
+            // Guest frame
+            if (GuestModeLabel != null) GuestModeLabel.Text = L["Profile_Guest"];
+            if (GuestHintLabel != null) GuestHintLabel.Text = "Đăng nhập để lưu ngôn ngữ trên server";
+            if (LoginPromptBtn != null) LoginPromptBtn.Text = "Đăng nhập ngay";
 
-    private async void OnChangeLanguageClicked(object sender, EventArgs e)
-    {
-        var options = _languageNames.Values.ToArray();
-        var codes = _languageNames.Keys.ToArray();
-        var cancelText = L["Common_Cancel"];
+            // Role label
+            var user = _auth.GetCurrentUser();
+            if (RoleLabel != null)
+                RoleLabel.Text = user?.Role == Models.UserRole.Admin
+                    ? L["Profile_Admin"]
+                    : (user != null ? L["Profile_Tourist"] : L["Profile_Guest"]);
 
-        var choice = await DisplayActionSheet(
-            L["Lang_Select"],
-            cancelText,
-            null,
-            options);
+            // Ngôn ngữ hiện tại
+            var lang = _auth.GetCurrentLanguage();
+            if (CurrentLanguageLabel != null)
+                CurrentLanguageLabel.Text = _langNames.GetValueOrDefault(lang, lang);
+        }
 
-        if (string.IsNullOrEmpty(choice) || choice == cancelText) return;
+        // ── Load thông tin user ──────────────────────────────────────────
+        private void LoadProfile()
+        {
+            var user = _auth.GetCurrentUser();
+            var isLoggedIn = _auth.IsAuthenticated() && user != null;
+            var lang = _auth.GetCurrentLanguage();
 
-        var idx = Array.IndexOf(options, choice);
-        if (idx < 0) return;
+            CurrentLanguageLabel.Text = _langNames.GetValueOrDefault(lang, lang);
 
-        var user = _authService.GetCurrentUser();
-        if (user == null) return;
+            if (isLoggedIn && user != null)
+            {
+                UserNameLabel.Text = user.Username;
+                RoleLabel.Text = user.Role == Models.UserRole.Admin
+                    ? L["Profile_Admin"]
+                    : L["Profile_Tourist"];
+                InfoUsername.Text = user.Username;
+                InfoRole.Text = user.Role == Models.UserRole.Admin ? "Admin" : "User";
 
-        var selectedCode = codes[idx];
+                AccountFrame.IsVisible = true;
+                LogoutBtn.IsVisible = true;
+                GuestFrame.IsVisible = false;
+                Console.WriteLine("[info] - Hien thi ho so nguoi dung da dang nhap");
+            }
+            else
+            {
+                UserNameLabel.Text = "Du khách";
+                RoleLabel.Text = L["Profile_Guest"];
+                AccountFrame.IsVisible = false;
+                LogoutBtn.IsVisible = false;
+                GuestFrame.IsVisible = true;
+                Console.WriteLine("[info] - Hien thi trang ho so khach (Guest)");
+            }
+        }
 
-        // 1. Lưu preference
-        user.PreferredLanguage = selectedCode;
+        // ── Đổi ngôn ngữ ────────────────────────────────────────────────
+        private async void OnChangeLanguageClicked(object sender, EventArgs e)
+        {
+            var options = _langNames.Values.ToArray();
+            var codes = _langNames.Keys.ToArray();
 
-        // 2. Đổi ngôn ngữ UI — tự lưu vào Preferences bên trong
-        L.SetLanguage(selectedCode);
+            var choice = await DisplayActionSheet(
+                L["Lang_Select"],
+                L["Common_Cancel"],
+                null,
+                options);
 
-        // 3. Cập nhật tab trực tiếp
-        AppShell.Current?.UpdateTabTitles();
+            if (string.IsNullOrEmpty(choice) || choice == L["Common_Cancel"]) return;
 
-        // 4. Cập nhật labels
-        CurrentLanguageLabel.Text = options[idx];
-        InfoLanguage.Text = options[idx];
+            var idx = Array.IndexOf(options, choice);
+            if (idx < 0) return;
 
-        RoleLabel.Text = user.Role.ToString() == "Admin"
-            ? L["Profile_Admin"]
-            : L["Profile_Tourist"];
+            var selectedCode = codes[idx];
+            Console.WriteLine($"[info] - Doi ngon ngu: {selectedCode}");
 
-        await DisplayAlert(
-            L["Common_Success"],
-            $"{L["Profile_LanguageChanged"]} {choice}",
-            L["Common_OK"]);
-    }
+            // SetLanguage → tự động trigger PropertyChanged → RefreshUIText() chạy ngay
+            L.SetLanguage(selectedCode);
 
-    private async void OnEditProfileClicked(object sender, EventArgs e)
-    {
-        var user = _authService.GetCurrentUser();
-        if (user == null) return;
+            // Cập nhật server nếu đã login
+            if (_auth.IsAuthenticated())
+                await _auth.UpdateLanguageAsync(selectedCode);
 
-        var newName = await DisplayPromptAsync(
-            L["Profile_EditTitle"],
-            L["Profile_EditPrompt"],
-            initialValue: user.FullName ?? "");
+            await DisplayAlert(L["Common_Success"],
+                $"{L["Profile_ChangeLanguage"]}: {choice}",
+                L["Common_OK"]);
+        }
 
-        if (string.IsNullOrEmpty(newName)) return;
+        private async void OnLogoutClicked(object sender, EventArgs e)
+        {
+            bool confirm = await DisplayAlert(
+                L["Profile_Logout"],
+                L["Profile_LogoutConfirm"],
+                L["Profile_Logout"],
+                L["Common_Cancel"]);
 
-        user.FullName = newName;
-        FullNameLabel.Text = newName;
-        InfoFullName.Text = newName;
+            if (!confirm) return;
 
-        await DisplayAlert(L["Common_Success"], L["Profile_UpdateSuccess"], L["Common_OK"]);
-    }
+            Console.WriteLine("[log] - Nguoi dung dang xuat");
+            await _auth.LogoutAsync();
+            await Shell.Current.GoToAsync("//login");
+        }
 
-    private async void OnLogoutClicked(object sender, EventArgs e)
-    {
-        bool confirm = await DisplayAlert(
-            L["Profile_LogoutTitle"],
-            L["Profile_LogoutConfirm"],
-            L["Profile_Logout"],
-            L["Common_Cancel"]);
-
-        if (!confirm) return;
-
-        await _authService.LogoutAsync();
-        await Shell.Current.GoToAsync("//login");
+        private async void OnLoginClicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync("//login");
+        }
     }
 }

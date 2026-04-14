@@ -1,52 +1,46 @@
-﻿using TravelGuide.Services;
+// AppShell.xaml.cs
+using TravelGuide.Services;
 using TravelGuide.Views;
 
-namespace TravelGuide;
-
-public partial class AppShell : Shell
+namespace TravelGuide
 {
-    private static LocalizationService L => LocalizationService.Instance;
-
-    public static AppShell Current { get; private set; }
-
-    public AppShell()
+    public partial class AppShell : Shell
     {
-        InitializeComponent();
-        Current = this;
+        private static LocalizationService L => LocalizationService.Instance;
+        public static AppShell? Current { get; private set; }
 
-        Routing.RegisterRoute(nameof(MapPage), typeof(MapPage));
-        Routing.RegisterRoute(nameof(PlaceDetailPage), typeof(PlaceDetailPage));
-
-        // 🔥 Update title ngay khi load
-        Dispatcher.DispatchAsync(UpdateTabTitles);
-
-        // 🔥 Khi đổi ngôn ngữ
-        L.PropertyChanged += (_, _) =>
-            MainThread.BeginInvokeOnMainThread(UpdateTabTitles);
-
-        // 🔥 Khi navigate
-        Navigated += (_, _) =>
-            MainThread.BeginInvokeOnMainThread(UpdateTabTitles);
-    }
-
-    public void UpdateTabTitles()
-    {
-        foreach (var item in Items)
+        public AppShell()
         {
-            if (item is not TabBar tabBar) continue;
+            InitializeComponent();
+            Current = this;
 
-            foreach (var tab in tabBar.Items)
+            // Đăng ký các route điều hướng push (không phải tab)
+            Routing.RegisterRoute(nameof(POIDetailPage), typeof(POIDetailPage));
+
+            // Cập nhật tab title theo ngôn ngữ
+            Dispatcher.DispatchAsync(UpdateTabTitles);
+            L.PropertyChanged += (_, _) =>
+                MainThread.BeginInvokeOnMainThread(UpdateTabTitles);
+        }
+
+        public void UpdateTabTitles()
+        {
+            foreach (var item in Items)
             {
-                // 🔥 LẤY ĐÚNG ROUTE TỪ ShellContent
-                if (tab.Items.FirstOrDefault() is ShellContent content)
+                if (item is not TabBar tabBar) continue;
+                foreach (var tab in tabBar.Items)
                 {
-                    tab.Title = content.Route switch
+                    if (tab.Items.FirstOrDefault() is ShellContent content)
                     {
-                        "home" => L["Tab_Home"],
-                        "places" => L["Tab_Places"],
-                        "profile" => L["Tab_Profile"],
-                        _ => tab.Title
-                    };
+                        tab.Title = content.Route switch
+                        {
+                            "home"    => "Trang chủ",
+                            "scan"    => "Quét QR",
+                            "map"     => "Bản đồ",
+                            "profile" => "Hồ sơ",
+                            _         => tab.Title
+                        };
+                    }
                 }
             }
         }

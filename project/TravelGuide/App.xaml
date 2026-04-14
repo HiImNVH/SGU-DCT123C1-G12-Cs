@@ -1,14 +1,67 @@
-﻿<?xml version = "1.0" encoding = "UTF-8" ?>
+<?xml version = "1.0" encoding = "UTF-8" ?>
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:TravelGuide"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="TravelGuide.App">
     <Application.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
-                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+
+            <!-- ── Brand Colors ── -->
+            <Color x:Key="Primary">#2E7D32</Color>
+            <Color x:Key="PrimaryLight">#4CAF50</Color>
+            <Color x:Key="PrimaryDark">#1B5E20</Color>
+            <Color x:Key="PrimaryContainer">#E8F5E9</Color>
+            <Color x:Key="Accent">#F57C00</Color>
+            <Color x:Key="Danger">#D32F2F</Color>
+            <Color x:Key="Surface">White</Color>
+            <Color x:Key="Background">#F5F5F5</Color>
+            <Color x:Key="TextPrimary">#212121</Color>
+            <Color x:Key="TextSecondary">#757575</Color>
+            <Color x:Key="Divider">#E0E0E0</Color>
+
+            <!-- ── Converters ── -->
+            <!--
+                FIX #1: Thêm InvertedBoolConverter từ CommunityToolkit.Maui
+                Trước đây ScanPage.xaml dùng {StaticResource InvertBoolConverter}
+                nhưng converter này không được đăng ký ở đâu cả → crash khi standalone
+            -->
+            <toolkit:InvertedBoolConverter x:Key="InvertBoolConverter"/>
+
+            <!-- ── Global Styles ── -->
+            <Style TargetType="Shell" ApplyToDerivedTypes="True">
+                <Setter Property="Shell.BackgroundColor" Value="{StaticResource Primary}"/>
+                <Setter Property="Shell.ForegroundColor" Value="White"/>
+                <Setter Property="Shell.TitleColor" Value="White"/>
+                <Setter Property="Shell.DisabledColor" Value="#B2FFFFFF"/>
+                <Setter Property="Shell.UnselectedColor" Value="#80FFFFFF"/>
+                <Setter Property="Shell.NavBarHasShadow" Value="False"/>
+                <Setter Property="Shell.TabBarBackgroundColor" Value="White"/>
+                <Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource Primary}"/>
+                <Setter Property="Shell.TabBarUnselectedColor" Value="#BDBDBD"/>
+                <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource Primary}"/>
+            </Style>
+
+            <Style TargetType="Label">
+                <Setter Property="FontFamily" Value="OpenSansRegular"/>
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
+            </Style>
+
+            <Style TargetType="Button">
+                <Setter Property="FontFamily" Value="OpenSansRegular"/>
+                <Setter Property="FontSize" Value="15"/>
+            </Style>
+
+            <Style TargetType="Entry">
+                <Setter Property="FontFamily" Value="OpenSansRegular"/>
+                <Setter Property="FontSize" Value="15"/>
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+            </Style>
+
+            <Style TargetType="Frame">
+                <Setter Property="HasShadow" Value="False"/>
+                <Setter Property="BorderColor" Value="Transparent"/>
+            </Style>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

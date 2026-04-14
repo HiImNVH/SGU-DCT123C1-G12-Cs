@@ -1,65 +1,115 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:svc="clr-namespace:TravelGuide.Services"
-             x:Class="TravelGuide.LoginPage"
-             BackgroundColor="White"
-             Shell.NavBarIsVisible="False">
-
-    <!-- Bind Title vào key Login_Title -->
-    <ContentPage.Title>
-        <Binding Source="{x:Static svc:LocalizationService.Instance}" Path="[Login_Title]"/>
-    </ContentPage.Title>
+             x:Class="TravelGuide.Views.LoginPage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="White">
 
     <ScrollView>
-        <VerticalStackLayout Padding="32" Spacing="16" VerticalOptions="Center">
+        <StackLayout Padding="32,80,32,32" Spacing="0">
 
-            <Label Text="🗺️ TravelGuide"
-                   FontSize="32" FontAttributes="Bold"
-                   HorizontalOptions="Center" TextColor="#2E7D32"/>
+            <!-- Logo -->
+            <Label Text="🗺️"
+                   FontSize="72"
+                   HorizontalOptions="Center"
+                   Margin="0,0,0,8"/>
+            <Label Text="Travel Guide"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   TextColor="#1B5E20"
+                   HorizontalOptions="Center"/>
+            <Label x:Name="LoginSubtitleLabel"
+                   FontSize="13"
+                   TextColor="#888"
+                   HorizontalOptions="Center"
+                   Margin="0,6,0,40"/>
 
-            <!-- Login_Subtitle -->
-            <Label Text="{Binding Source={x:Static svc:LocalizationService.Instance}, Path=[Login_Subtitle]}"
-                   FontSize="14" TextColor="Gray"
-                   HorizontalOptions="Center" Margin="0,0,0,16"/>
+            <!-- Username -->
+            <Frame BackgroundColor="#F8F8F8"
+                   CornerRadius="12"
+                   BorderColor="#E0E0E0"
+                   Padding="16,8"
+                   Margin="0,0,0,12">
+                <Entry x:Name="UsernameEntry"
+                       PlaceholderColor="#BDBDBD"
+                       FontSize="15"
+                       ReturnType="Next"/>
+            </Frame>
 
-            <!-- Login_Username -->
-            <Entry x:Name="UsernameEntry"
-                   Placeholder="{Binding Source={x:Static svc:LocalizationService.Instance}, Path=[Login_Username]}"
-                   ReturnType="Next"/>
+            <!-- Password -->
+            <Frame BackgroundColor="#F8F8F8"
+                   CornerRadius="12"
+                   BorderColor="#E0E0E0"
+                   Padding="16,8"
+                   Margin="0,0,0,24">
+                <Entry x:Name="PasswordEntry"
+                       PlaceholderColor="#BDBDBD"
+                       IsPassword="True"
+                       FontSize="15"
+                       ReturnType="Done"/>
+            </Frame>
 
-            <!-- Login_Password -->
-            <Entry x:Name="PasswordEntry"
-                   Placeholder="{Binding Source={x:Static svc:LocalizationService.Instance}, Path=[Login_Password]}"
-                   IsPassword="True"
-                   ReturnType="Done"/>
-
-            <ActivityIndicator x:Name="LoadingIndicator"
-                               IsVisible="False" IsRunning="False"
-                               Color="#2E7D32"/>
-
-            <!-- Login_Button -->
+            <!-- Login button -->
             <Button x:Name="LoginBtn"
-                    Text="{Binding Source={x:Static svc:LocalizationService.Instance}, Path=[Login_Button]}"
                     Clicked="OnLoginClicked"
                     BackgroundColor="#2E7D32"
                     TextColor="White"
-                    CornerRadius="8"/>
+                    CornerRadius="12"
+                    FontSize="16"
+                    HeightRequest="52"
+                    Margin="0,0,0,12"/>
 
-            <HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
-                <!-- Login_NoAccount -->
-                <Label Text="{Binding Source={x:Static svc:LocalizationService.Instance}, Path=[Login_NoAccount]}"
-                       VerticalOptions="Center"/>
-                <!-- Login_SignUp -->
-                <Label Text="{Binding Source={x:Static svc:LocalizationService.Instance}, Path=[Login_SignUp]}"
-                       TextColor="#2E7D32" FontAttributes="Bold"
-                       VerticalOptions="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnSignupClicked"/>
-                    </Label.GestureRecognizers>
-                </Label>
-            </HorizontalStackLayout>
+            <!-- Loading -->
+            <ActivityIndicator x:Name="LoadingIndicator"
+                               IsVisible="False"
+                               IsRunning="False"
+                               Color="#2E7D32"
+                               Margin="0,0,0,12"/>
 
-        </VerticalStackLayout>
+            <!-- Guest mode -->
+            <Button x:Name="GuestBtn"
+                    Clicked="OnGuestClicked"
+                    BackgroundColor="Transparent"
+                    BorderColor="#2E7D32"
+                    BorderWidth="1.5"
+                    TextColor="#2E7D32"
+                    CornerRadius="12"
+                    FontSize="14"
+                    HeightRequest="48"
+                    Margin="0,0,0,20"/>
+
+            <!-- Separator -->
+            <Grid ColumnDefinitions="*,Auto,*" Margin="0,0,0,20">
+                <BoxView Grid.Column="0" HeightRequest="1" BackgroundColor="#E0E0E0" VerticalOptions="Center"/>
+                <Label x:Name="OrLabel"
+                       Grid.Column="1"
+                       TextColor="#BDBDBD"
+                       FontSize="13"/>
+                <BoxView Grid.Column="2" HeightRequest="1" BackgroundColor="#E0E0E0" VerticalOptions="Center"/>
+            </Grid>
+
+            <Label x:Name="FirstTimeLabel"
+                   FontSize="13"
+                   TextColor="#888"
+                   HorizontalOptions="Center"
+                   Margin="0,0,0,8"/>
+
+            <Button x:Name="SelectLanguageBtn"
+        Clicked="OnSelectLanguageClicked"
+        BackgroundColor="Transparent"
+        TextColor="#2E7D32"
+        FontSize="14"
+        FontAttributes="Bold"/>
+
+            <!-- THÊM BUTTON MỚI -->
+            <Button x:Name="RegisterBtn2"
+        Text="Tạo tài khoản mới"
+        Clicked="OnRegisterClicked"
+        BackgroundColor="Transparent"
+        TextColor="#1976D2"
+        FontSize="14"
+        FontAttributes="Bold"/>
+
+        </StackLayout>
     </ScrollView>
 </ContentPage>

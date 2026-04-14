@@ -1,46 +1,87 @@
+// Views/LanguageSelectionPage.xaml.cs
 using TravelGuide.Models;
 using TravelGuide.Services;
 
-namespace TravelGuide;
-
-public partial class LanguageSelectionPage : ContentPage
+namespace TravelGuide.Views
 {
-    private readonly IAuthService _authService;
-
-    public List<Language> Languages { get; set; } = new()
+    public partial class LanguageSelectionPage : ContentPage
     {
-        new Language { Code = "vi", Name = "Vietnamese", NativeName = "Tiếng Việt", IsActive = true },
-        new Language { Code = "en", Name = "English",    NativeName = "English",     IsActive = true },
-        new Language { Code = "ja", Name = "Japanese",   NativeName = "日本語",       IsActive = true },
-        new Language { Code = "ko", Name = "Korean",     NativeName = "한국어",        IsActive = true },
-        new Language { Code = "zh", Name = "Chinese",    NativeName = "中文",         IsActive = true },
-        new Language { Code = "fr", Name = "French",     NativeName = "Français",    IsActive = true }
-    };
+        private readonly AuthService _auth;
+        private static LocalizationService L => LocalizationService.Instance;
 
-    public LanguageSelectionPage(IAuthService authService)
-    {
-        InitializeComponent();
-        _authService = authService;
-        BindingContext = this;
-    }
-
-    private async void OnLanguageSelected(object sender, EventArgs e)
-    {
-        if (sender is Button btn && btn.CommandParameter is string code)
+        public List<LanguageItem> Languages { get; } = new()
         {
-            // 1. Lưu vào user preference
-            var user = _authService.GetCurrentUser();
-            if (user != null)
-                user.PreferredLanguage = code;
-            Preferences.Set("app_language", code);
-            // 2. Đổi ngôn ngữ UI — tự lưu vào Preferences bên trong
-            LocalizationService.Instance.SetLanguage(code);
+            new("vi", "Tiếng Việt (mặc định)", "Vietnamese", "🇻🇳"),
+            new("en", "English",               "English",    "🇺🇸"),
+            new("zh", "中文",                   "Chinese",    "🇨🇳"),
+            new("ja", "日本語",                  "Japanese",   "🇯🇵"),
+            new("ko", "한국어",                  "Korean",     "🇰🇷"),
+            new("fr", "Français",              "French",     "🇫🇷"),
+        };
 
-            // 3. Cập nhật tab trực tiếp
-            AppShell.Current?.UpdateTabTitles();
+        public LanguageSelectionPage(AuthService auth)
+        {
+            InitializeComponent();
+            _auth = auth;
+            BindingContext = this;
+
+            // Lắng nghe đổi ngôn ngữ → refresh text tĩnh ngay lập tức
+            L.PropertyChanged += (_, _) =>
+                MainThread.BeginInvokeOnMainThread(RefreshUIText);
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            RefreshUIText();
+        }
+
+        // ── Refresh text tĩnh theo ngôn ngữ hiện tại ────────────────────
+        private void RefreshUIText()
+        {
+            // Các label tĩnh có x:Name trong XAML
+            if (TitleLabel != null)
+                TitleLabel.Text = L["Lang_Select"];
+
+            if (SkipBtn != null)
+                SkipBtn.Text = L["Lang_Skip"];
+
+            Console.WriteLine($"[info] - Da refresh UI LanguageSelectionPage: {L.CurrentLanguageCode}");
+        }
+
+        // ── Chọn ngôn ngữ ────────────────────────────────────────────────
+        private async void OnLanguageTapped(object sender, TappedEventArgs e)
+        {
+            if (e.Parameter is not string code) return;
+            Console.WriteLine($"[info] - Nguoi dung chon ngon ngu: {code}");
+            await ApplyLanguageAndNavigate(code);
+        }
+
+        private async void OnSkipClicked(object sender, EventArgs e)
+        {
+            Console.WriteLine("[log] - Bo qua chon ngon ngu, dung mac dinh: vi");
+            await ApplyLanguageAndNavigate("vi");
+        }
+
+        private async Task ApplyLanguageAndNavigate(string code)
+        {
+            // 1. Lưu preference
+            Preferences.Set("preferred_language", code);
+
+            // 2. Đổi ngôn ngữ → tự động trigger PropertyChanged → RefreshUIText()
+            //    Tất cả page đang lắng nghe đều refresh ngay lập tức
+            L.SetLanguage(code);
+
+            // 3. Cập nhật server nếu đã login
+            if (_auth.IsAuthenticated())
+                await _auth.UpdateLanguageAsync(code);
+
+            Console.WriteLine($"[info] - Da chon ngon ngu: {code}, chuyen vao app");
 
             // 4. Điều hướng vào app
-            await Shell.Current.GoToAsync("//register");
+            await Shell.Current.GoToAsync("//main");
         }
     }
+
+    public record LanguageItem(string Code, string NativeName, string Name, string Flag);
 }

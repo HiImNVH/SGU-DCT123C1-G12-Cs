@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter</value></resheader>
+
+  <!-- Trùng với default .resx — đảm bảo CultureInfo("vi") match đúng satellite assembly -->
+  <data name="Tab_Home" xml:space="preserve"><value>Trang chủ</value></data>
+  <data name="Tab_Scan" xml:space="preserve"><value>Quét QR</value></data>
+  <data name="Tab_Map" xml:space="preserve"><value>Bản đồ</value></data>
+  <data name="Tab_Profile" xml:space="preserve"><value>Hồ sơ</value></data>
+
+  <data name="Common_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="Common_Cancel" xml:space="preserve"><value>Hủy</value></data>
+  <data name="Common_Error" xml:space="preserve"><value>Lỗi</value></data>
+  <data name="Common_Success" xml:space="preserve"><value>Thành công</value></data>
+  <data name="Common_Loading" xml:space="preserve"><value>Đang tải...</value></data>
+  <data name="Common_Retry" xml:space="preserve"><value>Thử lại</value></data>
+
+  <data name="Scan_Title" xml:space="preserve"><value>Quét mã QR</value></data>
+  <data name="Scan_Instruction" xml:space="preserve"><value>Hướng camera vào mã QR tại gian hàng</value></data>
+  <data name="Scan_Loading" xml:space="preserve"><value>Đang tải thông tin...</value></data>
+  <data name="Scan_InvalidQR" xml:space="preserve"><value>Không nhận diện được gian hàng. Vui lòng thử lại.</value></data>
+  <data name="Scan_NotFound" xml:space="preserve"><value>Không tìm thấy thông tin gian hàng.</value></data>
+  <data name="Scan_Offline" xml:space="preserve"><value>Ngoại tuyến - không có dữ liệu. Vui lòng kết nối mạng.</value></data>
+  <data name="Scan_Again" xml:space="preserve"><value>Quét gian hàng khác</value></data>
+  <data name="Scan_OpenCamera" xml:space="preserve"><value>📷 Mở camera quét QR</value></data>
+
+  <data name="TTS_Play" xml:space="preserve"><value>▶ Phát thuyết minh</value></data>
+  <data name="TTS_Pause" xml:space="preserve"><value>⏸ Tạm dừng</value></data>
+  <data name="TTS_Resume" xml:space="preserve"><value>▶ Tiếp tục</value></data>
+  <data name="TTS_Stop" xml:space="preserve"><value>⏹</value></data>
+  <data name="TTS_Playing" xml:space="preserve"><value>🎵 Đang phát thuyết minh...</value></data>
+  <data name="TTS_NoContent" xml:space="preserve"><value>Chưa có nội dung thuyết minh</value></data>
+  <data name="TTS_Section" xml:space="preserve"><value>🎙 Thuyết minh</value></data>
+
+  <data name="Login_Title" xml:space="preserve"><value>Đăng nhập</value></data>
+  <data name="Login_Username" xml:space="preserve"><value>Tên đăng nhập</value></data>
+  <data name="Login_Password" xml:space="preserve"><value>Mật khẩu</value></data>
+  <data name="Login_Button" xml:space="preserve"><value>Đăng nhập</value></data>
+  <data name="Login_Guest" xml:space="preserve"><value>Tiếp tục không cần đăng nhập</value></data>
+  <data name="Login_Failed" xml:space="preserve"><value>Đăng nhập thất bại</value></data>
+  <data name="Login_EmptyFields" xml:space="preserve"><value>Vui lòng nhập đầy đủ thông tin.</value></data>
+
+  <data name="Lang_Select" xml:space="preserve"><value>Chọn ngôn ngữ thuyết minh</value></data>
+  <data name="Lang_Skip" xml:space="preserve"><value>Bỏ qua, tiếp tục bằng Tiếng Việt</value></data>
+
+  <data name="Profile_Title" xml:space="preserve"><value>Hồ sơ</value></data>
+  <data name="Profile_Language" xml:space="preserve"><value>Ngôn ngữ thuyết minh</value></data>
+  <data name="Profile_ChangeLanguage" xml:space="preserve"><value>Đổi ngôn ngữ</value></data>
+  <data name="Profile_Logout" xml:space="preserve"><value>Đăng xuất</value></data>
+  <data name="Profile_LogoutConfirm" xml:space="preserve"><value>Bạn có chắc muốn đăng xuất?</value></data>
+  <data name="Profile_Tourist" xml:space="preserve"><value>Khách tham quan</value></data>
+  <data name="Profile_Admin" xml:space="preserve"><value>Quản trị viên</value></data>
+  <data name="Profile_Guest" xml:space="preserve"><value>Khách (chưa đăng nhập)</value></data>
+
+  <data name="Map_Title" xml:space="preserve"><value>Bản đồ</value></data>
+  <data name="Map_ErrorLoad" xml:space="preserve"><value>Không thể tải bản đồ. Vui lòng thử lại.</value></data>
+  <data name="Map_UserLocation" xml:space="preserve"><value>Vị trí của bạn</value></data>
+  <data name="Map_ViewDetail" xml:space="preserve"><value>📖 Xem chi tiết</value></data>
+
+  <data name="Home_Greeting" xml:space="preserve"><value>Xin chào 👋</value></data>
+  <data name="Home_Nearby" xml:space="preserve"><value>Gian hàng gần đây</value></data>
+  <data name="Home_Empty" xml:space="preserve"><value>Chưa có gian hàng nào</value></data>
+  <data name="Home_ScanHint" xml:space="preserve"><value>Nhấn để quét gian hàng</value></data>
+</root>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter</value></resheader>
+
+  <data name="Tab_Home" xml:space="preserve"><value>ホーム</value></data>
+  <data name="Tab_Scan" xml:space="preserve"><value>QRスキャン</value></data>
+  <data name="Tab_Map" xml:space="preserve"><value>地図</value></data>
+  <data name="Tab_Profile" xml:space="preserve"><value>プロフィール</value></data>
+
+  <data name="Common_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="Common_Cancel" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="Common_Error" xml:space="preserve"><value>エラー</value></data>
+  <data name="Common_Success" xml:space="preserve"><value>成功</value></data>
+  <data name="Common_Loading" xml:space="preserve"><value>読み込み中...</value></data>
+  <data name="Common_Retry" xml:space="preserve"><value>再試行</value></data>
+
+  <data name="Scan_Title" xml:space="preserve"><value>QRコードをスキャン</value></data>
+  <data name="Scan_Instruction" xml:space="preserve"><value>ブースのQRコードにカメラを向けてください</value></data>
+  <data name="Scan_Loading" xml:space="preserve"><value>情報を読み込み中...</value></data>
+  <data name="Scan_InvalidQR" xml:space="preserve"><value>ブースを認識できません。もう一度お試しください。</value></data>
+  <data name="Scan_NotFound" xml:space="preserve"><value>ブース情報が見つかりません。</value></data>
+  <data name="Scan_Offline" xml:space="preserve"><value>オフライン - データがありません。インターネットに接続してください。</value></data>
+  <data name="Scan_Again" xml:space="preserve"><value>別のブースをスキャン</value></data>
+  <data name="Scan_OpenCamera" xml:space="preserve"><value>📷 カメラを開く</value></data>
+
+  <data name="TTS_Play" xml:space="preserve"><value>▶ 音声ガイドを再生</value></data>
+  <data name="TTS_Pause" xml:space="preserve"><value>⏸ 一時停止</value></data>
+  <data name="TTS_Resume" xml:space="preserve"><value>▶ 再開</value></data>
+  <data name="TTS_Stop" xml:space="preserve"><value>⏹</value></data>
+  <data name="TTS_Playing" xml:space="preserve"><value>🎵 音声ガイド再生中...</value></data>
+  <data name="TTS_NoContent" xml:space="preserve"><value>音声ガイドはありません</value></data>
+  <data name="TTS_Section" xml:space="preserve"><value>🎙 音声ガイド</value></data>
+
+  <data name="Login_Title" xml:space="preserve"><value>ログイン</value></data>
+  <data name="Login_Username" xml:space="preserve"><value>ユーザー名</value></data>
+  <data name="Login_Password" xml:space="preserve"><value>パスワード</value></data>
+  <data name="Login_Button" xml:space="preserve"><value>ログイン</value></data>
+  <data name="Login_Guest" xml:space="preserve"><value>ログインせずに続ける</value></data>
+  <data name="Login_Failed" xml:space="preserve"><value>ログイン失敗</value></data>
+  <data name="Login_EmptyFields" xml:space="preserve"><value>ユーザー名とパスワードを入力してください。</value></data>
+
+  <data name="Lang_Select" xml:space="preserve"><value>音声ガイドの言語を選択</value></data>
+  <data name="Lang_Skip" xml:space="preserve"><value>スキップ（ベトナム語で続ける）</value></data>
+
+  <data name="Profile_Title" xml:space="preserve"><value>プロフィール</value></data>
+  <data name="Profile_Language" xml:space="preserve"><value>音声ガイド言語</value></data>
+  <data name="Profile_ChangeLanguage" xml:space="preserve"><value>変更</value></data>
+  <data name="Profile_Logout" xml:space="preserve"><value>ログアウト</value></data>
+  <data name="Profile_LogoutConfirm" xml:space="preserve"><value>ログアウトしますか？</value></data>
+  <data name="Profile_Tourist" xml:space="preserve"><value>観光客</value></data>
+  <data name="Profile_Admin" xml:space="preserve"><value>管理者</value></data>
+  <data name="Profile_Guest" xml:space="preserve"><value>ゲスト（未ログイン）</value></data>
+
+  <data name="Map_Title" xml:space="preserve"><value>地図</value></data>
+  <data name="Map_ErrorLoad" xml:space="preserve"><value>地図を読み込めません。もう一度お試しください。</value></data>
+  <data name="Map_UserLocation" xml:space="preserve"><value>現在地</value></data>
+  <data name="Map_ViewDetail" xml:space="preserve"><value>📖 詳細を見る</value></data>
+
+  <data name="Home_Greeting" xml:space="preserve"><value>こんにちは 👋</value></data>
+  <data name="Home_Nearby" xml:space="preserve"><value>近くのブース</value></data>
+  <data name="Home_Empty" xml:space="preserve"><value>ブースがありません</value></data>
+  <data name="Home_ScanHint" xml:space="preserve"><value>タップしてスキャン</value></data>
+</root>

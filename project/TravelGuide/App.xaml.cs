@@ -1,23 +1,21 @@
-﻿namespace TravelGuide;
-
+// App.xaml.cs
 using TravelGuide.Services;
 
-public partial class App : Application
+namespace TravelGuide
 {
-    private static AppShell _shell;
-
-    public App()
+    public partial class App : Application
     {
-        InitializeComponent();
-        // 🔥 Load ngôn ngữ trước
-      /*  LocalizationService.Instance.SetLanguage(
-            Preferences.Get("preferred_language", "vi")
-        );*/
-    }
+        public App()
+        {
+            InitializeComponent();
+            // Load ngôn ngữ đã lưu trước khi render UI
+            LocalizationService.Instance.SetLanguage(
+                Preferences.Get("preferred_language", "vi"));
+        }
 
-    protected override Window CreateWindow(IActivationState? activationState)
-    {
-        _shell ??= new AppShell();
-        return new Window(_shell);
+        protected override Window CreateWindow(IActivationState? activationState)
+        {
+            return new Window(new AppShell());
+        }
     }
 }

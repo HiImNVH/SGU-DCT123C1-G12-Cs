@@ -1,121 +1,104 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFrameworks>net9.0-android;net9.0-ios;net9.0-maccatalyst</TargetFrameworks>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks>
+  <PropertyGroup>
+    <TargetFrameworks>net8.0-android;net8.0-ios</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>TravelGuide</RootNamespace>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
 
-		<OutputType>Exe</OutputType>
-		<RootNamespace>TravelGuide</RootNamespace>
-		<UseMaui>true</UseMaui>
-		<SingleProject>true</SingleProject>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
+    <ApplicationTitle>Travel Guide</ApplicationTitle>
+    <ApplicationId>com.travelguide.app</ApplicationId>
+    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 
-		<ApplicationTitle>TravelGuide</ApplicationTitle>
-		<ApplicationId>com.companyname.travelguide</ApplicationId>
-		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-		<ApplicationVersion>1</ApplicationVersion>
+    <AndroidMinSdkVersion>21</AndroidMinSdkVersion>
+    <AndroidTargetSdkVersion>34</AndroidTargetSdkVersion>
+  </PropertyGroup>
 
-		<WindowsPackageType>None</WindowsPackageType>
+  <!-- App icon & splash -->
+  <ItemGroup>
+    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#2E7D32" />
+    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#2E7D32" BaseSize="128,128" />
+    <MauiImage Include="Resources\Images\*" />
+    <MauiFont Include="Resources\Fonts\*" />
+    <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Remove="Resources\Icons\**" />
+    <Compile Remove="Resources\Icons\**" />
+    <EmbeddedResource Remove="Resources\Icons\**" />
+    <MauiCss Remove="Resources\Icons\**" />
+    <MauiXaml Remove="Resources\Icons\**" />
+    <None Remove="Resources\Icons\**" />
+  </ItemGroup>
 
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">15.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
-		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
-	</PropertyGroup>
-
-	<!-- Chỉ áp dụng EmbedAssembliesIntoApk khi build Android -->
-	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
-		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
-		<MauiImage Include="Resources\Images\*" />
-		<MauiFont Include="Resources\Fonts\*" />
-		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<AndroidResource Remove="Resources\Images\Icon\**" />
-		<AndroidResource Remove="Resources\Images\Place\**" />
-		<Compile Remove="Resources\Images\Icon\**" />
-		<Compile Remove="Resources\Images\Place\**" />
-		<EmbeddedResource Remove="Resources\Images\Icon\**" />
-		<EmbeddedResource Remove="Resources\Images\Place\**" />
-		<MauiCss Remove="Resources\Images\Icon\**" />
-		<MauiCss Remove="Resources\Images\Place\**" />
-		<MauiImage Remove="Resources\Images\Icon\**" />
-		<MauiImage Remove="Resources\Images\Place\**" />
-		<MauiXaml Remove="Resources\Images\Icon\**" />
-		<MauiXaml Remove="Resources\Images\Place\**" />
-		<None Remove="Resources\Images\Icon\**" />
-		<None Remove="Resources\Images\Place\**" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.14" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.8" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Update="Services\Localization\AppResources.Designer.cs">
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
-		  <DependentUpon>AppResources.resx</DependentUpon>
-		</Compile>
-		<Compile Update="Views\MapPage.xaml.cs">
-			<DependentUpon>MapPage.xaml</DependentUpon>
-		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-		<MauiXaml Update="Views\HomePage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Views\LoginPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Views\MapPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Views\PlaceDetailPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Views\PlaceListPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Views\ProfilePage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Views\RegisterPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Models\DTOs\" />
-	</ItemGroup>
-<ItemGroup>
-  <EmbeddedResource Update="Resources\Localization\AppResources.resx">
-    <Generator>ResXFileCodeGenerator</Generator>
-    <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
-  </EmbeddedResource>
+  <!-- Resource files (localization) -->
+ <ItemGroup>
+    <EmbeddedResource Update="Resources\Languages\AppResources.resx">
+        <Generator>PublicResXFileCodeGenerator</Generator>
+        <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+        <!-- Satellite files - link với file chính -->
+    <EmbeddedResource Update="Resources\Languages\AppResources.vi.resx">
+        <DependentUpon>AppResources.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Languages\AppResources.en.resx">
+        <DependentUpon>AppResources.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Languages\AppResources.ja.resx">
+        <DependentUpon>AppResources.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Languages\AppResources.ko.resx">
+        <DependentUpon>AppResources.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Languages\AppResources.zh.resx">
+        <DependentUpon>AppResources.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Languages\AppResources.fr.resx">
+        <DependentUpon>AppResources.resx</DependentUpon>
+    </EmbeddedResource>
 </ItemGroup>
-
-<!-- Bước 2: Các file ngôn ngữ khác — KHÔNG cần Generator, chỉ cần EmbeddedResource -->
 <ItemGroup>
-  <EmbeddedResource Update="Resources\Localization\AppResources.en.resx" />
-  <EmbeddedResource Update="Resources\Localization\AppResources.ja.resx" />
-  <EmbeddedResource Update="Resources\Localization\AppResources.ko.resx" />
-  <EmbeddedResource Update="Resources\Localization\AppResources.zh.resx" />
-  <EmbeddedResource Update="Resources\Localization\AppResources.fr.resx" />
-  <EmbeddedResource Update="Services\Localization\AppResources.resx">
-    <Generator>PublicResXFileCodeGenerator</Generator>
-    <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
-  </EmbeddedResource>
+    <Compile Update="Resources\Languages\AppResources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>AppResources.resx</DependentUpon>
+    </Compile>
+</ItemGroup>
+  <!-- NuGet Packages -->
+  <ItemGroup>
+    <!-- ZXing QR Scanner -->
+    <PackageReference Include="ZXing.Net.Maui.Controls" Version="0.4.0" />
+
+    <!-- SQLite offline cache -->
+    <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
+    <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.8" />
+
+    <!-- CommunityToolkit UI helpers + InvertBoolConverter -->
+    <PackageReference Include="CommunityToolkit.Maui" Version="9.0.0" />
+
+    <!-- JSON -->
+    <PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Resources\Languages\AppResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AppResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+<PropertyGroup>
+  <SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
+</PropertyGroup>
+<ItemGroup>
+  <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
+</ItemGroup>
+<ItemGroup>
+  <MauiXaml Update="Views\RegisterPage.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </MauiXaml>
 </ItemGroup>
 </Project>

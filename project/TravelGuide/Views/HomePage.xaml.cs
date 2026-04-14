@@ -1,155 +1,109 @@
-// HomePage.xaml.cs
+// Views/HomePage.xaml.cs
 using System.Collections.ObjectModel;
-using TravelGuide.Models;
+using System.ComponentModel;
+using System.Windows.Input;
+using TravelGuide.Models.DTOs;
 using TravelGuide.Services;
-using TravelGuide.Views;
 
-namespace TravelGuide;
-
-public partial class HomePage : ContentPage
+namespace TravelGuide.Views
 {
-    private readonly IPOIService        _poiService;
-    private readonly ILocationService   _locationService;
-    private readonly INarrationService  _narrationService;
-    private readonly IAuthService       _authService;
-
-    private static LocalizationService L => LocalizationService.Instance;
-
-    public ObservableCollection<POI> NearbyPlaces { get; set; } = new();
-
-    public HomePage(
-        IPOIService poiService,
-        ILocationService locationService,
-        INarrationService narrationService,
-        IAuthService authService)
+    public partial class HomePage : ContentPage, INotifyPropertyChanged
     {
-        InitializeComponent();
-        _poiService       = poiService;
-        _locationService  = locationService;
-        _narrationService = narrationService;
-        _authService      = authService;
-        BindingContext    = this;
-    }
+        private readonly POIDataService _poiData;
+        private readonly AuthService _auth;
+        private static LocalizationService L => LocalizationService.Instance;
 
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-        await LoadNearbyPOIs();
-        await StartGeofencing();
-    }
+        public ObservableCollection<POISummaryDto> NearbyPlaces { get; } = new();
 
-    protected override async void OnDisappearing()
-    {
-        base.OnDisappearing();
-        await _locationService.StopMonitoringAsync();
-        await _narrationService.StopAsync();
-    }
+        private bool _isLoading;
+        private bool _isRefreshing;
+        public bool IsLoading { get => _isLoading; set { _isLoading = value; OnPropertyChanged(); } }
+        public bool IsRefreshing { get => _isRefreshing; set { _isRefreshing = value; OnPropertyChanged(); } }
+        public bool IsEmpty => !IsLoading && NearbyPlaces.Count == 0;
 
-    private async Task LoadNearbyPOIs()
-    {
-        try
+        public ICommand RefreshCommand { get; }
+
+        public HomePage(POIDataService poiData, AuthService auth)
         {
-            var location = await _locationService.GetCurrentLocationAsync();
-            var pois = await _poiService.GetAllAsync();
+            InitializeComponent();
+            _poiData = poiData;
+            _auth = auth;
+            BindingContext = this;
+            RefreshCommand = new Command(async () => await LoadPOIsAsync(forceRefresh: true));
 
-            if (location != null)
+            // Đổi ngôn ngữ → refresh UI ngay lập tức
+            L.PropertyChanged += (_, _) =>
+                MainThread.BeginInvokeOnMainThread(RefreshUIText);
+        }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            RefreshUIText();
+            UpdateUserGreeting();
+            await LoadPOIsAsync();
+        }
+
+        // ── Refresh toàn bộ text theo ngôn ngữ hiện tại ─────────────────
+        private void RefreshUIText()
+        {
+            if (GreetingLabel != null) GreetingLabel.Text = L["Home_Greeting"];
+            if (ScanCardTitleLabel != null) ScanCardTitleLabel.Text = L["Scan_Title"];
+            if (ScanCardHintLabel != null) ScanCardHintLabel.Text = L["Home_ScanHint"];
+            if (NearbyTitleLabel != null) NearbyTitleLabel.Text = L["Home_Nearby"];
+            if (EmptyLabel != null) EmptyLabel.Text = L["Home_Empty"];
+        }
+
+        private void UpdateUserGreeting()
+        {
+            var user = _auth.GetCurrentUser();
+            UserNameLabel.Text = user?.Username ?? "Du khách";
+            GreetingLabel.Text = L["Home_Greeting"];
+        }
+
+        private async Task LoadPOIsAsync(bool forceRefresh = false)
+        {
+            Console.WriteLine("[log] - Tai danh sach POI cho trang chu");
+            IsLoading = true;
+            OnPropertyChanged(nameof(IsEmpty));
+
+            try
             {
-                var userLocation = new Location(location.Latitude, location.Longitude);
-
-                var sorted = pois
-                    .Select(p => new
-                    {
-                        POI = p,
-                        Distance = Location.CalculateDistance(
-                            userLocation,
-                            new Location((double)p.Latitude, (double)p.Longitude),
-                            DistanceUnits.Kilometers)
-                    })
-                    .OrderBy(x => x.Distance)
-                    .Take(5)
-                    .Select(x => x.POI)
-                    .ToList();
-
+                var list = await _poiData.GetAllActiveAsync();
                 NearbyPlaces.Clear();
-                foreach (var p in sorted)
+                foreach (var p in list.Take(10))
                     NearbyPlaces.Add(p);
+
+                Console.WriteLine($"[info] - Da tai {NearbyPlaces.Count} POI");
             }
-            else
+            catch (Exception ex)
             {
-                // fallback
-                NearbyPlaces.Clear();
-                foreach (var p in pois.Take(5))
-                    NearbyPlaces.Add(p);
+                Console.WriteLine($"[error] - Loi tai POI: {ex.Message}");
+            }
+            finally
+            {
+                IsLoading = false;
+                IsRefreshing = false;
+                OnPropertyChanged(nameof(IsEmpty));
             }
         }
-        catch (Exception ex)
+
+        private async void OnScanTapped(object sender, EventArgs e)
         {
-            Console.WriteLine(ex);
+            Console.WriteLine("[log] - Chuyen sang trang Scan QR");
+            await Shell.Current.GoToAsync("//scan");
         }
-    }
 
-    private async Task StartGeofencing()
-    {
-        try
+        private async void OnPOICardTapped(object sender, TappedEventArgs e)
         {
-            var allPOIs = await _poiService.GetAllAsync();
-            if (!allPOIs.Any()) return;
-
-            _locationService.OnEnteredRegion -= OnEnteredPOIRegion;
-            _locationService.OnExitedRegion  -= OnExitedPOIRegion;
-            _locationService.OnEnteredRegion += OnEnteredPOIRegion;
-            _locationService.OnExitedRegion  += OnExitedPOIRegion;
-
-            await _locationService.StartMonitoringAsync(allPOIs);
+            if (e.Parameter is not POISummaryDto poi) return;
+            Console.WriteLine($"[log] - Xem chi tiet POI tu trang chu: {poi.Name}");
+            await Shell.Current.GoToAsync(nameof(POIDetailPage),
+                new Dictionary<string, object> { { "PoiId", poi.Id.ToString() } });
         }
-        catch { }
+
+        public new event PropertyChangedEventHandler? PropertyChanged;
+        private void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? name = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
-
-    private async void OnEnteredPOIRegion(object sender, POIEventArgs e)
-    {
-        var user = _authService.GetCurrentUser();
-        var lang = user?.PreferredLanguage ?? "vi";
-
-        var content = e.POI.Contents?
-            .FirstOrDefault(c => c.LanguageCode == lang)
-            ?? e.POI.Contents?.FirstOrDefault();
-
-        var text = content?.NarrationText ?? e.POI.Description;
-        if (string.IsNullOrEmpty(text)) return;
-
-        await MainThread.InvokeOnMainThreadAsync(async () =>
-        {
-            // Dùng key localization cho thông báo tự động
-            await DisplayAlert(
-                $"📍 {e.POI.Name}",
-                L["Home_AutoPlay"],
-                L["Common_OK"]);
-
-            await _narrationService.SpeakAsync(text, lang);
-        });
-    }
-
-    private async void OnExitedPOIRegion(object sender, POIEventArgs e)
-    {
-        await MainThread.InvokeOnMainThreadAsync(async () =>
-        {
-            await _narrationService.StopAsync();
-        });
-    }
-
-    private async void OnItemTapped(object sender, EventArgs e)
-    {
-        if (sender is Frame frame && frame.BindingContext is POI poi)
-            await Shell.Current.GoToAsync(nameof(PlaceDetailPage), true,
-                new Dictionary<string, object> { { "Place", poi } });
-    }
-
-    private async void OnMapClicked(object sender, EventArgs e) =>
-        await Shell.Current.GoToAsync(nameof(Views.MapPage));
-
-    private async void OnPlaceTapped(object sender, EventArgs e) =>
-        await Shell.Current.GoToAsync("//places");
-
-    private async void OanProfileTapped(object sender, EventArgs e) =>
-        await Shell.Current.GoToAsync("//profile");
 }

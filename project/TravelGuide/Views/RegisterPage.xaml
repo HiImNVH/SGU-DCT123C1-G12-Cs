@@ -1,52 +1,128 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:svc="clr-namespace:TravelGuide.Services"
-             x:Class="TravelGuide.RegisterPage"
-             BackgroundColor="White"
-             Shell.NavBarIsVisible="False">
-
-    <ContentPage.Title>
-        <Binding Source="{x:Static svc:LocalizationService.Instance}" Path="[Register_Title]"/>
-    </ContentPage.Title>
+             x:Class="TravelGuide.Views.RegisterPage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="White">
 
     <ScrollView>
-        <VerticalStackLayout Padding="32" Spacing="14">
+        <StackLayout Padding="32,60,32,32" Spacing="0">
 
-            <Label Text="{Binding Source={x:Static svc:LocalizationService.Instance}, Path=[Register_Title]}"
-                   FontSize="24" FontAttributes="Bold"
-                   HorizontalOptions="Center" Margin="0,16,0,8"/>
+            <!-- Logo -->
+            <Label Text="🗺️"
+                   FontSize="64"
+                   HorizontalOptions="Center"
+                   Margin="0,0,0,8"/>
+            <Label Text="Travel Guide"
+                   FontSize="26"
+                   FontAttributes="Bold"
+                   TextColor="#1B5E20"
+                   HorizontalOptions="Center"/>
+            <Label x:Name="SubtitleLabel"
+                   Text="Tạo tài khoản mới"
+                   FontSize="14"
+                   TextColor="#888"
+                   HorizontalOptions="Center"
+                   Margin="0,6,0,32"/>
 
-            <Entry x:Name="FullNameEntry"
-                   Placeholder="{Binding Source={x:Static svc:LocalizationService.Instance}, Path=[Register_FullName]}"
-                   ReturnType="Next"/>
+            <!-- Username -->
+            <Label x:Name="UsernameLbl"
+                   Text="Tên đăng nhập"
+                   FontSize="13"
+                   TextColor="#555"
+                   Margin="0,0,0,6"/>
+            <Frame BackgroundColor="#F8F8F8"
+                   CornerRadius="12"
+                   BorderColor="#E0E0E0"
+                   Padding="16,8"
+                   Margin="0,0,0,16">
+                <Entry x:Name="UsernameEntry"
+                       Placeholder="Nhập tên đăng nhập"
+                       PlaceholderColor="#BDBDBD"
+                       FontSize="15"
+                       ReturnType="Next"/>
+            </Frame>
 
-            <Entry x:Name="UsernameEntry"
-                   Placeholder="{Binding Source={x:Static svc:LocalizationService.Instance}, Path=[Register_Username]}"
-                   ReturnType="Next"/>
+            <!-- Password -->
+            <Label x:Name="PasswordLbl"
+                   Text="Mật khẩu"
+                   FontSize="13"
+                   TextColor="#555"
+                   Margin="0,0,0,6"/>
+            <Frame BackgroundColor="#F8F8F8"
+                   CornerRadius="12"
+                   BorderColor="#E0E0E0"
+                   Padding="16,8"
+                   Margin="0,0,0,16">
+                <Entry x:Name="PasswordEntry"
+                       Placeholder="Ít nhất 6 ký tự"
+                       PlaceholderColor="#BDBDBD"
+                       IsPassword="True"
+                       FontSize="15"
+                       ReturnType="Next"/>
+            </Frame>
 
-            <Entry x:Name="EmailEntry"
-                   Placeholder="{Binding Source={x:Static svc:LocalizationService.Instance}, Path=[Register_Email]}"
-                   Keyboard="Email"
-                   ReturnType="Next"/>
+            <!-- Confirm Password -->
+            <Label x:Name="ConfirmPasswordLbl"
+                   Text="Xác nhận mật khẩu"
+                   FontSize="13"
+                   TextColor="#555"
+                   Margin="0,0,0,6"/>
+            <Frame BackgroundColor="#F8F8F8"
+                   CornerRadius="12"
+                   BorderColor="#E0E0E0"
+                   Padding="16,8"
+                   Margin="0,0,0,24">
+                <Entry x:Name="ConfirmPasswordEntry"
+                       Placeholder="Nhập lại mật khẩu"
+                       PlaceholderColor="#BDBDBD"
+                       IsPassword="True"
+                       FontSize="15"
+                       ReturnType="Done"/>
+            </Frame>
 
-            <Entry x:Name="PasswordEntry"
-                   Placeholder="{Binding Source={x:Static svc:LocalizationService.Instance}, Path=[Register_Password]}"
-                   IsPassword="True"
-                   ReturnType="Done"/>
-
+            <!-- Register button -->
             <Button x:Name="RegisterBtn"
-                    Text="{Binding Source={x:Static svc:LocalizationService.Instance}, Path=[Register_Button]}"
+                    Text="Tạo tài khoản"
                     Clicked="OnRegisterClicked"
                     BackgroundColor="#2E7D32"
                     TextColor="White"
-                    CornerRadius="8"/>
+                    CornerRadius="12"
+                    FontSize="16"
+                    HeightRequest="52"
+                    Margin="0,0,0,12"/>
 
-            <Button Text="{Binding Source={x:Static svc:LocalizationService.Instance}, Path=[Register_BackToLogin]}"
-                    Clicked="OnBackToLoginClicked"
-                    BackgroundColor="Transparent"
-                    TextColor="#2E7D32"/>
+            <!-- Loading -->
+            <ActivityIndicator x:Name="LoadingIndicator"
+                               IsVisible="False"
+                               IsRunning="False"
+                               Color="#2E7D32"
+                               Margin="0,0,0,12"/>
 
-        </VerticalStackLayout>
+            <!-- Separator -->
+            <Grid ColumnDefinitions="*,Auto,*" Margin="0,0,0,16">
+                <BoxView Grid.Column="0" HeightRequest="1" BackgroundColor="#E0E0E0" VerticalOptions="Center"/>
+                <Label Grid.Column="1" Text="  hoặc  " TextColor="#BDBDBD" FontSize="13"/>
+                <BoxView Grid.Column="2" HeightRequest="1" BackgroundColor="#E0E0E0" VerticalOptions="Center"/>
+            </Grid>
+
+            <!-- Back to login -->
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="4">
+                <Label x:Name="AlreadyHaveAccountLabel"
+                       Text="Đã có tài khoản?"
+                       FontSize="14"
+                       TextColor="#888"
+                       VerticalOptions="Center"/>
+                <Button x:Name="BackToLoginBtn"
+                        Text="Đăng nhập"
+                        Clicked="OnBackToLoginClicked"
+                        BackgroundColor="Transparent"
+                        TextColor="#2E7D32"
+                        FontSize="14"
+                        FontAttributes="Bold"
+                        Padding="4,0"/>
+            </StackLayout>
+
+        </StackLayout>
     </ScrollView>
 </ContentPage>

@@ -1,6 +1,6 @@
 using System.ComponentModel;
 using System.Globalization;
-using TravelGuide.Services.Localization;
+using TravelGuide.Resources.Languages;
 
 namespace TravelGuide.Services
 {
@@ -12,9 +12,10 @@ namespace TravelGuide.Services
         {
             var saved = Preferences.Get("preferred_language", "vi");
             ApplyCulture(saved);
+            Console.WriteLine($"[info] - Ngon ngu khoi dong: {saved}");
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public string this[string key]
         {
@@ -22,6 +23,7 @@ namespace TravelGuide.Services
             {
                 var value = AppResources.ResourceManager
                     .GetString(key, AppResources.Culture);
+
                 return value ?? $"[{key}]";
             }
         }
@@ -32,8 +34,6 @@ namespace TravelGuide.Services
             {
                 ApplyCulture(languageCode);
                 Preferences.Set("preferred_language", languageCode);
-
-                // Chỉ fire event — KHÔNG tạo AppShell mới
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
             }
             catch (CultureNotFoundException)
@@ -45,6 +45,7 @@ namespace TravelGuide.Services
         private void ApplyCulture(string languageCode)
         {
             var culture = new CultureInfo(languageCode);
+
             AppResources.Culture = culture;
             CultureInfo.CurrentCulture = culture;
             CultureInfo.CurrentUICulture = culture;
@@ -52,12 +53,11 @@ namespace TravelGuide.Services
 
         public string CurrentLanguageCode =>
             CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-    
 
         public void InitFromUser(string preferredLanguage)
         {
-            // Chỉ áp dụng nếu chưa có ngôn ngữ được lưu trên thiết bị
             var saved = Preferences.Get("preferred_language", "");
+
             if (string.IsNullOrEmpty(saved) && !string.IsNullOrEmpty(preferredLanguage))
                 SetLanguage(preferredLanguage);
         }

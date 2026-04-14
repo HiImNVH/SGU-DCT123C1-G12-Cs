@@ -1,80 +1,157 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:svc="clr-namespace:TravelGuide.Services"
-             x:Class="TravelGuide.HomePage"
-             BackgroundColor="#F5F5F5"
-             Shell.NavBarIsVisible="False">
-    <Grid RowDefinitions="Auto,Auto,*,Auto">
+             x:Class="TravelGuide.Views.HomePage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F5F5F5">
 
-        <!-- HEADER -->
-        <Grid Padding="20" ColumnDefinitions="*,Auto">
-            <VerticalStackLayout>
-                <Label Text="{Binding Source={x:Static svc:LocalizationService.Instance}, Path=[Home_Welcome]}"
-                       FontSize="26" FontAttributes="Bold"/>
-                <Label Text="{Binding Source={x:Static svc:LocalizationService.Instance}, Path=[Home_Subtitle]}"
-                       FontSize="14" TextColor="Gray"/>
-            </VerticalStackLayout>
-        </Grid>
+    <RefreshView IsRefreshing="{Binding IsRefreshing}"
+                 Command="{Binding RefreshCommand}"
+                 RefreshColor="#2E7D32">
+        <ScrollView>
+            <StackLayout Spacing="0">
 
-        <!-- SEARCH BAR -->
-        <Frame Grid.Row="1" Margin="20,0" Padding="10"
-               CornerRadius="12" BackgroundColor="White">
-            <Grid ColumnDefinitions="Auto,*">
-                <Image Source="search.png" WidthRequest="20" HeightRequest="20"/>
-                <Entry Grid.Column="1"
-                       Placeholder="{Binding Source={x:Static svc:LocalizationService.Instance}, Path=[Home_SearchPlaceholder]}"
-                       BackgroundColor="Transparent"/>
-            </Grid>
-        </Frame>
+                <!-- ── Header ── -->
+                <Grid BackgroundColor="#2E7D32"
+                      Padding="20,50,20,24"
+                      RowDefinitions="Auto,Auto">
 
-        <!-- LOCATION LIST -->
-        <VerticalStackLayout Grid.Row="2" Padding="20">
-            <Label Text="{Binding Source={x:Static svc:LocalizationService.Instance}, Path=[Home_Nearby]}"
-                   FontSize="22" FontAttributes="Bold"/>
-
-            <CollectionView ItemsSource="{Binding NearbyPlaces}"
-                            HeightRequest="220" Margin="0,15,0,0">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Horizontal"/>
-                </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame WidthRequest="180" HeightRequest="200"
-                               CornerRadius="15" Padding="0" Margin="0,0,15,0">
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnItemTapped"/>
-                            </Frame.GestureRecognizers>
-                            <Grid>
-                                <Image Source="{Binding ImageUrl}" Aspect="AspectFill"/>
-                                <Grid VerticalOptions="End" Padding="10"
-                                      BackgroundColor="#66000000">
-                                    <VerticalStackLayout>
-                                        <Label Text="{Binding Name}"
-                                               TextColor="White"
-                                               FontSize="16" FontAttributes="Bold"/>
-                                        <Label Text="{Binding Category}"
-                                               TextColor="White" FontSize="12"/>
-                                    </VerticalStackLayout>
-                                </Grid>
-                            </Grid>
+                    <StackLayout Grid.Row="0"
+                                 Orientation="Horizontal"
+                                 HorizontalOptions="Fill">
+                        <StackLayout HorizontalOptions="FillAndExpand">
+                            <Label x:Name="GreetingLabel"
+                                   TextColor="#C8E6C9"
+                                   FontSize="13"/>
+                            <Label x:Name="UserNameLabel"
+                                   Text="Du khách"
+                                   TextColor="White"
+                                   FontSize="20"
+                                   FontAttributes="Bold"/>
+                        </StackLayout>
+                        <Frame WidthRequest="44"
+                               HeightRequest="44"
+                               CornerRadius="22"
+                               BackgroundColor="#4CAF50"
+                               BorderColor="Transparent"
+                               Padding="0"
+                               HorizontalOptions="End"
+                               VerticalOptions="Center">
+                            <Label Text="👤"
+                                   FontSize="22"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
                         </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </VerticalStackLayout>
+                    </StackLayout>
 
-        <!-- MAP BUTTON -->
-        <ImageButton Source="map.png"
-                     WidthRequest="48" HeightRequest="48"
-                     CornerRadius="38" BackgroundColor="White"
-                     Grid.RowSpan="3"
-                     HorizontalOptions="End" VerticalOptions="End"
-                     Margin="20" Clicked="OnMapClicked">
-            <ImageButton.Shadow>
-                <Shadow Brush="Black" Opacity="0.3" Offset="0,4" Radius="10"/>
-            </ImageButton.Shadow>
-        </ImageButton>
+                    <!-- Quick scan button -->
+                    <Frame Grid.Row="1"
+                           Margin="0,16,0,0"
+                           BackgroundColor="White"
+                           CornerRadius="14"
+                           HasShadow="False"
+                           Padding="16,14">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <Label Grid.Column="0"
+                                   Text="📷"
+                                   FontSize="24"
+                                   VerticalOptions="Center"/>
+                            <StackLayout Grid.Column="1" Margin="12,0,0,0">
+                                <Label x:Name="ScanCardTitleLabel"
+                                       FontSize="15"
+                                       FontAttributes="Bold"
+                                       TextColor="#1B5E20"/>
+                                <Label x:Name="ScanCardHintLabel"
+                                       FontSize="12"
+                                       TextColor="#888"/>
+                            </StackLayout>
+                            <Label Grid.Column="2"
+                                   Text="›"
+                                   FontSize="22"
+                                   TextColor="#2E7D32"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnScanTapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+                </Grid>
 
-    </Grid>
+                <!-- ── Nearby POI ── -->
+                <StackLayout Padding="16,20,16,0">
+                    <Label x:Name="NearbyTitleLabel"
+                           FontSize="17"
+                           FontAttributes="Bold"
+                           TextColor="#212121"
+                           Margin="0,0,0,12"/>
+
+                    <!-- Loading -->
+                    <ActivityIndicator IsVisible="{Binding IsLoading}"
+                                       IsRunning="{Binding IsLoading}"
+                                       Color="#2E7D32"
+                                       HorizontalOptions="Center"
+                                       Margin="0,20"/>
+
+                    <!-- Empty state -->
+                    <StackLayout IsVisible="{Binding IsEmpty}"
+                                 HorizontalOptions="Center"
+                                 Padding="0,20">
+                        <Label Text="🗺️"
+                               FontSize="48"
+                               HorizontalOptions="Center"/>
+                        <Label x:Name="EmptyLabel"
+                               FontSize="14"
+                               TextColor="#888"
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+
+                    <!-- POI Cards -->
+                    <CollectionView ItemsSource="{Binding NearbyPlaces}"
+                                    SelectionMode="None">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame Margin="0,0,0,12"
+                                       CornerRadius="14"
+                                       BackgroundColor="White"
+                                       HasShadow="True"
+                                       Padding="0">
+                                    <Grid ColumnDefinitions="100,*" HeightRequest="100">
+                                        <Image Grid.Column="0"
+                                               Source="{Binding ImageUrl}"
+                                               Aspect="AspectFill"
+                                               HorizontalOptions="Fill"
+                                               VerticalOptions="Fill"/>
+                                        <StackLayout Grid.Column="1"
+                                                     Padding="14,12"
+                                                     VerticalOptions="Center"
+                                                     Spacing="4">
+                                            <Label Text="{Binding Name}"
+                                                   FontSize="15"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#212121"
+                                                   LineBreakMode="TailTruncation"/>
+                                            <Label Text="{Binding Category}"
+                                                   FontSize="12"
+                                                   TextColor="#2E7D32"/>
+                                            <!-- Label "Nhấn để xem chi tiết" dùng x:Name 
+                                                 không được trong DataTemplate → dùng binding -->
+                                            <Label Text="{Binding ., StringFormat='📍 Xem chi tiết'}"
+                                                   FontSize="11"
+                                                   TextColor="#BDBDBD"/>
+                                        </StackLayout>
+                                    </Grid>
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer CommandParameter="{Binding .}"
+                                                              Tapped="OnPOICardTapped"/>
+                                    </Frame.GestureRecognizers>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+
+                <BoxView HeightRequest="24"/>
+            </StackLayout>
+        </ScrollView>
+    </RefreshView>
 </ContentPage>
