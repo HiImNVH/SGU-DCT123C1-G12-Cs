@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
 	<!-- Internet & Network -->
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -19,8 +20,10 @@
 	<application
         android:allowBackup="true"
         android:icon="@mipmap/appicon"
+        android:roundIcon="@mipmap/appicon_round"
+        android:label="Travel Guide"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true">
-		<!-- usesCleartextTraffic=true: cho phép HTTP (http://10.0.2.2:5171) -->
 	</application>
+
 </manifest>

@@ -121,8 +121,7 @@ public partial class ScanPage : ContentPage
 
     private void OnBarcodesDetected(object sender, BarcodeDetectionEventArgs e)
     {
-        if (!_isActive || _isProcessing || !_vm.IsScanning)
-            return;
+        if (!_isActive || _isProcessing) return;
 
         var result = e.Results?.FirstOrDefault();
         if (result == null || string.IsNullOrWhiteSpace(result.Value))
@@ -134,9 +133,18 @@ public partial class ScanPage : ContentPage
         {
             try
             {
-                DestroyCameraView(); // 🔥 stop camera đúng
+                DestroyCameraView();
 
-                await _vm.OnQRScannedAsync(result.Value);
+                var poiId = _vm.DecodePoiId(result.Value);
+
+                if (poiId == null)
+                {
+                    await DisplayAlert("Error", "QR không hợp lệ", "OK");
+                    _isProcessing = false;
+                    return;
+                }
+
+                await Shell.Current.GoToAsync($"{nameof(POIDetailPage)}?PoiId={poiId}");
             }
             catch (Exception ex)
             {

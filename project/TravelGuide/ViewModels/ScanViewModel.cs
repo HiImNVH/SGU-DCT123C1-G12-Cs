@@ -215,5 +215,11 @@ namespace TravelGuide.ViewModels
 
         private void OnPropertyChanged([CallerMemberName] string? name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        public Guid? DecodePoiId(string raw)
+        {
+            return _scanner.DecodePoiId(raw);
+        }
     }
+
+
 }

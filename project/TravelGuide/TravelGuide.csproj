@@ -26,14 +26,6 @@
     <MauiFont Include="Resources\Fonts\*" />
     <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Remove="Resources\Icons\**" />
-    <Compile Remove="Resources\Icons\**" />
-    <EmbeddedResource Remove="Resources\Icons\**" />
-    <MauiCss Remove="Resources\Icons\**" />
-    <MauiXaml Remove="Resources\Icons\**" />
-    <None Remove="Resources\Icons\**" />
-  </ItemGroup>
 
   <!-- Resource files (localization) -->
  <ItemGroup>

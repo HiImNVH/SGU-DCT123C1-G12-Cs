@@ -14,9 +14,9 @@ namespace TravelGuide.Views
         private readonly POIDataService _poiData;
         private readonly TTSPlayerService _tts;
         private readonly AuthService _auth;
+
         private static LocalizationService L => LocalizationService.Instance;
 
-        // ── State ──────────────────────────────────────────────────────
         private POISummaryDto? _poi;
         private bool _isLoading;
         private bool _hasContent;
@@ -51,32 +51,36 @@ namespace TravelGuide.Views
             set
             {
                 _poiId = value;
-                if (!string.IsNullOrEmpty(value))
-                    _ = LoadPOIAsync(Guid.Parse(value));
+
+                if (Guid.TryParse(value, out var id))
+                {
+                    _ = LoadPOIAsync(id);
+                }
             }
         }
 
         public POIDetailPage(POIDataService poiData, TTSPlayerService tts, AuthService auth)
         {
             InitializeComponent();
+
             _poiData = poiData;
             _tts = tts;
             _auth = auth;
+
             BindingContext = this;
 
             PlayCommand = new Command(async () => await PlayAsync(), () => CanPlay);
             PauseCommand = new Command(async () => await PauseAsync(), () => IsPlaying);
             ResumeCommand = new Command(async () => await ResumeAsync(), () => IsPaused);
             StopCommand = new Command(async () => await StopAsync(), () => IsPlaying || IsPaused);
+
             BackCommand = new Command(async () =>
             {
                 await StopAsync();
                 await Shell.Current.GoToAsync("..");
             });
 
-            // Đổi ngôn ngữ → refresh UI ngay lập tức
-            L.PropertyChanged += (_, _) =>
-                MainThread.BeginInvokeOnMainThread(RefreshUIText);
+            L.PropertyChanged += OnLanguageChanged;
         }
 
         protected override void OnAppearing()
@@ -85,21 +89,33 @@ namespace TravelGuide.Views
             RefreshUIText();
         }
 
-        // ── Refresh toàn bộ text theo ngôn ngữ hiện tại ─────────────────
+        protected override async void OnDisappearing()
+        {
+            base.OnDisappearing();
+
+            await StopAsync();
+
+            L.PropertyChanged -= OnLanguageChanged;
+        }
+
+        private void OnLanguageChanged(object sender, PropertyChangedEventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(RefreshUIText);
+        }
+
         private void RefreshUIText()
         {
-            if (TTSSectionLabel != null) TTSSectionLabel.Text = L["TTS_Section"];
-            if (PlayBtn != null) PlayBtn.Text = L["TTS_Play"];
-            if (PauseBtn != null) PauseBtn.Text = L["TTS_Pause"];
-            if (ResumeBtn != null) ResumeBtn.Text = L["TTS_Resume"];
-            if (PlayingLabel != null) PlayingLabel.Text = L["TTS_Playing"];
-            if (ContentLabel != null) ContentLabel.Text = "Nội dung";
-            if (NoContentLabel != null) NoContentLabel.Text = L["TTS_NoContent"];
+            TTSSectionLabel.Text = L["TTS_Section"];
+            PlayBtn.Text = L["TTS_Play"];
+            PauseBtn.Text = L["TTS_Pause"];
+            ResumeBtn.Text = L["TTS_Resume"];
+            PlayingLabel.Text = L["TTS_Playing"];
+            ContentLabel.Text = L["Content"];
+            NoContentLabel.Text = L["TTS_NoContent"];
         }
 
         private async Task LoadPOIAsync(Guid poiId)
         {
-            Console.WriteLine($"[log] - Tai chi tiet POI: {poiId}");
             IsLoading = true;
 
             var lang = _auth.GetCurrentLanguage();
@@ -109,22 +125,21 @@ namespace TravelGuide.Views
 
             if (dto == null)
             {
-                Console.WriteLine("[error] - Khong tai duoc chi tiet POI");
                 HasContent = false;
                 OnPropertyChanged(nameof(HasNoContent));
                 return;
             }
 
             _detailDto = dto;
+
             POI = new POISummaryDto
             {
                 Id = dto.Id,
                 Name = dto.Name,
                 Category = dto.Category,
-                ImageUrl = dto.ImageUrl,
-                Latitude = dto.Latitude,
-                Longitude = dto.Longitude
+                ImageUrl = dto.ImageUrl
             };
+
             Title = dto.Name;
 
             if (dto.Content != null)
@@ -132,13 +147,12 @@ namespace TravelGuide.Views
                 NarrationText = dto.Content.NarrationText;
                 LanguageFlag = GetLangFlag(dto.Content.LanguageCode);
                 HasContent = true;
-                Console.WriteLine("[info] - Co noi dung thuyet minh, tu dong phat TTS");
+
                 await PlayAsync();
             }
             else
             {
                 HasContent = false;
-                Console.WriteLine("[warn] - Khong co noi dung thuyet minh");
             }
 
             OnPropertyChanged(nameof(HasNoContent));
@@ -147,14 +161,15 @@ namespace TravelGuide.Views
         private async Task PlayAsync()
         {
             if (_detailDto?.Content == null) return;
+
             PlayerState = PlayerState.Playing;
             RefreshCommands();
 
             await _tts.PlayAsync(
-                localAudioPath: null,
-                audioUrl: _detailDto.Content.AudioUrl,
-                narrationText: _detailDto.Content.NarrationText,
-                langCode: _detailDto.Content.LanguageCode);
+                null,
+                _detailDto.Content.AudioUrl,
+                _detailDto.Content.NarrationText,
+                _detailDto.Content.LanguageCode);
 
             PlayerState = _tts.GetState();
             RefreshCommands();
@@ -176,17 +191,12 @@ namespace TravelGuide.Views
             RefreshCommands();
         }
 
-        protected override async void OnDisappearing()
-        {
-            base.OnDisappearing();
-            await StopAsync();
-        }
-
         private void RefreshCommands()
         {
             OnPropertyChanged(nameof(IsPlaying));
             OnPropertyChanged(nameof(IsPaused));
             OnPropertyChanged(nameof(CanPlay));
+
             (PlayCommand as Command)?.ChangeCanExecute();
             (PauseCommand as Command)?.ChangeCanExecute();
             (ResumeCommand as Command)?.ChangeCanExecute();
@@ -197,22 +207,19 @@ namespace TravelGuide.Views
         {
             "vi" => "🇻🇳",
             "en" => "🇺🇸",
-            "ja" => "🇯🇵",
-            "ko" => "🇰🇷",
-            "zh" => "🇨🇳",
-            "fr" => "🇫🇷",
             _ => "🌐"
         };
 
-        private void Set<T>(ref T field, T value, [CallerMemberName] string? name = null)
+        public new event PropertyChangedEventHandler? PropertyChanged;
+
+        private void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? name = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+        private void Set<T>(ref T field, T value, [System.Runtime.CompilerServices.CallerMemberName] string? name = null)
         {
             if (EqualityComparer<T>.Default.Equals(field, value)) return;
             field = value;
             OnPropertyChanged(name);
         }
-
-        public new event PropertyChangedEventHandler? PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string? name = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }
