@@ -24,7 +24,12 @@ try
 
     // ── Blazor Server ────────────────────────────────
     builder.Services.AddRazorComponents()
-        .AddInteractiveServerComponents();
+    .AddInteractiveServerComponents()
+    .AddHubOptions(options =>
+    {
+        // Tang gioi han message len 10MB
+        options.MaximumReceiveMessageSize = 10 * 1024 * 1024;
+    });
 
     // ── MudBlazor ────────────────────────────────────
     builder.Services.AddMudServices(config =>

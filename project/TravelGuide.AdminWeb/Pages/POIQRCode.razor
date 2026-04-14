@@ -7,6 +7,7 @@
 @inject NavigationManager Navigation
 @inject ISnackbar Snackbar
 @inject IJSRuntime JS
+@inject IHttpClientFactory HttpClientFactory
 
 <MudText Typo="Typo.h5" Class="mb-4">🔲 Tạo mã QR</MudText>
 
@@ -95,7 +96,7 @@ else
         }
         catch (Exception ex)
         {
-            Snackbar.Add($"❌ Lỗi tạo QR: {ex.Message}", Severity.Error);
+            Snackbar.Add($"❌ Lỗi: {ex.Message}", Severity.Error);
         }
         finally
         {
@@ -106,20 +107,17 @@ else
 
     private async Task DownloadQR()
     {
-        if (_qrResult == null || string.IsNullOrEmpty(_qrResult.QrImageBase64))
-        {
-            Snackbar.Add("⚠️ Chưa có QR để tải!", Severity.Warning);
-            return;
-        }
+        if (_qrResult == null) return;
 
         _isDownloading = true;
         StateHasChanged();
 
         try
         {
+            // ✅ Chia nhỏ base64 để tránh vượt giới hạn SignalR
+            // Dùng JS để tạo blob URL và download trực tiếp từ browser
             var fileName = $"QR_POI_{Id:N}.png";
-            // ✅ Truyền đúng 3 tham số: base64, mimeType, fileName
-            await JS.InvokeVoidAsync("downloadBase64File",
+            await JS.InvokeVoidAsync("downloadBase64Chunked",
                 _qrResult.QrImageBase64,
                 "image/png",
                 fileName);
