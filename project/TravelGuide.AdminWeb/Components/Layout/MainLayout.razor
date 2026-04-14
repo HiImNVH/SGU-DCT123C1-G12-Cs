@@ -1,0 +1,59 @@
+@using TravelGuide.AdminWeb.Services
+@inherits LayoutComponentBase
+@inject IAdminAuthService AuthService
+@inject NavigationManager Navigation
+
+<MudThemeProvider />
+<MudDialogProvider FullWidth="true" MaxWidth="MaxWidth.Small" />
+<MudSnackbarProvider />
+
+<MudLayout>
+    @if (AuthService.GetSession().IsLoggedIn)
+    {
+        <MudAppBar Elevation="1" Color="Color.Primary" Fixed="true">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                           Color="Color.Inherit" Edge="Edge.Start"
+                           OnClick="@(() => _drawerOpen = !_drawerOpen)" />
+            <MudText Typo="Typo.h6">🗺️ Travel Guide Admin</MudText>
+            <MudSpacer />
+            <MudText Typo="Typo.body2" Class="mr-3">@AuthService.GetSession().Username</MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.Logout"
+                           Color="Color.Inherit" OnClick="Logout" Title="Đăng xuất" />
+        </MudAppBar>
+
+        <MudDrawer @bind-Open="_drawerOpen" Elevation="1"
+                   Variant="DrawerVariant.Responsive"
+                   ClipMode="DrawerClipMode.Always">
+            <MudNavMenu>
+                <MudNavLink Href="/" Match="NavLinkMatch.All"
+                            Icon="@Icons.Material.Filled.Place">
+                    Quản lý POI
+                </MudNavLink>
+                <MudNavLink Href="/poi/create"
+                            Icon="@Icons.Material.Filled.AddLocation">
+                    Thêm POI mới
+                </MudNavLink>
+            </MudNavMenu>
+        </MudDrawer>
+
+        <MudMainContent>
+            <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-4 mt-16">
+                @Body
+            </MudContainer>
+        </MudMainContent>
+    }
+    else
+    {
+        @Body
+    }
+</MudLayout>
+
+@code {
+    private bool _drawerOpen = true;
+
+    private void Logout()
+    {
+        AuthService.Logout();
+        Navigation.NavigateTo("/login");
+    }
+}

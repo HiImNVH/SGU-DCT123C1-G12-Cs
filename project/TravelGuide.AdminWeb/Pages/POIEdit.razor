@@ -1,0 +1,459 @@
+@page "/poi/create"
+@page "/poi/edit/{Id:guid}"
+@rendermode InteractiveServer
+@using TravelGuide.AdminWeb.Services
+@using TravelGuide.Core.DTOs
+@inject IPOIManagementService POIService
+@inject IPOIContentManagementService ContentService
+@inject IAdminAuthService AuthService
+@inject ITranslationService TranslationService
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@inject IJSRuntime JS
+
+<MudText Typo="Typo.h5" Class="mb-4">
+    @(_isEditMode ? "✏️ Chỉnh sửa POI" : "➕ Thêm POI mới")
+</MudText>
+
+@* ── THÔNG TIN CƠ BẢN ── *@
+<MudPaper Class="pa-6 mb-4" Elevation="2">
+    <MudText Typo="Typo.h6" Class="mb-4">Thông tin cơ bản</MudText>
+    <MudGrid>
+        <MudItem xs="12" md="6">
+            <MudTextField @bind-Value="_name" Label="Tên điểm tham quan *"
+                          Variant="Variant.Outlined" FullWidth="true" Margin="Margin.Dense" />
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudTextField @bind-Value="_category" Label="Danh mục *"
+                          Variant="Variant.Outlined" FullWidth="true" Margin="Margin.Dense"
+                          HelperText="VD: Ẩm thực, Thủ công, Di tích..." />
+        </MudItem>
+        <MudItem xs="12">
+            <MudTextField @bind-Value="_imageUrl" Label="URL ảnh đại diện"
+                          Variant="Variant.Outlined" FullWidth="true" Margin="Margin.Dense" />
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudTextField @bind-Value="_latitude" Label="Vĩ độ *"
+                          Variant="Variant.Outlined" FullWidth="true" Margin="Margin.Dense" />
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudTextField @bind-Value="_longitude" Label="Kinh độ *"
+                          Variant="Variant.Outlined" FullWidth="true" Margin="Margin.Dense" />
+        </MudItem>
+        @if (_isEditMode)
+        {
+            <MudItem xs="12">
+                <MudSwitch @bind-Checked="_isActive" Label="Hiển thị (IsActive)" Color="Color.Primary" />
+            </MudItem>
+        }
+    </MudGrid>
+
+    <MudStack Row="true" Class="mt-4" Spacing="2">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Save"
+                   OnClick="ConfirmSavePOI" Disabled="_isSaving">
+            @(_isSaving ? "Đang lưu..." : (_isEditMode ? "Cập nhật POI" : "Tạo POI mới"))
+        </MudButton>
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.Cancel"
+                   OnClick="ConfirmCancel">
+            Hủy
+        </MudButton>
+    </MudStack>
+</MudPaper>
+
+@* ── NỘI DUNG THUYẾT MINH ── *@
+@if (_savedPoiId.HasValue)
+{
+    <MudPaper Class="pa-6" Elevation="2">
+        <MudText Typo="Typo.h6" Class="mb-1">🌐 Nội dung thuyết minh</MudText>
+        <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-4">
+            Nhập tiếng Việt → nhấn <strong>Dịch tự động</strong> → kiểm tra → <strong>Lưu tất cả</strong>
+        </MudText>
+
+        @* Tiếng Việt *@
+        <MudPaper Class="pa-4 mb-3" Outlined="true">
+            <MudText Typo="Typo.subtitle1" Class="mb-2">🇻🇳 Tiếng Việt (nguồn)</MudText>
+            <MudTextField @bind-Value="_viText"
+                          Label="Văn bản thuyết minh *"
+                          Variant="Variant.Outlined" FullWidth="true"
+                          Lines="4" Margin="Margin.Dense" Class="mb-2" />
+            <MudTextField @bind-Value="_viAudioUrl"
+                          Label="URL audio MP3/WAV (để trống nếu dùng TTS)"
+                          Variant="Variant.Outlined" FullWidth="true"
+                          Margin="Margin.Dense" Class="mb-2" />
+            <MudStack Row="true" Spacing="2" Wrap="Wrap.Wrap">
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary"
+                           StartIcon="@Icons.Material.Filled.Translate"
+                           OnClick="AutoTranslate"
+                           Disabled="_isTranslating || string.IsNullOrWhiteSpace(_viText)">
+                    @(_isTranslating ? "Đang dịch..." : "🔄 Dịch tự động")
+                </MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Info"
+                           StartIcon="@Icons.Material.Filled.PlayCircle"
+                           OnClick="@(() => PreviewAudio("vi", _viText, _viAudioUrl))">
+                    ▶ Nghe thử
+                </MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.Save"
+                           OnClick="@(() => SaveSingleContent("vi", _viText, _viAudioUrl))"
+                           Disabled="_isSavingContent || string.IsNullOrWhiteSpace(_viText)">
+                    Lưu VI
+                </MudButton>
+            </MudStack>
+        </MudPaper>
+
+        @* Các ngôn ngữ khác *@
+        @foreach (var lang in _otherLanguages)
+        {
+            var langCode = lang.Key;        @* ✅ đổi từ "code" thành "langCode" *@
+            var displayName = lang.Value;
+            <MudPaper Class="pa-4 mb-3" Outlined="true">
+                <MudText Typo="Typo.subtitle1" Class="mb-2">@displayName</MudText>
+                @if (_isTranslating && !_translatedTexts.ContainsKey(langCode))
+                {
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="80px" Class="mb-2" />
+                    <MudSkeleton Width="60%" Class="mb-2" />
+                }
+                else
+                {
+                    <MudTextField Value="@GetText(langCode)"
+                                  ValueChanged="@((string v) => SetText(langCode, v))"
+                                  Label="Văn bản thuyết minh"
+                                  Variant="Variant.Outlined" FullWidth="true"
+                                  Lines="4" Margin="Margin.Dense" Class="mb-2" />
+                    <MudTextField Value="@GetAudioUrl(langCode)"
+                                  ValueChanged="@((string v) => SetAudioUrl(langCode, v))"
+                                  Label="URL audio MP3/WAV"
+                                  Variant="Variant.Outlined" FullWidth="true"
+                                  Margin="Margin.Dense" Class="mb-2" />
+                    <MudStack Row="true" Spacing="2">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Info"
+                                   Size="Size.Small"
+                                   StartIcon="@Icons.Material.Filled.PlayCircle"
+                                   OnClick="@(() => PreviewAudio(langCode, GetText(langCode), GetAudioUrl(langCode)))">
+                            ▶ Nghe thử
+                        </MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                                   Size="Size.Small"
+                                   StartIcon="@Icons.Material.Filled.Save"
+                                   OnClick="@(() => SaveSingleContent(langCode, GetText(langCode), GetAudioUrl(langCode)))"
+                                   Disabled="_isSavingContent || string.IsNullOrWhiteSpace(GetText(langCode))">
+                            Lưu @langCode.ToUpper()  @* ✅ hết conflict *@
+                        </MudButton>
+                    </MudStack>
+                }
+            </MudPaper>
+        }
+
+        @* Nút lưu tất cả *@
+        <MudButton Variant="Variant.Filled" Color="Color.Success"
+                   StartIcon="@Icons.Material.Filled.Save"
+                   OnClick="ConfirmSaveAll"
+                   Disabled="_isSavingContent || string.IsNullOrWhiteSpace(_viText)"
+                   FullWidth="true" Size="Size.Large" Class="mt-2">
+            @(_isSavingContent ? "⏳ Đang lưu tất cả..." : "💾 Lưu tất cả ngôn ngữ")
+        </MudButton>
+    </MudPaper>
+}
+
+<audio id="audioPreview" style="display:none" />
+
+@code {
+    [Parameter] public Guid? Id { get; set; }
+
+    private bool _isEditMode => Id.HasValue;
+    private Guid? _savedPoiId;
+
+    // POI fields
+    private string _name = string.Empty;
+    private string _category = string.Empty;
+    private string _imageUrl = string.Empty;
+    private string _latitude = string.Empty;
+    private string _longitude = string.Empty;
+    private bool _isActive = true;
+    private bool _isSaving = false;
+
+    // Content fields
+    private string _viText = string.Empty;
+    private string _viAudioUrl = string.Empty;
+    private Dictionary<string, string> _translatedTexts = new();
+    private Dictionary<string, string> _audioUrls = new();
+    private bool _isSavingContent = false;
+    private bool _isTranslating = false;
+
+    private readonly Dictionary<string, string> _otherLanguages = new()
+    {
+        { "en", "🇺🇸 English" },
+        { "zh", "🇨🇳 中文" },
+        { "ja", "🇯🇵 日本語" },
+        { "ko", "🇰🇷 한국어" },
+        { "fr", "🇫🇷 Français" }
+    };
+
+    private string GetText(string lang) =>
+        _translatedTexts.GetValueOrDefault(lang, string.Empty);
+    private void SetText(string lang, string val) =>
+        _translatedTexts[lang] = val;
+    private string GetAudioUrl(string lang) =>
+        _audioUrls.GetValueOrDefault(lang, string.Empty);
+    private void SetAudioUrl(string lang, string val) =>
+        _audioUrls[lang] = val;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!AuthService.GetSession().IsLoggedIn)
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
+        if (_isEditMode && Id.HasValue)
+        {
+            _savedPoiId = Id;
+            var poi = await POIService.GetByIdAsync(Id.Value, AuthService.GetSession().Token);
+            if (poi != null)
+            {
+                _name = poi.Name;
+                _category = poi.Category;
+                _imageUrl = poi.ImageUrl ?? string.Empty;
+                _latitude = poi.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                _longitude = poi.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                _isActive = true;
+                if (poi.Content != null)
+                {
+                    _viText = poi.Content.NarrationText;
+                    _viAudioUrl = poi.Content.AudioUrl ?? string.Empty;
+                }
+            }
+        }
+    }
+
+    // ── Xác nhận hủy ──────────────────────────────────
+    private async Task ConfirmCancel()
+    {
+        var result = await DialogService.ShowMessageBox(
+            title: "Xác nhận hủy",
+            message: "Các thay đổi chưa lưu sẽ bị mất. Bạn có chắc muốn hủy?",
+            yesText: "Hủy bỏ thay đổi",
+            cancelText: "Tiếp tục chỉnh sửa");
+
+        if (result == true)
+            Navigation.NavigateTo("/");
+    }
+
+    // ── Xác nhận lưu POI ──────────────────────────────
+    private async Task ConfirmSavePOI()
+    {
+        if (string.IsNullOrWhiteSpace(_name) || string.IsNullOrWhiteSpace(_category))
+        {
+            Snackbar.Add("⚠️ Vui lòng nhập đầy đủ Tên và Danh mục!", Severity.Warning);
+            return;
+        }
+
+        var latStr = _latitude.Replace(',', '.');
+        var lngStr = _longitude.Replace(',', '.');
+        if (!double.TryParse(latStr, System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out var lat) ||
+            !double.TryParse(lngStr, System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out var lng))
+        {
+            Snackbar.Add("⚠️ Vĩ độ / Kinh độ không hợp lệ!", Severity.Warning);
+            return;
+        }
+
+        // Popup xác nhận
+        var action = _isEditMode ? "cập nhật" : "tạo mới";
+        var result = await DialogService.ShowMessageBox(
+            title: _isEditMode ? "✏️ Xác nhận cập nhật" : "➕ Xác nhận tạo mới",
+            message: $"Bạn có chắc muốn <strong>{action}</strong> POI <strong>{_name}</strong>?",
+            yesText: _isEditMode ? "Cập nhật" : "Tạo mới",
+            cancelText: "Hủy");
+
+        if (result != true) return;
+
+        await ExecuteSavePOI(lat, lng);
+    }
+
+    private async Task ExecuteSavePOI(double lat, double lng)
+    {
+        _isSaving = true;
+        StateHasChanged();
+
+        var token = AuthService.GetSession().Token;
+        try
+        {
+            if (_isEditMode && Id.HasValue)
+            {
+                var success = await POIService.UpdateAsync(Id.Value, new UpdatePOIDto
+                {
+                    Name = _name, Category = _category,
+                    ImageUrl = string.IsNullOrWhiteSpace(_imageUrl) ? null : _imageUrl,
+                    Latitude = lat, Longitude = lng, IsActive = _isActive
+                }, token);
+
+                Snackbar.Add(
+                    success ? $"✅ Cập nhật POI \"{_name}\" thành công!" : "❌ Cập nhật thất bại!",
+                    success ? Severity.Success : Severity.Error);
+            }
+            else
+            {
+                var newId = await POIService.CreateAsync(new CreatePOIDto
+                {
+                    Name = _name, Category = _category,
+                    ImageUrl = string.IsNullOrWhiteSpace(_imageUrl) ? null : _imageUrl,
+                    Latitude = lat, Longitude = lng, IsActive = true
+                }, token);
+
+                if (newId.HasValue)
+                {
+                    _savedPoiId = newId;
+                    Snackbar.Add($"✅ Tạo POI \"{_name}\" thành công! Hãy thêm nội dung bên dưới.", Severity.Success);
+                    StateHasChanged();
+                }
+                else
+                {
+                    Snackbar.Add("❌ Tạo POI thất bại!", Severity.Error);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"❌ Lỗi: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isSaving = false;
+            StateHasChanged();
+        }
+    }
+
+    // ── Dịch tự động ─────────────────────────────────
+    private async Task AutoTranslate()
+{
+    if (string.IsNullOrWhiteSpace(_viText)) return;
+
+    _isTranslating = true;
+    Snackbar.Add("🔄 Đang dịch tự động...", Severity.Info);
+    StateHasChanged();
+
+    var results = await TranslationService.TranslateToAllLanguagesAsync(_viText);
+    foreach (var r in results.Where(r => r.Success))
+        _translatedTexts[r.TargetLanguage] = r.TranslatedText;
+
+    _isTranslating = false;
+    var ok = results.Count(r => r.Success);
+    Snackbar.Add($"✅ Đã dịch thành công {ok}/{results.Count} ngôn ngữ! Đang lưu...", Severity.Success);
+    StateHasChanged();
+
+    // ✅ Tự động lưu tất cả ngôn ngữ sau khi dịch
+    if (ok > 0 && _savedPoiId.HasValue)
+    {
+        await ExecuteSaveAll();
+    }
+}
+
+    // ── Nghe thử ─────────────────────────────────────
+    private async Task PreviewAudio(string lang, string text, string audioUrl)
+    {
+        if (!string.IsNullOrWhiteSpace(audioUrl))
+            await JS.InvokeVoidAsync("playAudio", audioUrl);
+        else if (!string.IsNullOrWhiteSpace(text))
+            await JS.InvokeVoidAsync("speakText", text, lang);
+        else
+            Snackbar.Add("⚠️ Chưa có văn bản để nghe thử!", Severity.Warning);
+    }
+
+    // ── Lưu từng ngôn ngữ ────────────────────────────
+    private async Task SaveSingleContent(string lang, string text, string audioUrl)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            Snackbar.Add($"⚠️ Vui lòng nhập văn bản [{lang}]!", Severity.Warning);
+            return;
+        }
+
+        _isSavingContent = true;
+        StateHasChanged();
+
+        var success = await ContentService.UpsertContentAsync(_savedPoiId!.Value, new POIContentDto
+        {
+            LanguageCode = lang,
+            NarrationText = text,
+            AudioUrl = string.IsNullOrWhiteSpace(audioUrl) ? null : audioUrl
+        }, AuthService.GetSession().Token);
+
+        _isSavingContent = false;
+        Snackbar.Add(
+            success ? $"✅ Đã lưu nội dung [{lang.ToUpper()}] thành công!" : $"❌ Lưu [{lang}] thất bại!",
+            success ? Severity.Success : Severity.Error);
+        StateHasChanged();
+    }
+
+    // ── Xác nhận lưu tất cả ──────────────────────────
+    private async Task ConfirmSaveAll()
+    {
+        if (string.IsNullOrWhiteSpace(_viText))
+        {
+            Snackbar.Add("⚠️ Vui lòng nhập nội dung tiếng Việt trước!", Severity.Warning);
+            return;
+        }
+
+        // Đếm ngôn ngữ có nội dung
+        var langCount = 1 + _otherLanguages.Keys.Count(k => !string.IsNullOrWhiteSpace(GetText(k)));
+
+        var result = await DialogService.ShowMessageBox(
+            title: "💾 Xác nhận lưu tất cả",
+            message: $"Lưu nội dung cho <strong>{langCount} ngôn ngữ</strong>?<br/>Nội dung cũ sẽ được ghi đè.",
+            yesText: "Lưu tất cả",
+            cancelText: "Hủy");
+
+        if (result != true) return;
+
+        await ExecuteSaveAll();
+    }
+
+    private async Task ExecuteSaveAll()
+    {
+        _isSavingContent = true;
+        StateHasChanged();
+
+        var token = AuthService.GetSession().Token;
+        var saved = 0;
+        var failed = 0;
+
+        // Lưu tiếng Việt
+        var viOk = await ContentService.UpsertContentAsync(_savedPoiId!.Value, new POIContentDto
+        {
+            LanguageCode = "vi",
+            NarrationText = _viText,
+            AudioUrl = string.IsNullOrWhiteSpace(_viAudioUrl) ? null : _viAudioUrl
+        }, token);
+        if (viOk) saved++; else failed++;
+
+        // Lưu các ngôn ngữ khác
+        foreach (var code in _otherLanguages.Keys)
+        {
+            var text = GetText(code);
+            if (string.IsNullOrWhiteSpace(text)) continue;
+
+            var ok = await ContentService.UpsertContentAsync(_savedPoiId!.Value, new POIContentDto
+            {
+                LanguageCode = code,
+                NarrationText = text,
+                AudioUrl = string.IsNullOrWhiteSpace(GetAudioUrl(code)) ? null : GetAudioUrl(code)
+            }, token);
+
+            if (ok) saved++; else failed++;
+        }
+
+        _isSavingContent = false;
+
+        if (failed == 0)
+            Snackbar.Add($"✅ Đã lưu thành công {saved} ngôn ngữ!", Severity.Success);
+        else
+            Snackbar.Add($"⚠️ Lưu được {saved}, thất bại {failed} ngôn ngữ.", Severity.Warning);
+
+        StateHasChanged();
+    }
+}

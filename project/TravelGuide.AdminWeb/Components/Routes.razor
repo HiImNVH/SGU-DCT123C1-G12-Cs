@@ -1,0 +1,14 @@
+@using TravelGuide.AdminWeb.Components.Layout
+
+<Router AppAssembly="typeof(Program).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <PageTitle>Không tìm thấy trang</PageTitle>
+        <LayoutView Layout="typeof(MainLayout)">
+            <MudText Typo="Typo.h5">404 - Không tìm thấy trang này.</MudText>
+        </LayoutView>
+    </NotFound>
+</Router>
