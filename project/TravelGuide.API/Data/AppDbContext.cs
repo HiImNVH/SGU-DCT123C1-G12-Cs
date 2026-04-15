@@ -1,5 +1,28 @@
+// TravelGuide.API/Data/AppDbContext.cs
+// Thêm DbSet<DeviceSession> vào AppDbContext hiện tại
+
+// Tìm dòng:
+//     public DbSet<QRCode> QRCodes => Set<QRCode>();
+// Thêm ngay bên dưới:
+//     public DbSet<DeviceSession> DeviceSessions => Set<DeviceSession>();
+
+// Tìm protected override void OnModelCreating, thêm block này vào cuối trước dấu }:
+/*
+modelBuilder.Entity<DeviceSession>(e =>
+{
+    e.HasKey(x => x.DeviceId);
+    e.Property(x => x.DeviceId).HasMaxLength(100);
+    e.Property(x => x.Platform).HasMaxLength(50);
+    e.Property(x => x.OsVersion).HasMaxLength(50);
+    e.Property(x => x.AppVersion).HasMaxLength(20);
+    e.Property(x => x.LanguageCode).HasMaxLength(10).HasDefaultValue("vi");
+    e.Property(x => x.Username).HasMaxLength(100);
+});
+*/
+
+// ── File AppDbContext.cs hoàn chỉnh (copy đè toàn bộ) ──────────────
 using Microsoft.EntityFrameworkCore;
-using TravelGuide.Core.Models; // ✅ dùng Core
+using TravelGuide.Core.Models;
 
 namespace TravelGuide.API.Data;
 
@@ -7,10 +30,11 @@ public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-    public DbSet<POI> POIs => Set<POI>();
-    public DbSet<POIContent> POIContents => Set<POIContent>();
-    public DbSet<User> Users => Set<User>();
-    public DbSet<QRCode> QRCodes => Set<QRCode>();
+    public DbSet<POI>           POIs           => Set<POI>();
+    public DbSet<POIContent>    POIContents    => Set<POIContent>();
+    public DbSet<User>          Users          => Set<User>();
+    public DbSet<QRCode>        QRCodes        => Set<QRCode>();
+    public DbSet<DeviceSession> DeviceSessions => Set<DeviceSession>(); // ← THÊM
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -47,6 +71,18 @@ public class AppDbContext : DbContext
              .WithOne(p => p.QRCode)
              .HasForeignKey<QRCode>(x => x.POIId)
              .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // ── DeviceSession ────────────────────────────────────────────────
+        modelBuilder.Entity<DeviceSession>(e =>
+        {
+            e.HasKey(x => x.DeviceId);
+            e.Property(x => x.DeviceId).HasMaxLength(100);
+            e.Property(x => x.Platform).HasMaxLength(50);
+            e.Property(x => x.OsVersion).HasMaxLength(50);
+            e.Property(x => x.AppVersion).HasMaxLength(20);
+            e.Property(x => x.LanguageCode).HasMaxLength(10).HasDefaultValue("vi");
+            e.Property(x => x.Username).HasMaxLength(100);
         });
     }
 }

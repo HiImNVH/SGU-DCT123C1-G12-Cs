@@ -13,6 +13,15 @@ namespace TravelGuide
                 Preferences.Get("preferred_language", "vi"));
         }
 
+        public App(DeviceTrackingService tracking)
+{
+    InitializeComponent();
+    LocalizationService.Instance.SetLanguage(Preferences.Get("preferred_language", "vi"));
+ 
+    // Gửi ping mỗi khi app mở (fire-and-forget)
+    tracking.PingAsync();
+}
+
         protected override Window CreateWindow(IActivationState? activationState)
         {
             return new Window(new AppShell());

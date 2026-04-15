@@ -73,6 +73,7 @@ try
     builder.Services.AddScoped<IPOIManagementService, POIManagementService>();
     builder.Services.AddScoped<IPOIContentManagementService, POIContentManagementService>();
     builder.Services.AddScoped<IQRManagementService, QRManagementService>();
+    builder.Services.AddScoped<IDeviceManagementService, DeviceManagementService>();
     builder.Services.AddScoped<ITranslationService, TranslationService>();
     builder.Services.AddMudServices(config =>
     {

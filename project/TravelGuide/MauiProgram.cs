@@ -47,6 +47,8 @@ namespace TravelGuide
              */
             s.AddSingleton<ScanViewModel>();
 
+            s.AddSingleton<DeviceTrackingService>();
+
             // ── Views ─────────────────────────────────────
             // Auth (Transient OK vì không phải tab Shell)
             s.AddTransient<LoginPage>();

@@ -18,7 +18,10 @@ Log.Information("[info] - Bat dau khoi dong Travel Guide App API");
 try
 {
     var builder = WebApplication.CreateBuilder(args);
-
+    builder.WebHost.ConfigureKestrel(options =>
+    {
+        options.ListenAnyIP(5171); // 🔥 cho phép điện thoại truy cập
+    });
     // ─────────────────────────────────────────────
     // SERILOG tich hop vao ASP.NET Core
     // ─────────────────────────────────────────────
@@ -59,6 +62,8 @@ try
     builder.Services.AddScoped<IQRService, QRService>();
     builder.Services.AddScoped<IAuthService, AuthService>();
     builder.Services.AddScoped<IUserPreferenceService, UserPreferenceService>();
+    builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
+    builder.Services.AddScoped<IDeviceService, DeviceService>();
 
     // ─────────────────────────────────────────────
     // MVC + API

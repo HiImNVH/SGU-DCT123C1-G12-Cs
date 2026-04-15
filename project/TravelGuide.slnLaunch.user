@@ -11,10 +11,6 @@
         "Path": "TravelGuide.AdminWeb\\TravelGuide.AdminWeb.csproj",
         "Action": "Start",
         "DebugTarget": "http"
-      },
-      {
-        "Path": "TravelGuide\\TravelGuide.csproj",
-        "Action": "Start"
       }
     ]
   }

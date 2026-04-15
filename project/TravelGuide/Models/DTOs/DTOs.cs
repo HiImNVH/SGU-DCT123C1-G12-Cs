@@ -75,4 +75,9 @@ namespace TravelGuide.Models.DTOs
     {
         public string LanguageCode { get; set; } = "vi";
     }
+
+    public class DevicePingRequest
+    {
+        
+    }
 }

@@ -4,6 +4,8 @@ using TravelGuide.ViewModels;
 using ZXing.Net.Maui;
 using ZXing.Net.Maui.Controls;
 
+
+
 namespace TravelGuide.Views;
 
 public partial class ScanPage : ContentPage
@@ -11,17 +13,20 @@ public partial class ScanPage : ContentPage
     private CameraBarcodeReaderView _cameraView;
 
     private readonly ScanViewModel _vm;
+    private readonly DeviceTrackingService _trackingService; // ← THÊM DÒNG NÀY
 
     private bool _isProcessing = false;
     private bool _isActive = false;
 
     private static LocalizationService L => LocalizationService.Instance;
 
-    public ScanPage(ScanViewModel vm)
+    // ← SỬA CONSTRUCTOR
+    public ScanPage(ScanViewModel vm, DeviceTrackingService trackingService)
     {
         InitializeComponent();
 
         _vm = vm;
+        _trackingService = trackingService; // ← THÊM DÒNG NÀY
         BindingContext = vm;
 
         L.PropertyChanged += OnLanguageChanged;
@@ -145,6 +150,9 @@ public partial class ScanPage : ContentPage
                 }
 
                 await Shell.Current.GoToAsync($"{nameof(POIDetailPage)}?PoiId={poiId}");
+
+                // ← GHI NHẬN SCAN (fire-and-forget, không cần await)
+                _trackingService.RecordScan();
             }
             catch (Exception ex)
             {
