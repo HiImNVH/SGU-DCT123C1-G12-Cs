@@ -63,4 +63,30 @@
   <data name="Home_Nearby" xml:space="preserve"><value>近くのブース</value></data>
   <data name="Home_Empty" xml:space="preserve"><value>ブースがありません</value></data>
   <data name="Home_ScanHint" xml:space="preserve"><value>タップしてスキャン</value></data>
+	<data name="Content_Section" xml:space="preserve"><value>ナレーション内容</value></data>
+	<data name="Register_Title" xml:space="preserve"><value>登録</value></data>
+	<data name="Register_Subtitle" xml:space="preserve"><value>新しいアカウントを作成</value></data>
+	<data name="Register_ConfirmPassword" xml:space="preserve"><value>パスワードを確認</value></data>
+	<data name="Register_Button" xml:space="preserve"><value>アカウント作成</value></data>
+	<data name="Register_AlreadyHave" xml:space="preserve"><value>すでにアカウントをお持ちですか？</value></data>
+	<data name="Register_Placeholder_Username" xml:space="preserve"><value>ユーザー名を入力</value></data>
+	<data name="Register_Placeholder_Password" xml:space="preserve"><value>6文字以上</value></data>
+	<data name="Register_Placeholder_Confirm" xml:space="preserve"><value>パスワードを再入力</value></data>
+	<data name="Register_Success" xml:space="preserve"><value>アカウント作成成功！</value></data>
+	<data name="Profile_LanguageSection" xml:space="preserve"><value>言語設定</value></data>
+	<data name="Profile_AccountInfo" xml:space="preserve"><value>アカウント情報</value></data>
+	<data name="Profile_UsernameField" xml:space="preserve"><value>ユーザー名</value></data>
+	<data name="Profile_RoleField" xml:space="preserve"><value>役割</value></data>
+	<data name="Profile_LoginHint" xml:space="preserve"><value>ログインしてサーバーに言語を保存</value></data>
+	<data name="Profile_LoginPrompt" xml:space="preserve"><value>今すぐログイン</value></data>
+	<data name="Login_OrLabel" xml:space="preserve"><value>または</value></data>
+	<data name="Login_FirstTime" xml:space="preserve"><value>初めてですか？言語を選択してください</value></data>
+	<data name="Map_Navigate" xml:space="preserve"><value>案内</value></data>
+	<data name="Map_NavigateStop" xml:space="preserve"><value>案内を停止</value></data>
+	<data name="Map_Arrived" xml:space="preserve"><value>到着しました！</value></data>
+	<data name="Map_CalcRoute" xml:space="preserve"><value>ルート計算中...</value></data>
+	<data name="Map_Walk" xml:space="preserve"><value>徒歩</value></data>
+	<data name="Map_Motorbike" xml:space="preserve"><value>バイク</value></data>
+
 </root>
+

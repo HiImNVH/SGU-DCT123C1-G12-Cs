@@ -14,11 +14,12 @@ namespace TravelGuide
             InitializeComponent();
             Current = this;
 
-            // Đăng ký các route điều hướng push (không phải tab)
             Routing.RegisterRoute(nameof(POIDetailPage), typeof(POIDetailPage));
 
-            // Cập nhật tab title theo ngôn ngữ
+            // Cập nhật tab titles ngay khi khởi động
             Dispatcher.DispatchAsync(UpdateTabTitles);
+
+            // Lắng nghe đổi ngôn ngữ → cập nhật tab titles ngay lập tức
             L.PropertyChanged += (_, _) =>
                 MainThread.BeginInvokeOnMainThread(UpdateTabTitles);
         }
@@ -34,11 +35,11 @@ namespace TravelGuide
                     {
                         tab.Title = content.Route switch
                         {
-                            "home"    => "Trang chủ",
-                            "scan"    => "Quét QR",
-                            "map"     => "Bản đồ",
-                            "profile" => "Hồ sơ",
-                            _         => tab.Title
+                            "home" => L["Tab_Home"],
+                            "scan" => L["Tab_Scan"],
+                            "map" => L["Tab_Map"],
+                            "profile" => L["Tab_Profile"],
+                            _ => tab.Title
                         };
                     }
                 }

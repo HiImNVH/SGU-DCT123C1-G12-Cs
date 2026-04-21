@@ -37,7 +37,7 @@ namespace TravelGuide
             s.AddSingleton<POIDataService>();
             s.AddSingleton<QRScannerService>();
             s.AddSingleton<TTSPlayerService>();
-
+            s.AddSingleton<ProximityService>();
             // ── ViewModels ────────────────────────────────
             /*
              * FIX #2a: ScanViewModel đổi sang Singleton

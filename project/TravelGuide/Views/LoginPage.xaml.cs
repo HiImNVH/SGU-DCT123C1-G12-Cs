@@ -14,7 +14,6 @@ namespace TravelGuide.Views
             InitializeComponent();
             _auth = auth;
 
-            // Đổi ngôn ngữ → refresh UI ngay lập tức
             L.PropertyChanged += (_, _) =>
                 MainThread.BeginInvokeOnMainThread(RefreshUIText);
         }
@@ -25,7 +24,7 @@ namespace TravelGuide.Views
             RefreshUIText();
         }
 
-        // ── Refresh toàn bộ text theo ngôn ngữ hiện tại ─────────────────
+        // ── Refresh toàn bộ text theo ngôn ngữ ──────────────────────
         private void RefreshUIText()
         {
             if (LoginSubtitleLabel != null) LoginSubtitleLabel.Text = L["Login_Title"];
@@ -33,8 +32,8 @@ namespace TravelGuide.Views
             if (PasswordEntry != null) PasswordEntry.Placeholder = L["Login_Password"];
             if (LoginBtn != null) LoginBtn.Text = L["Login_Button"];
             if (GuestBtn != null) GuestBtn.Text = L["Login_Guest"];
-            if (OrLabel != null) OrLabel.Text = "  " + L["Common_OK"].Replace("OK", "") + "hoặc  ";
-            if (FirstTimeLabel != null) FirstTimeLabel.Text = "Lần đầu sử dụng? Hãy chọn ngôn ngữ";
+            if (OrLabel != null) OrLabel.Text = L["Login_OrLabel"];
+            if (FirstTimeLabel != null) FirstTimeLabel.Text = L["Login_FirstTime"];
             if (SelectLanguageBtn != null) SelectLanguageBtn.Text = L["Lang_Select"];
         }
 
@@ -50,9 +49,8 @@ namespace TravelGuide.Views
             }
 
             Console.WriteLine("[log] - Bat dau dang nhap");
-            LoginBtn.IsEnabled = false;
-            LoadingIndicator.IsVisible = true;
-            LoadingIndicator.IsRunning = true;
+            if (LoginBtn != null) LoginBtn.IsEnabled = false;
+            if (LoadingIndicator != null) { LoadingIndicator.IsVisible = true; LoadingIndicator.IsRunning = true; }
 
             var result = await _auth.LoginAsync(new LoginRequest
             {
@@ -60,13 +58,12 @@ namespace TravelGuide.Views
                 Password = password
             });
 
-            LoginBtn.IsEnabled = true;
-            LoadingIndicator.IsVisible = false;
-            LoadingIndicator.IsRunning = false;
+            if (LoginBtn != null) LoginBtn.IsEnabled = true;
+            if (LoadingIndicator != null) { LoadingIndicator.IsVisible = false; LoadingIndicator.IsRunning = false; }
 
             if (result.Success)
             {
-                Console.WriteLine("[info] - Dang nhap thanh cong, chuyen vao app");
+                Console.WriteLine("[info] - Dang nhap thanh cong");
                 var lang = result.User?.PreferredLanguage ?? "vi";
                 LocalizationService.Instance.InitFromUser(lang);
                 await Shell.Current.GoToAsync("//main");
@@ -80,16 +77,14 @@ namespace TravelGuide.Views
 
         private async void OnGuestClicked(object sender, EventArgs e)
         {
-            Console.WriteLine("[log] - Nguoi dung chon che do khach (Guest)");
+            Console.WriteLine("[log] - Nguoi dung chon che do khach");
             await Shell.Current.GoToAsync("//main");
         }
+
         private async void OnRegisterClicked(object sender, EventArgs e)
-        {
-            await Shell.Current.GoToAsync("//register");
-        }
+            => await Shell.Current.GoToAsync("//register");
+
         private async void OnSelectLanguageClicked(object sender, EventArgs e)
-        {
-            await Shell.Current.GoToAsync("//language");
-        }
+            => await Shell.Current.GoToAsync("//language");
     }
 }

@@ -14,7 +14,6 @@ namespace TravelGuide.Views
         private readonly POIDataService _poiData;
         private readonly TTSPlayerService _tts;
         private readonly AuthService _auth;
-
         private static LocalizationService L => LocalizationService.Instance;
 
         private POISummaryDto? _poi;
@@ -51,29 +50,23 @@ namespace TravelGuide.Views
             set
             {
                 _poiId = value;
-
                 if (Guid.TryParse(value, out var id))
-                {
                     _ = LoadPOIAsync(id);
-                }
             }
         }
 
         public POIDetailPage(POIDataService poiData, TTSPlayerService tts, AuthService auth)
         {
             InitializeComponent();
-
             _poiData = poiData;
             _tts = tts;
             _auth = auth;
-
             BindingContext = this;
 
             PlayCommand = new Command(async () => await PlayAsync(), () => CanPlay);
             PauseCommand = new Command(async () => await PauseAsync(), () => IsPlaying);
             ResumeCommand = new Command(async () => await ResumeAsync(), () => IsPaused);
             StopCommand = new Command(async () => await StopAsync(), () => IsPlaying || IsPaused);
-
             BackCommand = new Command(async () =>
             {
                 await StopAsync();
@@ -92,35 +85,31 @@ namespace TravelGuide.Views
         protected override async void OnDisappearing()
         {
             base.OnDisappearing();
-
             await StopAsync();
-
             L.PropertyChanged -= OnLanguageChanged;
         }
 
-        private void OnLanguageChanged(object sender, PropertyChangedEventArgs e)
-        {
-            MainThread.BeginInvokeOnMainThread(RefreshUIText);
-        }
+        private void OnLanguageChanged(object? sender, PropertyChangedEventArgs e)
+            => MainThread.BeginInvokeOnMainThread(RefreshUIText);
 
+        // ── Refresh UI ───────────────────────────────────────────────
         private void RefreshUIText()
         {
-            TTSSectionLabel.Text = L["TTS_Section"];
-            PlayBtn.Text = L["TTS_Play"];
-            PauseBtn.Text = L["TTS_Pause"];
-            ResumeBtn.Text = L["TTS_Resume"];
-            PlayingLabel.Text = L["TTS_Playing"];
-            ContentLabel.Text = L["Content"];
-            NoContentLabel.Text = L["TTS_NoContent"];
+            if (TTSSectionLabel != null) TTSSectionLabel.Text = L["TTS_Section"];
+            if (PlayBtn != null) PlayBtn.Text = L["TTS_Play"];
+            if (PauseBtn != null) PauseBtn.Text = L["TTS_Pause"];
+            if (ResumeBtn != null) ResumeBtn.Text = L["TTS_Resume"];
+            if (PlayingLabel != null) PlayingLabel.Text = L["TTS_Playing"];
+            if (ContentLabel != null) ContentLabel.Text = L["Content_Section"];
+            if (NoContentLabel != null) NoContentLabel.Text = L["TTS_NoContent"];
         }
 
+        // ── Load POI ─────────────────────────────────────────────────
         private async Task LoadPOIAsync(Guid poiId)
         {
             IsLoading = true;
-
             var lang = _auth.GetCurrentLanguage();
             var (dto, _) = await _poiData.GetPOIByIdAsync(poiId, lang);
-
             IsLoading = false;
 
             if (dto == null)
@@ -131,7 +120,6 @@ namespace TravelGuide.Views
             }
 
             _detailDto = dto;
-
             POI = new POISummaryDto
             {
                 Id = dto.Id,
@@ -139,7 +127,6 @@ namespace TravelGuide.Views
                 Category = dto.Category,
                 ImageUrl = dto.ImageUrl
             };
-
             Title = dto.Name;
 
             if (dto.Content != null)
@@ -147,30 +134,23 @@ namespace TravelGuide.Views
                 NarrationText = dto.Content.NarrationText;
                 LanguageFlag = GetLangFlag(dto.Content.LanguageCode);
                 HasContent = true;
-
                 await PlayAsync();
             }
             else
             {
                 HasContent = false;
             }
-
             OnPropertyChanged(nameof(HasNoContent));
         }
 
+        // ── TTS ──────────────────────────────────────────────────────
         private async Task PlayAsync()
         {
             if (_detailDto?.Content == null) return;
-
             PlayerState = PlayerState.Playing;
             RefreshCommands();
-
-            await _tts.PlayAsync(
-                null,
-                _detailDto.Content.AudioUrl,
-                _detailDto.Content.NarrationText,
-                _detailDto.Content.LanguageCode);
-
+            await _tts.PlayAsync(null, _detailDto.Content.AudioUrl,
+                _detailDto.Content.NarrationText, _detailDto.Content.LanguageCode);
             PlayerState = _tts.GetState();
             RefreshCommands();
         }
@@ -196,7 +176,6 @@ namespace TravelGuide.Views
             OnPropertyChanged(nameof(IsPlaying));
             OnPropertyChanged(nameof(IsPaused));
             OnPropertyChanged(nameof(CanPlay));
-
             (PlayCommand as Command)?.ChangeCanExecute();
             (PauseCommand as Command)?.ChangeCanExecute();
             (ResumeCommand as Command)?.ChangeCanExecute();
@@ -207,15 +186,17 @@ namespace TravelGuide.Views
         {
             "vi" => "🇻🇳",
             "en" => "🇺🇸",
+            "ja" => "🇯🇵",
+            "ko" => "🇰🇷",
+            "zh" => "🇨🇳",
+            "fr" => "🇫🇷",
             _ => "🌐"
         };
 
         public new event PropertyChangedEventHandler? PropertyChanged;
-
-        private void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? name = null)
+        private void OnPropertyChanged([CallerMemberName] string? name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-
-        private void Set<T>(ref T field, T value, [System.Runtime.CompilerServices.CallerMemberName] string? name = null)
+        private void Set<T>(ref T field, T value, [CallerMemberName] string? name = null)
         {
             if (EqualityComparer<T>.Default.Equals(field, value)) return;
             field = value;

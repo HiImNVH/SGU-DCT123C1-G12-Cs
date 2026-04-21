@@ -53,13 +53,6 @@
         <DependentUpon>AppResources.resx</DependentUpon>
     </EmbeddedResource>
 </ItemGroup>
-<ItemGroup>
-    <Compile Update="Resources\Languages\AppResources.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>AppResources.resx</DependentUpon>
-    </Compile>
-</ItemGroup>
   <!-- NuGet Packages -->
   <ItemGroup>
     <!-- ZXing QR Scanner -->
@@ -75,18 +68,18 @@
     <!-- JSON -->
     <PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Resources\Languages\AppResources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>AppResources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
 <PropertyGroup>
   <SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
 </PropertyGroup>
 <ItemGroup>
   <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
+</ItemGroup>
+<ItemGroup>
+  <Compile Update="Resources\Languages\AppResources.Designer.cs">
+    <DesignTime>True</DesignTime>
+    <AutoGen>True</AutoGen>
+    <DependentUpon>AppResources.resx</DependentUpon>
+  </Compile>
 </ItemGroup>
 <ItemGroup>
   <MauiXaml Update="Views\RegisterPage.xaml">

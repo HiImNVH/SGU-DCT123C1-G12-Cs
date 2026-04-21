@@ -115,6 +115,15 @@ namespace TravelGuide.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nội dung thuyết minh.
+        /// </summary>
+        public static string Content_Section {
+            get {
+                return ResourceManager.GetString("Content_Section", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Chưa có gian hàng nào.
         /// </summary>
         public static string Home_Empty {
@@ -196,11 +205,29 @@ namespace TravelGuide.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Lần đầu sử dụng? Hãy chọn ngôn ngữ.
+        /// </summary>
+        public static string Login_FirstTime {
+            get {
+                return ResourceManager.GetString("Login_FirstTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tiếp tục không cần đăng nhập.
         /// </summary>
         public static string Login_Guest {
             get {
                 return ResourceManager.GetString("Login_Guest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hoặc.
+        /// </summary>
+        public static string Login_OrLabel {
+            get {
+                return ResourceManager.GetString("Login_OrLabel", resourceCulture);
             }
         }
         
@@ -232,11 +259,56 @@ namespace TravelGuide.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Đã đến nơi!.
+        /// </summary>
+        public static string Map_Arrived {
+            get {
+                return ResourceManager.GetString("Map_Arrived", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Đang tính đường....
+        /// </summary>
+        public static string Map_CalcRoute {
+            get {
+                return ResourceManager.GetString("Map_CalcRoute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Không thể tải bản đồ. Vui lòng thử lại..
         /// </summary>
         public static string Map_ErrorLoad {
             get {
                 return ResourceManager.GetString("Map_ErrorLoad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Xe máy.
+        /// </summary>
+        public static string Map_Motorbike {
+            get {
+                return ResourceManager.GetString("Map_Motorbike", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dẫn đường.
+        /// </summary>
+        public static string Map_Navigate {
+            get {
+                return ResourceManager.GetString("Map_Navigate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dừng dẫn đường.
+        /// </summary>
+        public static string Map_NavigateStop {
+            get {
+                return ResourceManager.GetString("Map_NavigateStop", resourceCulture);
             }
         }
         
@@ -264,6 +336,24 @@ namespace TravelGuide.Resources.Languages {
         public static string Map_ViewDetail {
             get {
                 return ResourceManager.GetString("Map_ViewDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Đi bộ.
+        /// </summary>
+        public static string Map_Walk {
+            get {
+                return ResourceManager.GetString("Map_Walk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thông tin tài khoản.
+        /// </summary>
+        public static string Profile_AccountInfo {
+            get {
+                return ResourceManager.GetString("Profile_AccountInfo", resourceCulture);
             }
         }
         
@@ -304,6 +394,33 @@ namespace TravelGuide.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cài đặt ngôn ngữ.
+        /// </summary>
+        public static string Profile_LanguageSection {
+            get {
+                return ResourceManager.GetString("Profile_LanguageSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Đăng nhập để lưu ngôn ngữ trên server.
+        /// </summary>
+        public static string Profile_LoginHint {
+            get {
+                return ResourceManager.GetString("Profile_LoginHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Đăng nhập ngay.
+        /// </summary>
+        public static string Profile_LoginPrompt {
+            get {
+                return ResourceManager.GetString("Profile_LoginPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Đăng xuất.
         /// </summary>
         public static string Profile_Logout {
@@ -322,6 +439,15 @@ namespace TravelGuide.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Quyền.
+        /// </summary>
+        public static string Profile_RoleField {
+            get {
+                return ResourceManager.GetString("Profile_RoleField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hồ sơ.
         /// </summary>
         public static string Profile_Title {
@@ -336,6 +462,96 @@ namespace TravelGuide.Resources.Languages {
         public static string Profile_Tourist {
             get {
                 return ResourceManager.GetString("Profile_Tourist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tên đăng nhập.
+        /// </summary>
+        public static string Profile_UsernameField {
+            get {
+                return ResourceManager.GetString("Profile_UsernameField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Đã có tài khoản?.
+        /// </summary>
+        public static string Register_AlreadyHave {
+            get {
+                return ResourceManager.GetString("Register_AlreadyHave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tạo tài khoản.
+        /// </summary>
+        public static string Register_Button {
+            get {
+                return ResourceManager.GetString("Register_Button", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Xác nhận mật khẩu.
+        /// </summary>
+        public static string Register_ConfirmPassword {
+            get {
+                return ResourceManager.GetString("Register_ConfirmPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nhập lại mật khẩu.
+        /// </summary>
+        public static string Register_Placeholder_Confirm {
+            get {
+                return ResourceManager.GetString("Register_Placeholder_Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ít nhất 6 ký tự.
+        /// </summary>
+        public static string Register_Placeholder_Password {
+            get {
+                return ResourceManager.GetString("Register_Placeholder_Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nhập tên đăng nhập.
+        /// </summary>
+        public static string Register_Placeholder_Username {
+            get {
+                return ResourceManager.GetString("Register_Placeholder_Username", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tạo tài khoản mới.
+        /// </summary>
+        public static string Register_Subtitle {
+            get {
+                return ResourceManager.GetString("Register_Subtitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tạo tài khoản thành công!.
+        /// </summary>
+        public static string Register_Success {
+            get {
+                return ResourceManager.GetString("Register_Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Đăng ký.
+        /// </summary>
+        public static string Register_Title {
+            get {
+                return ResourceManager.GetString("Register_Title", resourceCulture);
             }
         }
         

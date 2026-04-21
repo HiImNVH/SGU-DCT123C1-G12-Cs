@@ -63,4 +63,31 @@
   <data name="Home_Nearby" xml:space="preserve"><value>Nearby booths</value></data>
   <data name="Home_Empty" xml:space="preserve"><value>No booths found</value></data>
   <data name="Home_ScanHint" xml:space="preserve"><value>Tap to scan a booth</value></data>
+	<data name="Content_Section" xml:space="preserve"><value>Narration content</value></data>
+	<data name="Register_Title" xml:space="preserve"><value>Register</value></data>
+	<data name="Register_Subtitle" xml:space="preserve"><value>Create a new account</value></data>
+	<data name="Register_ConfirmPassword" xml:space="preserve"><value>Confirm password</value></data>
+	<data name="Register_Button" xml:space="preserve"><value>Create account</value></data>
+	<data name="Register_AlreadyHave" xml:space="preserve"><value>Already have an account?</value></data>
+	<data name="Register_Placeholder_Username" xml:space="preserve"><value>Enter username</value></data>
+	<data name="Register_Placeholder_Password" xml:space="preserve"><value>At least 6 characters</value></data>
+	<data name="Register_Placeholder_Confirm" xml:space="preserve"><value>Re-enter password</value></data>
+	<data name="Register_Success" xml:space="preserve"><value>Account created successfully!</value></data>
+	<data name="Profile_LanguageSection" xml:space="preserve"><value>Language settings</value></data>
+	<data name="Profile_AccountInfo" xml:space="preserve"><value>Account information</value></data>
+	<data name="Profile_UsernameField" xml:space="preserve"><value>Username</value></data>
+	<data name="Profile_RoleField" xml:space="preserve"><value>Role</value></data>
+	<data name="Profile_LoginHint" xml:space="preserve"><value>Login to save language on server</value></data>
+	<data name="Profile_LoginPrompt" xml:space="preserve"><value>Login now</value></data>
+	<data name="Login_OrLabel" xml:space="preserve"><value>or</value></data>
+	<data name="Login_FirstTime" xml:space="preserve"><value>First time? Choose your language</value></data>
+	<data name="Map_Navigate" xml:space="preserve"><value>Navigate</value></data>
+	<data name="Map_NavigateStop" xml:space="preserve"><value>Stop navigation</value></data>
+	<data name="Map_Arrived" xml:space="preserve"><value>You have arrived!</value></data>
+	<data name="Map_CalcRoute" xml:space="preserve"><value>Calculating route...</value></data>
+	<data name="Map_Walk" xml:space="preserve"><value>Walking</value></data>
+	<data name="Map_Motorbike" xml:space="preserve"><value>Motorbike</value></data>
 </root>
+
+  <!-- Keys bổ sung -->
+ 

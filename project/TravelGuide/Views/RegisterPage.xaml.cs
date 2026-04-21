@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// Views/RegisterPage.xaml.cs
 using TravelGuide.Models.DTOs;
 using TravelGuide.Services;
+
 namespace TravelGuide.Views
 {
     public partial class RegisterPage : ContentPage
@@ -27,19 +24,20 @@ namespace TravelGuide.Views
             RefreshUIText();
         }
 
+        // ── Refresh toàn bộ text theo ngôn ngữ ──────────────────────
         private void RefreshUIText()
         {
-            SubtitleLabel.Text = "Tạo tài khoản mới";
-            UsernameLbl.Text = L["Login_Username"];
-            PasswordLbl.Text = L["Login_Password"];
-            ConfirmPasswordLbl.Text = "Xác nhận mật khẩu";
-            RegisterBtn.Text = "Tạo tài khoản";
-            AlreadyHaveAccountLabel.Text = "Đã có tài khoản?";
-            BackToLoginBtn.Text = L["Login_Button"];
+            if (SubtitleLabel != null) SubtitleLabel.Text = L["Register_Subtitle"];
+            if (UsernameLbl != null) UsernameLbl.Text = L["Login_Username"];
+            if (PasswordLbl != null) PasswordLbl.Text = L["Login_Password"];
+            if (ConfirmPasswordLbl != null) ConfirmPasswordLbl.Text = L["Register_ConfirmPassword"];
+            if (RegisterBtn != null) RegisterBtn.Text = L["Register_Button"];
+            if (AlreadyHaveAccountLabel != null) AlreadyHaveAccountLabel.Text = L["Register_AlreadyHave"];
+            if (BackToLoginBtn != null) BackToLoginBtn.Text = L["Login_Button"];
 
-            UsernameEntry.Placeholder = "Nhập tên đăng nhập";
-            PasswordEntry.Placeholder = "Ít nhất 6 ký tự";
-            ConfirmPasswordEntry.Placeholder = "Nhập lại mật khẩu";
+            if (UsernameEntry != null) UsernameEntry.Placeholder = L["Register_Placeholder_Username"];
+            if (PasswordEntry != null) PasswordEntry.Placeholder = L["Register_Placeholder_Password"];
+            if (ConfirmPasswordEntry != null) ConfirmPasswordEntry.Placeholder = L["Register_Placeholder_Confirm"];
         }
 
         private async void OnRegisterClicked(object sender, EventArgs e)
@@ -48,53 +46,46 @@ namespace TravelGuide.Views
             var password = PasswordEntry?.Text;
             var confirmPassword = ConfirmPasswordEntry?.Text;
 
-            // Validate
             if (string.IsNullOrEmpty(username))
             {
-                await DisplayAlert(L["Common_Error"], "Vui lòng nhập tên đăng nhập.", L["Common_OK"]);
+                await DisplayAlert(L["Common_Error"], L["Login_EmptyFields"], L["Common_OK"]);
                 return;
             }
-
             if (username.Length < 3)
             {
-                await DisplayAlert(L["Common_Error"], "Tên đăng nhập phải có ít nhất 3 ký tự.", L["Common_OK"]);
+                await DisplayAlert(L["Common_Error"], L["Login_EmptyFields"], L["Common_OK"]);
                 return;
             }
-
             if (string.IsNullOrEmpty(password) || password.Length < 6)
             {
-                await DisplayAlert(L["Common_Error"], "Mật khẩu phải có ít nhất 6 ký tự.", L["Common_OK"]);
+                await DisplayAlert(L["Common_Error"], L["Login_EmptyFields"], L["Common_OK"]);
                 return;
             }
-
             if (password != confirmPassword)
             {
-                await DisplayAlert(L["Common_Error"], "Mật khẩu xác nhận không khớp.", L["Common_OK"]);
+                await DisplayAlert(L["Common_Error"], L["Login_EmptyFields"], L["Common_OK"]);
                 return;
             }
 
-            Console.WriteLine($"[log] - Bat dau dang ky tai khoan: {username}");
+            Console.WriteLine($"[log] - Bat dau dang ky: {username}");
 
-            RegisterBtn.IsEnabled = false;
-            LoadingIndicator.IsVisible = true;
-            LoadingIndicator.IsRunning = true;
+            if (RegisterBtn != null) RegisterBtn.IsEnabled = false;
+            if (LoadingIndicator != null) { LoadingIndicator.IsVisible = true; LoadingIndicator.IsRunning = true; }
 
-            var lang = L.CurrentLanguageCode;
             var result = await _auth.RegisterAsync(new RegisterRequest
             {
                 Username = username,
                 Password = password,
-                PreferredLanguage = lang
+                PreferredLanguage = L.CurrentLanguageCode
             });
 
-            RegisterBtn.IsEnabled = true;
-            LoadingIndicator.IsVisible = false;
-            LoadingIndicator.IsRunning = false;
+            if (RegisterBtn != null) RegisterBtn.IsEnabled = true;
+            if (LoadingIndicator != null) { LoadingIndicator.IsVisible = false; LoadingIndicator.IsRunning = false; }
 
             if (result.Success)
             {
-                Console.WriteLine("[info] - Dang ky thanh cong, chuyen vao app");
-                await DisplayAlert(L["Common_Success"], "Tạo tài khoản thành công!", L["Common_OK"]);
+                Console.WriteLine("[info] - Dang ky thanh cong");
+                await DisplayAlert(L["Common_Success"], L["Register_Success"], L["Common_OK"]);
                 await Shell.Current.GoToAsync("//main");
             }
             else
@@ -105,8 +96,6 @@ namespace TravelGuide.Views
         }
 
         private async void OnBackToLoginClicked(object sender, EventArgs e)
-        {
-            await Shell.Current.GoToAsync("//login");
-        }
+            => await Shell.Current.GoToAsync("//login");
     }
 }

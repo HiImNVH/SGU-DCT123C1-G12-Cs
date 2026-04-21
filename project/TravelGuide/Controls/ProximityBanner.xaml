@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Controls/ProximityBanner.xaml -->
+<!-- Banner nổi ở góc trên cùng — hiển thị khi phát hiện POI gần -->
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TravelGuide.Controls.ProximityBanner"
+             IsVisible="False">
+
+    <!-- Frame nổi, bo góc, shadow, slide từ trên xuống -->
+    <Frame x:Name="BannerFrame"
+           Margin="12,0"
+           Padding="0"
+           CornerRadius="14"
+           HasShadow="True"
+           BackgroundColor="White"
+           BorderColor="#2E7D32">
+
+        <Grid RowDefinitions="Auto,Auto" Padding="14,12">
+
+            <!-- Row 0: Icon + tên POI + nút đóng -->
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto">
+
+                <!-- Icon POI -->
+                <Frame Grid.Column="0"
+                       WidthRequest="40"
+                       HeightRequest="40"
+                       CornerRadius="20"
+                       BackgroundColor="#E8F5E9"
+                       BorderColor="Transparent"
+                       Padding="0"
+                       VerticalOptions="Center"
+                       Margin="0,0,10,0">
+                    <Label Text="📍"
+                           FontSize="20"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Frame>
+
+                <!-- Tên + khoảng cách -->
+                <StackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                    <Label x:Name="POINameLabel"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="#1B5E20"
+                           LineBreakMode="TailTruncation"/>
+                    <Label x:Name="DistanceLabel"
+                           FontSize="12"
+                           TextColor="#2E7D32"/>
+                </StackLayout>
+
+                <!-- Nút đóng -->
+                <ImageButton Grid.Column="2"
+                             Source="close_icon.png"
+                             WidthRequest="24"
+                             HeightRequest="24"
+                             VerticalOptions="Start"
+                             BackgroundColor="Transparent"
+                             Clicked="OnDismissClicked"/>
+            </Grid>
+
+            <!-- Row 1: Câu hỏi + 2 nút -->
+            <Grid Grid.Row="1"
+                  ColumnDefinitions="*,Auto,Auto"
+                  Margin="0,10,0,0">
+
+                <Label Grid.Column="0"
+                       x:Name="QuestionLabel"
+                       FontSize="13"
+                       TextColor="#555"
+                       VerticalOptions="Center"/>
+
+                <!-- Nút CÓ -->
+                <Button Grid.Column="1"
+                        x:Name="YesBtn"
+                        Text="Có"
+                        BackgroundColor="#2E7D32"
+                        TextColor="White"
+                        CornerRadius="8"
+                        FontSize="13"
+                        Padding="16,6"
+                        Margin="8,0,4,0"
+                        Clicked="OnYesClicked"/>
+
+                <!-- Nút KHÔNG -->
+                <Button Grid.Column="2"
+                        x:Name="NoBtn"
+                        Text="Không"
+                        BackgroundColor="#F5F5F5"
+                        TextColor="#555"
+                        CornerRadius="8"
+                        FontSize="13"
+                        Padding="12,6"
+                        Clicked="OnNoClicked"/>
+            </Grid>
+
+            <!-- Progress bar tự tắt sau N giây -->
+            <ProgressBar x:Name="CountdownBar"
+                         Grid.Row="1"
+                         Progress="1"
+                         ProgressColor="#2E7D32"
+                         HeightRequest="3"
+                         Margin="0,8,0,-4"
+                         VerticalOptions="End"/>
+
+        </Grid>
+    </Frame>
+
+</ContentView>

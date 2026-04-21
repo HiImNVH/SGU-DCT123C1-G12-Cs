@@ -63,4 +63,31 @@
   <data name="Home_Nearby" xml:space="preserve"><value>Stands à proximité</value></data>
   <data name="Home_Empty" xml:space="preserve"><value>Aucun stand trouvé</value></data>
   <data name="Home_ScanHint" xml:space="preserve"><value>Appuyez pour scanner</value></data>
+
+	<data name="Content_Section" xml:space="preserve"><value>Contenu de narration</value></data>
+	<data name="Register_Title" xml:space="preserve"><value>S'inscrire</value></data>
+	<data name="Register_Subtitle" xml:space="preserve"><value>Créer un nouveau compte</value></data>
+	<data name="Register_ConfirmPassword" xml:space="preserve"><value>Confirmer le mot de passe</value></data>
+	<data name="Register_Button" xml:space="preserve"><value>Créer un compte</value></data>
+	<data name="Register_AlreadyHave" xml:space="preserve"><value>Vous avez déjà un compte ?</value></data>
+	<data name="Register_Placeholder_Username" xml:space="preserve"><value>Entrer le nom d'utilisateur</value></data>
+	<data name="Register_Placeholder_Password" xml:space="preserve"><value>Au moins 6 caractères</value></data>
+	<data name="Register_Placeholder_Confirm" xml:space="preserve"><value>Ressaisir le mot de passe</value></data>
+	<data name="Register_Success" xml:space="preserve"><value>Compte créé avec succès !</value></data>
+	<data name="Profile_LanguageSection" xml:space="preserve"><value>Paramètres de langue</value></data>
+	<data name="Profile_AccountInfo" xml:space="preserve"><value>Informations du compte</value></data>
+	<data name="Profile_UsernameField" xml:space="preserve"><value>Nom d'utilisateur</value></data>
+	<data name="Profile_RoleField" xml:space="preserve"><value>Rôle</value></data>
+	<data name="Profile_LoginHint" xml:space="preserve"><value>Connectez-vous pour sauvegarder la langue sur le serveur</value></data>
+	<data name="Profile_LoginPrompt" xml:space="preserve"><value>Se connecter maintenant</value></data>
+	<data name="Login_OrLabel" xml:space="preserve"><value>ou</value></data>
+	<data name="Login_FirstTime" xml:space="preserve"><value>Première fois ? Choisissez votre langue</value></data>
+	<data name="Map_Navigate" xml:space="preserve"><value>Itinéraire</value></data>
+	<data name="Map_NavigateStop" xml:space="preserve"><value>Arrêter</value></data>
+	<data name="Map_Arrived" xml:space="preserve"><value>Vous êtes arrivé !</value></data>
+	<data name="Map_CalcRoute" xml:space="preserve"><value>Calcul en cours...</value></data>
+	<data name="Map_Walk" xml:space="preserve"><value>À pied</value></data>
+	<data name="Map_Motorbike" xml:space="preserve"><value>Moto</value></data>
 </root>
+
+ 
