@@ -1,13 +1,13 @@
 @page "/poi/qr/{Id:guid}"
 @rendermode InteractiveServer
 @using TravelGuide.AdminWeb.Services
+@using TravelGuide.AdminWeb.Models
 @inject IQRManagementService QRService
 @inject IPOIManagementService POIService
 @inject IAdminAuthService AuthService
 @inject NavigationManager Navigation
 @inject ISnackbar Snackbar
 @inject IJSRuntime JS
-@inject IHttpClientFactory HttpClientFactory
 
 <MudText Typo="Typo.h5" Class="mb-4">🔲 Tạo mã QR</MudText>
 
@@ -28,6 +28,10 @@ else
                      alt="QR Code"
                      style="width:280px; height:280px; border:1px solid #eee; padding:8px;" />
             </div>
+
+            <MudText Typo="Typo.caption" Class="mb-3" Style="word-break:break-all; color:#666;">
+                🔗 Deep Link: @_qrResult.DeepLink
+            </MudText>
 
             <MudButton Variant="Variant.Filled"
                        Color="Color.Primary"
@@ -114,8 +118,6 @@ else
 
         try
         {
-            // ✅ Chia nhỏ base64 để tránh vượt giới hạn SignalR
-            // Dùng JS để tạo blob URL và download trực tiếp từ browser
             var fileName = $"QR_POI_{Id:N}.png";
             await JS.InvokeVoidAsync("downloadBase64Chunked",
                 _qrResult.QrImageBase64,

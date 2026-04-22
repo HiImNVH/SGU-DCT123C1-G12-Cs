@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Travel Guide – Mở ứng dụng</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f0f4f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 40px 32px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(46,125,50,.12);
+    }
+    .icon { font-size: 64px; margin-bottom: 16px; }
+    h1 { font-size: 22px; color: #1b5e20; margin-bottom: 8px; }
+    .subtitle { color: #555; font-size: 14px; margin-bottom: 32px; line-height: 1.5; }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+      margin-bottom: 12px;
+      transition: opacity .2s;
+    }
+    .btn:active { opacity: .8; }
+    .btn-primary { background: #2e7d32; color: #fff; }
+    .btn-secondary {
+      background: transparent;
+      color: #2e7d32;
+      border: 2px solid #2e7d32;
+    }
+    .poi-info {
+      background: #e8f5e9;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 28px;
+      font-size: 13px;
+      color: #2e7d32;
+    }
+    .poi-info strong { display: block; font-size: 15px; margin-bottom: 4px; }
+    .steps {
+      text-align: left;
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 24px;
+    }
+    .steps h3 { font-size: 13px; color: #888; margin-bottom: 12px; text-transform: uppercase; letter-spacing: .5px; }
+    .step { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; font-size: 14px; color: #333; }
+    .step-num {
+      min-width: 24px; height: 24px;
+      background: #2e7d32; color: #fff;
+      border-radius: 50%; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+    }
+    #status { font-size: 13px; color: #888; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">🗺️</div>
+    <h1>Travel Guide App</h1>
+    <p class="subtitle">Quét QR để nghe thuyết minh đa ngôn ngữ và khám phá điểm tham quan</p>
+
+    <div class="poi-info" id="poiInfo" style="display:none">
+      <strong id="poiLabel">Đang tải thông tin điểm tham quan...</strong>
+      <span id="poiId"></span>
+    </div>
+
+    <a href="#" class="btn btn-primary" id="openAppBtn">
+      🚀 Mở trong ứng dụng
+    </a>
+    <a href="https://github.com/HiImNVH/SGU-DCT123C1-G12-Cs/releases/latest"
+       class="btn btn-secondary" id="downloadBtn">
+      ⬇️ Tải ứng dụng (APK)
+    </a>
+
+    <div class="steps" id="notInstalledSteps" style="display:none">
+      <h3>Chưa cài ứng dụng? Làm theo 3 bước:</h3>
+      <div class="step">
+        <span class="step-num">1</span>
+        <span>Nhấn <strong>"Tải ứng dụng"</strong> để vào trang tải APK trên GitHub</span>
+      </div>
+      <div class="step">
+        <span class="step-num">2</span>
+        <span>Tải file <strong>TravelGuide.apk</strong> về điện thoại và cài đặt</span>
+      </div>
+      <div class="step">
+        <span class="step-num">3</span>
+        <span>Quét lại mã QR này — ứng dụng sẽ mở thẳng đến điểm tham quan</span>
+      </div>
+    </div>
+
+    <p id="status"></p>
+  </div>
+
+  <script>
+    // Lấy poiId từ query string: ?poi=xxx  hoặc  hash #poi=xxx
+    function getPoiId() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('poi')) return params.get('poi');
+      const hash = new URLSearchParams(window.location.hash.replace('#', ''));
+      if (hash.has('poi')) return hash.get('poi');
+      // Thử lấy từ path: /redirect?poi=xxx
+      return null;
+    }
+
+    const poiId = getPoiId();
+    const deepLink = poiId ? `travelguide://poi/${poiId}` : 'travelguide://home';
+
+    if (poiId) {
+      document.getElementById('poiInfo').style.display = 'block';
+      document.getElementById('poiLabel').textContent = 'Điểm tham quan';
+      document.getElementById('poiId').textContent = `ID: ${poiId}`;
+    }
+
+    document.getElementById('openAppBtn').href = deepLink;
+
+    // Thử mở app, nếu sau 2.5s vẫn còn focus thì hiện hướng dẫn tải
+    document.getElementById('openAppBtn').addEventListener('click', function (e) {
+      e.preventDefault();
+      const status = document.getElementById('status');
+      status.textContent = 'Đang mở ứng dụng...';
+
+      window.location.href = deepLink;
+
+      const start = Date.now();
+      setTimeout(function () {
+        if (Date.now() - start < 3000) {
+          // App chưa cài hoặc không mở được
+          status.textContent = 'Không tìm thấy ứng dụng trên thiết bị này.';
+          document.getElementById('notInstalledSteps').style.display = 'block';
+        }
+      }, 2500);
+    });
+  </script>
+</body>
+</html>
