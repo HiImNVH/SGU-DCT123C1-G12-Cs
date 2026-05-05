@@ -3,14 +3,18 @@
     "Name": "Both",
     "Projects": [
       {
+        "Path": "TravelGuide.AdminWeb\\TravelGuide.AdminWeb.csproj",
+        "Action": "Start",
+        "DebugTarget": "http"
+      },
+      {
         "Path": "TravelGuide.API\\TravelGuide.API.csproj",
         "Action": "Start",
         "DebugTarget": "http"
       },
       {
-        "Path": "TravelGuide.AdminWeb\\TravelGuide.AdminWeb.csproj",
-        "Action": "Start",
-        "DebugTarget": "http"
+        "Path": "TravelGuide\\TravelGuide.csproj",
+        "Action": "Start"
       }
     ]
   }

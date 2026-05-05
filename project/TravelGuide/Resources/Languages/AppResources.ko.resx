@@ -29,7 +29,7 @@
   <data name="TTS_Play" xml:space="preserve"><value>▶ 해설 재생</value></data>
   <data name="TTS_Pause" xml:space="preserve"><value>⏸ 일시 정지</value></data>
   <data name="TTS_Resume" xml:space="preserve"><value>▶ 재개</value></data>
-  <data name="TTS_Stop" xml:space="preserve"><value>⏹</value></data>
+  <data name="TTS_Stop" xml:space="preserve"><value>⏹ 정지</value></data>
   <data name="TTS_Playing" xml:space="preserve"><value>🎵 해설 재생 중...</value></data>
   <data name="TTS_NoContent" xml:space="preserve"><value>해설 내용이 없습니다</value></data>
   <data name="TTS_Section" xml:space="preserve"><value>🎙 해설</value></data>

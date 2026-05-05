@@ -70,6 +70,7 @@ namespace TravelGuide.Services
 
                 var list = JsonSerializer.Deserialize<List<POISummaryDto>>(json, _jsonOpts) ?? new();
                 Console.WriteLine($"[info] - Lay duoc {list.Count} POI tu API");
+                _ = Task.Run(() => PreloadAllCacheAsync(list));
                 return list;
             }
             catch (HttpRequestException ex)
@@ -88,6 +89,68 @@ namespace TravelGuide.Services
                 Console.WriteLine($"[error] - Loi GetAllActive: {ex.Message}");
                 return new();
             }
+        }
+        private async Task PreloadAllCacheAsync(List<POISummaryDto> pois)
+        {
+            var lang = _auth.GetCurrentLanguage();
+            Console.WriteLine($"[cache] - Bat dau preload {pois.Count} POI, lang={lang}");
+
+            int saved = 0;
+            int skipped = 0;
+
+            foreach (var poi in pois)
+            {
+                try
+                {
+                    // Kiểm tra cache còn hạn → bỏ qua, không tải lại
+                    var existing = await _cache.GetPOIAsync(poi.Id, lang);
+                    if (existing != null)
+                    {
+                        skipped++;
+                        Console.WriteLine($"[cache] - Skip (con han): {poi.Name}");
+                        continue;
+                    }
+
+                    // Chưa có hoặc hết hạn → tải từ API
+                    Console.WriteLine($"[cache] - Preloading: {poi.Name}");
+
+                    var url = $"{AppConstants.ApiPoi}/{poi.Id}?lang={lang}";
+                    var response = await _http.GetAsync(url);
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine($"[warn] - Preload fail {poi.Name}: {(int)response.StatusCode}");
+                        continue;
+                    }
+
+                    var json = await response.Content.ReadAsStringAsync();
+                    var dto = JsonSerializer.Deserialize<POIDetailDto>(json, _jsonOpts);
+
+                    if (dto == null) continue;
+
+                    // Lưu vào SQLite
+                    await _cache.SavePOIAsync(dto, lang);
+                    saved++;
+
+                    // Tải audio về local nếu có
+                    if (!string.IsNullOrEmpty(dto.Content?.AudioUrl))
+                    {
+                        await _cache.SaveAudioFileAsync(
+                            dto.Content.AudioUrl, dto.Id, lang);
+                        Console.WriteLine($"[cache] - Audio cached: {poi.Name}");
+                    }
+
+                    // Delay nhỏ giữa các request để không spam API
+                    await Task.Delay(200);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[error] - Preload loi [{poi.Name}]: {ex.Message}");
+                    // Bỏ qua POI này, tiếp tục POI tiếp theo
+                }
+            }
+
+            Console.WriteLine($"[cache] - Preload xong: {saved} moi, {skipped} bo qua");
         }
 
         /// <summary>

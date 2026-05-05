@@ -36,6 +36,7 @@ try
     {
         config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
         config.SnackbarConfiguration.ShowCloseIcon = true;
+        config.SnackbarConfiguration.VisibleStateDuration = 3000;
     });
 
     // ── HttpClient goi API ───────────────────────────
@@ -47,7 +48,7 @@ try
         builder.Services.AddHttpClient("TravelGuideAPI", client =>
         {
             client.BaseAddress = new Uri(apiBaseUrl);
-            client.Timeout = TimeSpan.FromSeconds(10);
+            client.Timeout = TimeSpan.FromSeconds(30); // Tăng timeout cho QR generation
         }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
         {
             ServerCertificateCustomValidationCallback =
@@ -59,7 +60,7 @@ try
         builder.Services.AddHttpClient("TravelGuideAPI", client =>
         {
             client.BaseAddress = new Uri(apiBaseUrl);
-            client.Timeout = TimeSpan.FromSeconds(10);
+            client.Timeout = TimeSpan.FromSeconds(30);
         });
     }
 
@@ -75,12 +76,6 @@ try
     builder.Services.AddScoped<IQRManagementService, QRManagementService>();
     builder.Services.AddScoped<IDeviceManagementService, DeviceManagementService>();
     builder.Services.AddScoped<ITranslationService, TranslationService>();
-    builder.Services.AddMudServices(config =>
-    {
-        config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
-        config.SnackbarConfiguration.ShowCloseIcon = true;
-        config.SnackbarConfiguration.VisibleStateDuration = 3000;
-    });
 
     // ── Build ─────────────────────────────────────────
     var app = builder.Build();

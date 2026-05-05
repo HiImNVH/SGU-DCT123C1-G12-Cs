@@ -7,7 +7,9 @@ namespace TravelGuide
     public partial class AppShell : Shell
     {
         private static LocalizationService L => LocalizationService.Instance;
-        public static AppShell? Current { get; private set; }
+
+        // Dùng `new` để tránh warning CS0108 vì Shell.Current đã tồn tại
+        public new static AppShell? Current { get; private set; }
 
         public AppShell()
         {
@@ -16,10 +18,8 @@ namespace TravelGuide
 
             Routing.RegisterRoute(nameof(POIDetailPage), typeof(POIDetailPage));
 
-            // Cập nhật tab titles ngay khi khởi động
             Dispatcher.DispatchAsync(UpdateTabTitles);
 
-            // Lắng nghe đổi ngôn ngữ → cập nhật tab titles ngay lập tức
             L.PropertyChanged += (_, _) =>
                 MainThread.BeginInvokeOnMainThread(UpdateTabTitles);
         }
@@ -44,6 +44,39 @@ namespace TravelGuide
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Được gọi từ MainActivity.HandleIntent() khi nhận deep-link
+        /// travelguide://poi/{poiId} — dù app đang chạy hay vừa khởi động.
+        /// </summary>
+        public static async Task HandleDeepLinkAsync(string poiId)
+        {
+            if (string.IsNullOrWhiteSpace(poiId)) return;
+
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                // Đợi Shell hoàn toàn sẵn sàng (quan trọng khi app cold-start từ QR)
+                var timeout = 0;
+                while (Shell.Current == null && timeout < 20)
+                {
+                    await Task.Delay(100);
+                    timeout++;
+                }
+
+                if (Shell.Current == null) return;
+
+                // Nếu đang ở login/language page thì vào main trước
+                var currentRoute = Shell.Current.CurrentState?.Location?.ToString() ?? "";
+                if (!currentRoute.Contains("main"))
+                {
+                    await Shell.Current.GoToAsync("//main/home");
+                    await Task.Delay(200);
+                }
+
+                await Shell.Current.GoToAsync(
+                    $"{nameof(POIDetailPage)}?PoiId={poiId}");
+            });
         }
     }
 }

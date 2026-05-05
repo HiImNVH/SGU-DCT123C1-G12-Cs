@@ -22,7 +22,7 @@ public class DeviceScanRequest
 public class DeviceStatsDto
 {
     public int TotalDevices      { get; set; }
-    public int ActiveToday       { get; set; }  // LastSeenAt trong 24h
+    public int ActiveToday       { get; set; }  // LastSeenAt trong 5 phút (đang hoạt động)
     public int ActiveThisWeek    { get; set; }  // LastSeenAt trong 7 ngày
     public int ActiveThisMonth   { get; set; }  // LastSeenAt trong 30 ngày
     public int LoggedInDevices   { get; set; }  // Username != null

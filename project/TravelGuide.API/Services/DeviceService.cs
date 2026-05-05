@@ -48,7 +48,7 @@ public class DeviceService : IDeviceService
         var stats = new DeviceStatsDto
         {
             TotalDevices   = all.Count,
-            ActiveToday    = all.Count(d => d.LastSeenAt >= now.AddHours(-24)),
+            ActiveToday    = all.Count(d => d.LastSeenAt >= now.AddMinutes(-1)),
             ActiveThisWeek = all.Count(d => d.LastSeenAt >= now.AddDays(-7)),
             ActiveThisMonth= all.Count(d => d.LastSeenAt >= now.AddDays(-30)),
             LoggedInDevices= all.Count(d => d.Username != null),
@@ -85,7 +85,7 @@ public class DeviceService : IDeviceService
                 }).ToList()
         };
 
-        _logger.LogInformation("[info] - Lay thong ke thiet bi: total={Total}, today={Today}", stats.TotalDevices, stats.ActiveToday);
+        _logger.LogInformation("[info] - Lay thong ke thiet bi: total={Total}, activeNow={ActiveNow}", stats.TotalDevices, stats.ActiveToday);
         return stats;
     }
 }

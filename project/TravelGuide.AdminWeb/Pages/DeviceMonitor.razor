@@ -68,13 +68,13 @@ else
             <MudCard Elevation="2" Style="border-left: 4px solid #4CAF50">
                 <MudCardContent>
                     <MudStack AlignItems="AlignItems.Center">
-                        <MudIcon Icon="@Icons.Material.Filled.Today"
+                        <MudIcon Icon="@Icons.Material.Filled.FiberManualRecord"
                                  Color="Color.Success" Size="Size.Large" />
                         <MudText Typo="Typo.h3" Color="Color.Success">
                             @_stats.ActiveToday
                         </MudText>
                         <MudText Typo="Typo.body2" Color="Color.Secondary">
-                            Hoạt động hôm nay
+                            Đang hoạt động
                         </MudText>
                     </MudStack>
                 </MudCardContent>
@@ -128,9 +128,6 @@ else
                      Tổng quan
                 </MudText>
                 <MudStack Spacing="2">
-                    
-                    <MudProgressLinear Value="@GetPercent(_stats.LoggedInDevices, _stats.TotalDevices)"
-                                       Color="Color.Primary" Rounded="true" Size="Size.Medium" />
                     <MudStack Row="true" Justify="Justify.SpaceBetween">
                         <MudText Typo="Typo.body2">Thiết bị</MudText>
                         <MudChip T="string" Color="Color.Default" Size="Size.Small">

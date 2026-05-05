@@ -29,7 +29,7 @@
   <data name="TTS_Play" xml:space="preserve"><value>▶ 音声ガイドを再生</value></data>
   <data name="TTS_Pause" xml:space="preserve"><value>⏸ 一時停止</value></data>
   <data name="TTS_Resume" xml:space="preserve"><value>▶ 再開</value></data>
-  <data name="TTS_Stop" xml:space="preserve"><value>⏹</value></data>
+  <data name="TTS_Stop" xml:space="preserve"><value>⏹ 停止</value></data>
   <data name="TTS_Playing" xml:space="preserve"><value>🎵 音声ガイド再生中...</value></data>
   <data name="TTS_NoContent" xml:space="preserve"><value>音声ガイドはありません</value></data>
   <data name="TTS_Section" xml:space="preserve"><value>🎙 音声ガイド</value></data>

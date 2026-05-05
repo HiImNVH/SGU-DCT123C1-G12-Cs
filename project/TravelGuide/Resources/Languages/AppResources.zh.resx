@@ -29,7 +29,7 @@
   <data name="TTS_Play" xml:space="preserve"><value>▶ 播放讲解</value></data>
   <data name="TTS_Pause" xml:space="preserve"><value>⏸ 暂停</value></data>
   <data name="TTS_Resume" xml:space="preserve"><value>▶ 继续</value></data>
-  <data name="TTS_Stop" xml:space="preserve"><value>⏹</value></data>
+  <data name="TTS_Stop" xml:space="preserve"><value>⏹ 停止播放</value></data>
   <data name="TTS_Playing" xml:space="preserve"><value>🎵 正在播放讲解...</value></data>
   <data name="TTS_NoContent" xml:space="preserve"><value>暂无讲解内容</value></data>
   <data name="TTS_Section" xml:space="preserve"><value>🎙 讲解</value></data>

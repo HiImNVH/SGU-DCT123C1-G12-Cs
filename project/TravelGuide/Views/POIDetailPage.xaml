@@ -58,54 +58,18 @@
                         <StackLayout IsVisible="{Binding HasContent}" Spacing="12">
                             <BoxView HeightRequest="1" Color="#E0E0E0"/>
 
-                            <Label x:Name="TTSSectionLabel"
-                                   FontSize="13"
-                                   FontAttributes="Bold"
-                                   TextColor="#555"/>
-
-                            <!-- TTS Controls -->
-                            <Grid ColumnDefinitions="*,56,56" ColumnSpacing="8">
-                                <Button x:Name="PlayBtn"
+                            <!-- TTS Controls: 1 nút toggle + cờ ngôn ngữ -->
+                            <Grid ColumnDefinitions="*,56" ColumnSpacing="8">
+                                <Button x:Name="TTSToggleBtn"
                                         Grid.Column="0"
-                                        Command="{Binding PlayCommand}"
-                                        IsVisible="{Binding CanPlay}"
+                                        Clicked="OnTTSToggleClicked"
                                         BackgroundColor="#2E7D32"
                                         TextColor="White"
                                         CornerRadius="10"
                                         FontSize="14"
                                         HeightRequest="48"/>
 
-                                <Button x:Name="PauseBtn"
-                                        Grid.Column="0"
-                                        Command="{Binding PauseCommand}"
-                                        IsVisible="{Binding IsPlaying}"
-                                        BackgroundColor="#F57C00"
-                                        TextColor="White"
-                                        CornerRadius="10"
-                                        FontSize="14"
-                                        HeightRequest="48"/>
-
-                                <Button x:Name="ResumeBtn"
-                                        Grid.Column="0"
-                                        Command="{Binding ResumeCommand}"
-                                        IsVisible="{Binding IsPaused}"
-                                        BackgroundColor="#1976D2"
-                                        TextColor="White"
-                                        CornerRadius="10"
-                                        FontSize="14"
-                                        HeightRequest="48"/>
-
-                                <Button x:Name="StopBtn"
-                                        Grid.Column="1"
-                                        Text="⏹"
-                                        Command="{Binding StopCommand}"
-                                        BackgroundColor="#EEEEEE"
-                                        TextColor="#333"
-                                        CornerRadius="10"
-                                        HeightRequest="48"
-                                        FontSize="18"/>
-
-                                <Frame Grid.Column="2"
+                                <Frame Grid.Column="1"
                                        BackgroundColor="#E8F5E9"
                                        CornerRadius="10"
                                        Padding="0"
@@ -116,17 +80,6 @@
                                            VerticalOptions="Center"/>
                                 </Frame>
                             </Grid>
-
-                            <!-- Playing badge -->
-                            <Frame x:Name="PlayingBadge"
-                                   BackgroundColor="#F1F8E9"
-                                   CornerRadius="8"
-                                   Padding="10,6"
-                                   IsVisible="{Binding IsPlaying}">
-                                <Label x:Name="PlayingLabel"
-                                       TextColor="#388E3C"
-                                       FontSize="13"/>
-                            </Frame>
 
                             <BoxView HeightRequest="1" Color="#E0E0E0"/>
 

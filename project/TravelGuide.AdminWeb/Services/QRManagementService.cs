@@ -1,84 +1,115 @@
+// TravelGuide.AdminWeb/Services/QRManagementService.cs
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
+using TravelGuide.AdminWeb.Models;
 
-namespace TravelGuide.AdminWeb.Services;
-
-public class QRResult
+namespace TravelGuide.AdminWeb.Services
 {
-    public Guid PoiId { get; set; }
-    public string QrImageBase64 { get; set; } = string.Empty;
-    public string Format { get; set; } = "PNG";
-
-    /// <summary>Data URI de dung truc tiep trong the img src</summary>
-    public string DataUri => $"data:image/png;base64,{QrImageBase64}";
-}
-
-public interface IQRManagementService
-{
-    Task<QRResult?> GenerateQRAsync(Guid poiId, string token);
-    string GetDownloadFileName(Guid poiId);
-}
-
-/// <summary>
-/// QRModule: generate QR tu API, preview va download
-/// </summary>
-public class QRManagementService : IQRManagementService
-{
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ILogger<QRManagementService> _logger;
-
-    public QRManagementService(IHttpClientFactory httpClientFactory, ILogger<QRManagementService> logger)
+    /// <summary>
+    /// Interface cho QR Management Service
+    /// </summary>
+    public interface IQRManagementService
     {
-        _httpClientFactory = httpClientFactory;
-        _logger = logger;
+        Task<QRResult?> GenerateQRAsync(Guid poiId, string token);
+        Task<string?> GetQRBase64Async(string poiId, string? adminJwt);
+        string BuildDeepLink(string poiId);
+        string BuildFallbackUrl(string poiId);
     }
 
     /// <summary>
-    /// Goi API generate QR, tra ve base64 PNG
+    /// Service quản lý tạo QR code cho POI
     /// </summary>
-    public async Task<QRResult?> GenerateQRAsync(Guid poiId, string token)
+    public class QRManagementService : IQRManagementService
     {
-        _logger.LogInformation("[info] - Generate QR cho POI id={Id}", poiId);
-        try
-        {
-            var client = _httpClientFactory.CreateClient("TravelGuideAPI");
-            client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", token);
+        private readonly IHttpClientFactory _httpClientFactory;
 
-            var response = await client.GetAsync($"/api/admin/poi/{poiId}/qr");
-            if (!response.IsSuccessStatusCode)
+        // Deep-link scheme khớp với IntentFilter trong MainActivity.cs
+        private const string DeepLinkScheme = "travelguide";
+
+        // URL fallback khi chưa cài app
+        private const string FallbackBaseUrl =
+            "https://hiimnvh.github.io/SGU-DCT123C1-G12-Cs/qr-redirect.html";
+
+        public QRManagementService(IHttpClientFactory httpClientFactory)
+        {
+            _httpClientFactory = httpClientFactory;
+        }
+
+        /// <summary>
+        /// Tạo QR code và trả về QRResult với đầy đủ thông tin
+        /// </summary>
+        public async Task<QRResult?> GenerateQRAsync(Guid poiId, string token)
+        {
+            try
             {
-                _logger.LogWarning("[warn] - Generate QR that bai, status={Status}", response.StatusCode);
+                var poiIdStr = poiId.ToString();
+                var base64Image = await GetQRBase64Async(poiIdStr, token);
+                
+                if (string.IsNullOrEmpty(base64Image))
+                    return null;
+
+                var deepLink = BuildDeepLink(poiIdStr);
+                var dataUri = $"data:image/png;base64,{base64Image}";
+
+                return new QRResult
+                {
+                    QrImageBase64 = base64Image,
+                    DataUri = dataUri,
+                    DeepLink = deepLink
+                };
+            }
+            catch
+            {
                 return null;
             }
+        }
 
-            var data = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
-            if (data == null)
+        /// <summary>
+        /// Lấy QR code (base64 PNG) cho POI.
+        /// API backend sẽ encode chuỗi được truyền vào thành ảnh QR.
+        /// </summary>
+        public async Task<string?> GetQRBase64Async(string poiId, string? adminJwt)
+        {
+            if (string.IsNullOrWhiteSpace(poiId)) return null;
+
+            try
             {
-                _logger.LogWarning("[warn] - Khong doc duoc QR response");
+                var encodedValue = BuildDeepLink(poiId);
+                var httpClient = _httpClientFactory.CreateClient("TravelGuideAPI");
+
+                var request = new HttpRequestMessage(
+                    HttpMethod.Get,
+                    $"/api/admin/poi/{poiId}/qr?encodedValue={Uri.EscapeDataString(encodedValue)}");
+
+                if (!string.IsNullOrWhiteSpace(adminJwt))
+                    request.Headers.Authorization =
+                        new AuthenticationHeaderValue("Bearer", adminJwt);
+
+                var resp = await httpClient.SendAsync(request);
+                if (!resp.IsSuccessStatusCode) return null;
+
+                var json = await resp.Content.ReadFromJsonAsync<QRResponse>();
+                return json?.QrImageBase64;
+            }
+            catch
+            {
                 return null;
             }
-
-            var result = new QRResult
-            {
-                PoiId = poiId,
-                QrImageBase64 = data["qrImageBase64"]?.ToString() ?? string.Empty,
-                Format = data["format"]?.ToString() ?? "PNG"
-            };
-
-            _logger.LogInformation("[info] - Da generate QR thanh cong cho POI id={Id}", poiId);
-            return result;
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "[error] - Loi khi generate QR: {Message}", ex.Message);
-            return null;
-        }
+
+        /// <summary>
+        /// Tạo deep-link URL: travelguide://poi/{poiId}
+        /// Android sẽ intercept URL này nếu app đã cài (qua IntentFilter).
+        /// </summary>
+        public string BuildDeepLink(string poiId)
+            => $"{DeepLinkScheme}://poi/{poiId}";
+
+        /// <summary>
+        /// Tạo HTTP fallback URL cho QR — dùng khi muốn QR hoạt động cả trên
+        /// trình duyệt (chưa cài app). Trỏ đến trang redirect trên GitHub Pages.
+        /// </summary>
+        public string BuildFallbackUrl(string poiId)
+            => $"{FallbackBaseUrl}?poi={Uri.EscapeDataString(poiId)}";
+
+        private record QRResponse(string? QrImageBase64, string? Format);
     }
-
-    /// <summary>
-    /// Tra ve ten file khi download QR
-    /// </summary>
-    public string GetDownloadFileName(Guid poiId) =>
-        $"QR_POI_{poiId:N}.png";
 }

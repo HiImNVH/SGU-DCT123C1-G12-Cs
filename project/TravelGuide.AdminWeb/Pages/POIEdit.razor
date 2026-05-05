@@ -11,6 +11,8 @@
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @inject IJSRuntime JS
+@inject IConfiguration Configuration
+@implements IAsyncDisposable
 
 <MudText Typo="Typo.h5" Class="mb-4">
     @(_isEditMode ? "✏️ Chỉnh sửa POI" : "➕ Thêm POI mới")
@@ -33,14 +35,54 @@
             <MudTextField @bind-Value="_imageUrl" Label="URL ảnh đại diện"
                           Variant="Variant.Outlined" FullWidth="true" Margin="Margin.Dense" />
         </MudItem>
-        <MudItem xs="12" md="6">
+
+        @* ── TOẠ ĐỘ ── *@
+        <MudItem xs="12" md="5">
             <MudTextField @bind-Value="_latitude" Label="Vĩ độ *"
-                          Variant="Variant.Outlined" FullWidth="true" Margin="Margin.Dense" />
+                          Variant="Variant.Outlined" FullWidth="true" Margin="Margin.Dense"
+                          HelperText="Click vào bản đồ để tự động điền"
+                          ReadOnly="_mapPickerOpen" />
         </MudItem>
-        <MudItem xs="12" md="6">
+        <MudItem xs="12" md="5">
             <MudTextField @bind-Value="_longitude" Label="Kinh độ *"
-                          Variant="Variant.Outlined" FullWidth="true" Margin="Margin.Dense" />
+                          Variant="Variant.Outlined" FullWidth="true" Margin="Margin.Dense"
+                          HelperText="Hoặc kéo thả marker trên bản đồ"
+                          ReadOnly="_mapPickerOpen" />
         </MudItem>
+        <MudItem xs="12" md="2" Class="d-flex align-end">
+            <MudButton Variant="Variant.Outlined"
+                       Color="@(_mapPickerOpen ? Color.Error : Color.Primary)"
+                       StartIcon="@(_mapPickerOpen ? Icons.Material.Filled.Close : Icons.Material.Filled.Map)"
+                       OnClick="ToggleMapPicker"
+                       FullWidth="true">
+                @(_mapPickerOpen ? "Đóng bản đồ" : "📍 Chọn trên bản đồ")
+            </MudButton>
+        </MudItem>
+
+        @* KEY FIX: Container luôn tồn tại trong DOM, chỉ ẩn/hiện bằng CSS.
+           Nếu dùng @if thì DOM element bị xóa/tạo lại → goongjs.Map mất container → crash.
+           Dùng display:none đảm bảo element luôn có trong DOM để goongjs attach vào. *@
+        <MudItem xs="12" style="@(_mapPickerOpen ? "" : "display:none")">
+            <MudPaper Outlined="true" Class="pa-2">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-2" Spacing="2">
+                    <MudIcon Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Small" />
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">
+                        Click vào bản đồ để chọn vị trí. Kéo marker đỏ để tinh chỉnh tọa độ.
+                    </MudText>
+                    @if (!string.IsNullOrWhiteSpace(_latitude) && !string.IsNullOrWhiteSpace(_longitude))
+                    {
+                        <MudChip Color="Color.Success" Size="Size.Small"
+                                 Icon="@Icons.Material.Filled.LocationOn">
+                            @_latitude, @_longitude
+                        </MudChip>
+                    }
+                </MudStack>
+                <div id="goong-map-container"
+                     style="width:100%; height:420px; border-radius:8px; overflow:hidden; background:#f0f0f0;">
+                </div>
+            </MudPaper>
+        </MudItem>
+
         @if (_isEditMode)
         {
             <MudItem xs="12">
@@ -72,15 +114,12 @@
             Nhập tiếng Việt → nhấn <strong>Dịch tự động</strong> → kiểm tra → <strong>Lưu tất cả</strong>
         </MudText>
 
-        @* Tiếng Việt *@
         <MudPaper Class="pa-4 mb-3" Outlined="true">
             <MudText Typo="Typo.subtitle1" Class="mb-2">🇻🇳 Tiếng Việt (nguồn)</MudText>
-            <MudTextField @bind-Value="_viText"
-                          Label="Văn bản thuyết minh *"
+            <MudTextField @bind-Value="_viText" Label="Văn bản thuyết minh *"
                           Variant="Variant.Outlined" FullWidth="true"
                           Lines="4" Margin="Margin.Dense" Class="mb-2" />
-            <MudTextField @bind-Value="_viAudioUrl"
-                          Label="URL audio MP3/WAV (để trống nếu dùng TTS)"
+            <MudTextField @bind-Value="_viAudioUrl" Label="URL audio MP3/WAV (để trống nếu dùng TTS)"
                           Variant="Variant.Outlined" FullWidth="true"
                           Margin="Margin.Dense" Class="mb-2" />
             <MudStack Row="true" Spacing="2" Wrap="Wrap.Wrap">
@@ -104,10 +143,9 @@
             </MudStack>
         </MudPaper>
 
-        @* Các ngôn ngữ khác *@
         @foreach (var lang in _otherLanguages)
         {
-            var langCode = lang.Key;        @* ✅ đổi từ "code" thành "langCode" *@
+            var langCode = lang.Key;
             var displayName = lang.Value;
             <MudPaper Class="pa-4 mb-3" Outlined="true">
                 <MudText Typo="Typo.subtitle1" Class="mb-2">@displayName</MudText>
@@ -129,25 +167,22 @@
                                   Variant="Variant.Outlined" FullWidth="true"
                                   Margin="Margin.Dense" Class="mb-2" />
                     <MudStack Row="true" Spacing="2">
-                        <MudButton Variant="Variant.Outlined" Color="Color.Info"
-                                   Size="Size.Small"
+                        <MudButton Variant="Variant.Outlined" Color="Color.Info" Size="Size.Small"
                                    StartIcon="@Icons.Material.Filled.PlayCircle"
                                    OnClick="@(() => PreviewAudio(langCode, GetText(langCode), GetAudioUrl(langCode)))">
                             ▶ Nghe thử
                         </MudButton>
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary"
-                                   Size="Size.Small"
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small"
                                    StartIcon="@Icons.Material.Filled.Save"
                                    OnClick="@(() => SaveSingleContent(langCode, GetText(langCode), GetAudioUrl(langCode)))"
                                    Disabled="_isSavingContent || string.IsNullOrWhiteSpace(GetText(langCode))">
-                            Lưu @langCode.ToUpper()  @* ✅ hết conflict *@
+                            Lưu @langCode.ToUpper()
                         </MudButton>
                     </MudStack>
                 }
             </MudPaper>
         }
 
-        @* Nút lưu tất cả *@
         <MudButton Variant="Variant.Filled" Color="Color.Success"
                    StartIcon="@Icons.Material.Filled.Save"
                    OnClick="ConfirmSaveAll"
@@ -183,6 +218,16 @@
     private bool _isSavingContent = false;
     private bool _isTranslating = false;
 
+    // Map picker
+    // _mapPickerOpen  : user đã nhấn nút → cần hiện map
+    // _mapInitialized : JS goongMap.init đã được gọi thành công
+    private bool _mapPickerOpen = false;
+    private bool _mapInitialized = false;
+    private DotNetObjectReference<POIEdit>? _dotNetRef;
+
+    // Goong Maptile Key — hardcode để fallback khi config thiếu
+    private const string _fallbackMaptileKey = "POdfxjueKxYZ09MjbKKLCKkxeNLfhFpsXaOfT3Rn";
+
     private readonly Dictionary<string, string> _otherLanguages = new()
     {
         { "en", "🇺🇸 English" },
@@ -192,14 +237,10 @@
         { "fr", "🇫🇷 Français" }
     };
 
-    private string GetText(string lang) =>
-        _translatedTexts.GetValueOrDefault(lang, string.Empty);
-    private void SetText(string lang, string val) =>
-        _translatedTexts[lang] = val;
-    private string GetAudioUrl(string lang) =>
-        _audioUrls.GetValueOrDefault(lang, string.Empty);
-    private void SetAudioUrl(string lang, string val) =>
-        _audioUrls[lang] = val;
+    private string GetText(string lang) => _translatedTexts.GetValueOrDefault(lang, string.Empty);
+    private void SetText(string lang, string val) => _translatedTexts[lang] = val;
+    private string GetAudioUrl(string lang) => _audioUrls.GetValueOrDefault(lang, string.Empty);
+    private void SetAudioUrl(string lang, string val) => _audioUrls[lang] = val;
 
     protected override async Task OnInitializedAsync()
     {
@@ -227,6 +268,99 @@
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// KEY FIX: Dùng OnAfterRenderAsync thay vì Task.Delay.
+    ///
+    /// Lý do: Trong Blazor Server, sau StateHasChanged() server gửi diff HTML sang client.
+    /// Client cần thêm thời gian để apply DOM update. Task.Delay(150) chạy trên SERVER
+    /// thread, không đồng bộ với việc client render xong. OnAfterRenderAsync được gọi
+    /// SAU KHI Blazor xác nhận client đã render, đây là thời điểm chắc chắn container
+    /// #goong-map-container đã tồn tại trong DOM.
+    /// </summary>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_mapPickerOpen && !_mapInitialized)
+        {
+            _mapInitialized = true; // Set trước để tránh gọi lại nếu re-render
+            await InitGoongMap();
+        }
+    }
+
+    // ── Map Picker ────────────────────────────────────
+    private async Task ToggleMapPicker()
+    {
+        if (_mapPickerOpen)
+        {
+            // Đóng map
+            _mapPickerOpen = false;
+            _mapInitialized = false;
+            try { await JS.InvokeVoidAsync("goongMap.destroy"); } catch { }
+            _dotNetRef?.Dispose();
+            _dotNetRef = null;
+            Console.WriteLine("[log] - Da dong Goong Map");
+        }
+        else
+        {
+            // Mở map: chỉ set flag, KHÔNG gọi JS ở đây.
+            // OnAfterRenderAsync sẽ gọi init sau khi Blazor render container ra client.
+            _mapPickerOpen = true;
+            _mapInitialized = false;
+            Console.WriteLine("[log] - Mo map picker, cho OnAfterRenderAsync...");
+        }
+    }
+
+    private async Task InitGoongMap()
+    {
+        try
+        {
+            _dotNetRef = DotNetObjectReference.Create(this);
+
+            var maptileKey = Configuration["GoongSettings:MaptileKey"];
+            if (string.IsNullOrWhiteSpace(maptileKey))
+                maptileKey = _fallbackMaptileKey;
+
+            // Parse tọa độ hiện tại (nếu có), mặc định về TP.HCM
+            double lat = 10.7769, lng = 106.7009;
+            if (double.TryParse(_latitude.Replace(',', '.'),
+                    System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture, out var parsedLat) &&
+                double.TryParse(_longitude.Replace(',', '.'),
+                    System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture, out var parsedLng))
+            {
+                lat = parsedLat;
+                lng = parsedLng;
+            }
+
+            Console.WriteLine($"[log] - Khoi tao Goong Map tai: {lat}, {lng}");
+
+            await JS.InvokeVoidAsync("goongMap.init",
+                "goong-map-container", lat, lng, maptileKey, _dotNetRef);
+
+            Console.WriteLine("[info] - Goong Map khoi tao thanh cong");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[error] - Khoi tao Goong Map that bai: {ex.Message}");
+            Snackbar.Add($"❌ Không thể tải bản đồ: {ex.Message}", Severity.Error);
+            _mapPickerOpen = false;
+            _mapInitialized = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    /// <summary>
+    /// Được gọi từ JavaScript khi người dùng click hoặc kéo marker trên bản đồ.
+    /// </summary>
+    [JSInvokable]
+    public async Task OnMapClick(double lat, double lng)
+    {
+        _latitude = lat.ToString("F6", System.Globalization.CultureInfo.InvariantCulture);
+        _longitude = lng.ToString("F6", System.Globalization.CultureInfo.InvariantCulture);
+        Console.WriteLine($"[log] - Cap nhat toa do tu ban do: {_latitude}, {_longitude}");
+        await InvokeAsync(StateHasChanged);
     }
 
     // ── Xác nhận hủy ──────────────────────────────────
@@ -258,11 +392,10 @@
             !double.TryParse(lngStr, System.Globalization.NumberStyles.Any,
                 System.Globalization.CultureInfo.InvariantCulture, out var lng))
         {
-            Snackbar.Add("⚠️ Vĩ độ / Kinh độ không hợp lệ!", Severity.Warning);
+            Snackbar.Add("⚠️ Vĩ độ / Kinh độ không hợp lệ! Hãy dùng bản đồ để chọn tọa độ.", Severity.Warning);
             return;
         }
 
-        // Popup xác nhận
         var action = _isEditMode ? "cập nhật" : "tạo mới";
         var result = await DialogService.ShowMessageBox(
             title: _isEditMode ? "✏️ Xác nhận cập nhật" : "➕ Xác nhận tạo mới",
@@ -271,7 +404,6 @@
             cancelText: "Hủy");
 
         if (result != true) return;
-
         await ExecuteSavePOI(lat, lng);
     }
 
@@ -312,9 +444,7 @@
                     StateHasChanged();
                 }
                 else
-                {
                     Snackbar.Add("❌ Tạo POI thất bại!", Severity.Error);
-                }
             }
         }
         catch (Exception ex)
@@ -330,28 +460,25 @@
 
     // ── Dịch tự động ─────────────────────────────────
     private async Task AutoTranslate()
-{
-    if (string.IsNullOrWhiteSpace(_viText)) return;
-
-    _isTranslating = true;
-    Snackbar.Add("🔄 Đang dịch tự động...", Severity.Info);
-    StateHasChanged();
-
-    var results = await TranslationService.TranslateToAllLanguagesAsync(_viText);
-    foreach (var r in results.Where(r => r.Success))
-        _translatedTexts[r.TargetLanguage] = r.TranslatedText;
-
-    _isTranslating = false;
-    var ok = results.Count(r => r.Success);
-    Snackbar.Add($"✅ Đã dịch thành công {ok}/{results.Count} ngôn ngữ! Đang lưu...", Severity.Success);
-    StateHasChanged();
-
-    // ✅ Tự động lưu tất cả ngôn ngữ sau khi dịch
-    if (ok > 0 && _savedPoiId.HasValue)
     {
-        await ExecuteSaveAll();
+        if (string.IsNullOrWhiteSpace(_viText)) return;
+
+        _isTranslating = true;
+        Snackbar.Add("🔄 Đang dịch tự động...", Severity.Info);
+        StateHasChanged();
+
+        var results = await TranslationService.TranslateToAllLanguagesAsync(_viText);
+        foreach (var r in results.Where(r => r.Success))
+            _translatedTexts[r.TargetLanguage] = r.TranslatedText;
+
+        _isTranslating = false;
+        var ok = results.Count(r => r.Success);
+        Snackbar.Add($"✅ Đã dịch thành công {ok}/{results.Count} ngôn ngữ! Đang lưu...", Severity.Success);
+        StateHasChanged();
+
+        if (ok > 0 && _savedPoiId.HasValue)
+            await ExecuteSaveAll();
     }
-}
 
     // ── Nghe thử ─────────────────────────────────────
     private async Task PreviewAudio(string lang, string text, string audioUrl)
@@ -399,9 +526,7 @@
             return;
         }
 
-        // Đếm ngôn ngữ có nội dung
         var langCount = 1 + _otherLanguages.Keys.Count(k => !string.IsNullOrWhiteSpace(GetText(k)));
-
         var result = await DialogService.ShowMessageBox(
             title: "💾 Xác nhận lưu tất cả",
             message: $"Lưu nội dung cho <strong>{langCount} ngôn ngữ</strong>?<br/>Nội dung cũ sẽ được ghi đè.",
@@ -409,7 +534,6 @@
             cancelText: "Hủy");
 
         if (result != true) return;
-
         await ExecuteSaveAll();
     }
 
@@ -419,19 +543,15 @@
         StateHasChanged();
 
         var token = AuthService.GetSession().Token;
-        var saved = 0;
-        var failed = 0;
+        var saved = 0; var failed = 0;
 
-        // Lưu tiếng Việt
         var viOk = await ContentService.UpsertContentAsync(_savedPoiId!.Value, new POIContentDto
         {
-            LanguageCode = "vi",
-            NarrationText = _viText,
+            LanguageCode = "vi", NarrationText = _viText,
             AudioUrl = string.IsNullOrWhiteSpace(_viAudioUrl) ? null : _viAudioUrl
         }, token);
         if (viOk) saved++; else failed++;
 
-        // Lưu các ngôn ngữ khác
         foreach (var code in _otherLanguages.Keys)
         {
             var text = GetText(code);
@@ -439,11 +559,9 @@
 
             var ok = await ContentService.UpsertContentAsync(_savedPoiId!.Value, new POIContentDto
             {
-                LanguageCode = code,
-                NarrationText = text,
+                LanguageCode = code, NarrationText = text,
                 AudioUrl = string.IsNullOrWhiteSpace(GetAudioUrl(code)) ? null : GetAudioUrl(code)
             }, token);
-
             if (ok) saved++; else failed++;
         }
 
@@ -455,5 +573,12 @@
             Snackbar.Add($"⚠️ Lưu được {saved}, thất bại {failed} ngôn ngữ.", Severity.Warning);
 
         StateHasChanged();
+    }
+
+    // ── Dispose ──────────────────────────────────────
+    public async ValueTask DisposeAsync()
+    {
+        try { await JS.InvokeVoidAsync("goongMap.destroy"); } catch { }
+        _dotNetRef?.Dispose();
     }
 }

@@ -69,8 +69,13 @@
                        FontAttributes="Bold"/>
 
                 <Label x:Name="TTSSectionLabel"/>
-                <Button x:Name="PlayBtn" Command="{Binding PlayCommand}"/>
-                <Button x:Name="PauseBtn" Command="{Binding PauseCommand}"/>
+                <Button x:Name="TTSToggleBtn"
+                        Text="{Binding TTSButtonText}"
+                        Command="{Binding ToggleTTSCommand}"
+                        BackgroundColor="#2E7D32"
+                        TextColor="White"
+                        CornerRadius="10"
+                        HeightRequest="48"/>
 
                 <Label x:Name="ContentSectionLabel"/>
                 <Label Text="{Binding CurrentPOI.Content.NarrationText}"/>

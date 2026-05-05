@@ -33,7 +33,7 @@
   <data name="TTS_Play" xml:space="preserve"><value>▶ Phát thuyết minh</value></data>
   <data name="TTS_Pause" xml:space="preserve"><value>⏸ Tạm dừng</value></data>
   <data name="TTS_Resume" xml:space="preserve"><value>▶ Tiếp tục</value></data>
-  <data name="TTS_Stop" xml:space="preserve"><value>⏹</value></data>
+  <data name="TTS_Stop" xml:space="preserve"><value>⏹ Ngừng phát</value></data>
   <data name="TTS_Playing" xml:space="preserve"><value>🎵 Đang phát thuyết minh...</value></data>
   <data name="TTS_NoContent" xml:space="preserve"><value>Chưa có nội dung thuyết minh</value></data>
   <data name="TTS_Section" xml:space="preserve"><value>🎙 Thuyết minh</value></data>

@@ -87,10 +87,8 @@ namespace TravelGuide.Views
                 var (dto, _) = await _poiData.GetPOIByIdAsync(poi.Id, lang);
                 if (dto?.Content == null) return;
 
-                await _tts.StopAsync();
+                _tts.Stop();
                 await _tts.PlayAsync(
-                    null,
-                    dto.Content.AudioUrl,
                     dto.Content.NarrationText,
                     dto.Content.LanguageCode);
             });
@@ -131,10 +129,8 @@ namespace TravelGuide.Views
                 var (dto, _) = await _poiData.GetPOIByIdAsync(poi.Id, lang);
                 if (dto?.Content == null) return;
 
-                await _tts.StopAsync();
+                _tts.Stop();
                 await _tts.PlayAsync(
-                    null,
-                    dto.Content.AudioUrl,
                     dto.Content.NarrationText,
                     dto.Content.LanguageCode);
             });

@@ -9,7 +9,7 @@ using TravelGuide.Services;
 namespace TravelGuide.Views
 {
     [QueryProperty(nameof(PoiId), "PoiId")]
-    public partial class POIDetailPage : ContentPage, INotifyPropertyChanged
+    public partial class POIDetailPage : ContentPage
     {
         private readonly POIDataService _poiData;
         private readonly TTSPlayerService _tts;
@@ -21,7 +21,7 @@ namespace TravelGuide.Views
         private bool _hasContent;
         private string _narrationText = "";
         private string _languageFlag = "🌐";
-        private PlayerState _playerState = PlayerState.Idle;
+        private bool _isTTSPlaying;
 
         public POISummaryDto? POI { get => _poi; set => Set(ref _poi, value); }
         public bool IsLoading { get => _isLoading; set => Set(ref _isLoading, value); }
@@ -29,16 +29,7 @@ namespace TravelGuide.Views
         public bool HasNoContent => !HasContent && !IsLoading;
         public string NarrationText { get => _narrationText; set => Set(ref _narrationText, value); }
         public string LanguageFlag { get => _languageFlag; set => Set(ref _languageFlag, value); }
-        public PlayerState PlayerState { get => _playerState; set => Set(ref _playerState, value); }
 
-        public bool IsPlaying => PlayerState == PlayerState.Playing;
-        public bool IsPaused => PlayerState == PlayerState.Paused;
-        public bool CanPlay => HasContent && !IsPlaying && !IsPaused;
-
-        public ICommand PlayCommand { get; }
-        public ICommand PauseCommand { get; }
-        public ICommand ResumeCommand { get; }
-        public ICommand StopCommand { get; }
         public ICommand BackCommand { get; }
 
         private POIDetailDto? _detailDto;
@@ -63,13 +54,9 @@ namespace TravelGuide.Views
             _auth = auth;
             BindingContext = this;
 
-            PlayCommand = new Command(async () => await PlayAsync(), () => CanPlay);
-            PauseCommand = new Command(async () => await PauseAsync(), () => IsPlaying);
-            ResumeCommand = new Command(async () => await ResumeAsync(), () => IsPaused);
-            StopCommand = new Command(async () => await StopAsync(), () => IsPlaying || IsPaused);
             BackCommand = new Command(async () =>
             {
-                await StopAsync();
+                _tts.Stop();
                 await Shell.Current.GoToAsync("..");
             });
 
@@ -82,10 +69,11 @@ namespace TravelGuide.Views
             RefreshUIText();
         }
 
-        protected override async void OnDisappearing()
+        protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            await StopAsync();
+            _tts.Stop();
+            _isTTSPlaying = false;
             L.PropertyChanged -= OnLanguageChanged;
         }
 
@@ -95,13 +83,25 @@ namespace TravelGuide.Views
         // ── Refresh UI ───────────────────────────────────────────────
         private void RefreshUIText()
         {
-            if (TTSSectionLabel != null) TTSSectionLabel.Text = L["TTS_Section"];
-            if (PlayBtn != null) PlayBtn.Text = L["TTS_Play"];
-            if (PauseBtn != null) PauseBtn.Text = L["TTS_Pause"];
-            if (ResumeBtn != null) ResumeBtn.Text = L["TTS_Resume"];
-            if (PlayingLabel != null) PlayingLabel.Text = L["TTS_Playing"];
+            UpdateTTSButton();
             if (ContentLabel != null) ContentLabel.Text = L["Content_Section"];
             if (NoContentLabel != null) NoContentLabel.Text = L["TTS_NoContent"];
+        }
+
+        /// <summary>Cập nhật text và màu nút TTS trực tiếp</summary>
+        private void UpdateTTSButton()
+        {
+            if (TTSToggleBtn == null) return;
+            if (_isTTSPlaying)
+            {
+                TTSToggleBtn.Text = L["TTS_Stop"];
+                TTSToggleBtn.BackgroundColor = Color.FromArgb("#F57C00");
+            }
+            else
+            {
+                TTSToggleBtn.Text = L["TTS_Play"];
+                TTSToggleBtn.BackgroundColor = Color.FromArgb("#2E7D32");
+            }
         }
 
         // ── Load POI ─────────────────────────────────────────────────
@@ -109,7 +109,9 @@ namespace TravelGuide.Views
         {
             IsLoading = true;
             var lang = _auth.GetCurrentLanguage();
-            var (dto, _) = await _poiData.GetPOIByIdAsync(poiId, lang);
+            Console.WriteLine($"[log] - Load POI: {poiId}, lang={lang}");
+
+            var (dto, fromCache) = await _poiData.GetPOIByIdAsync(poiId, lang);
             IsLoading = false;
 
             if (dto == null)
@@ -129,59 +131,85 @@ namespace TravelGuide.Views
             };
             Title = dto.Name;
 
-            if (dto.Content != null)
+            if (dto.Content != null && !string.IsNullOrWhiteSpace(dto.Content.NarrationText))
             {
                 NarrationText = dto.Content.NarrationText;
                 LanguageFlag = GetLangFlag(dto.Content.LanguageCode);
                 HasContent = true;
-                await PlayAsync();
+
+                Console.WriteLine($"[info] - Co noi dung TTS ({dto.Content.NarrationText.Length} ky tu), tu dong phat");
+                UpdateTTSButton();
+
+                // Tự động phát TTS khi vào trang
+                await PlayTTSAsync();
             }
             else
             {
                 HasContent = false;
+                Console.WriteLine("[warn] - Khong co noi dung van ban cho TTS");
             }
             OnPropertyChanged(nameof(HasNoContent));
         }
 
-        // ── TTS ──────────────────────────────────────────────────────
-        private async Task PlayAsync()
+        // ── TTS: Clicked event handler ──────────────────────────────
+        private async void OnTTSToggleClicked(object? sender, EventArgs e)
+        {
+            try
+            {
+                Console.WriteLine($"[log] - NUT DUOC BAM! isTTSPlaying={_isTTSPlaying}");
+
+                if (_isTTSPlaying)
+                {
+                    Console.WriteLine("[log] - Nguoi dung bam Ngung Phat");
+                    _tts.Stop();
+                    _isTTSPlaying = false;
+                    UpdateTTSButton();
+                }
+                else
+                {
+                    Console.WriteLine("[log] - Nguoi dung bam Phat");
+                    await PlayTTSAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[error] - OnTTSToggleClicked: {ex}");
+            }
+        }
+
+        /// <summary>
+        /// Phát TTS từ NarrationText trong database.
+        /// </summary>
+        private async Task PlayTTSAsync()
         {
             if (_detailDto?.Content == null) return;
-            PlayerState = PlayerState.Playing;
-            RefreshCommands();
-            await _tts.PlayAsync(null, _detailDto.Content.AudioUrl,
-                _detailDto.Content.NarrationText, _detailDto.Content.LanguageCode);
-            PlayerState = _tts.GetState();
-            RefreshCommands();
+
+            var text = _detailDto.Content.NarrationText;
+            var lang = _detailDto.Content.LanguageCode;
+
+            if (string.IsNullOrWhiteSpace(text)) return;
+
+            _isTTSPlaying = true;
+            UpdateTTSButton();
+
+            try
+            {
+                Console.WriteLine($"[log] - Bat dau PlayAsync: {text.Length} ky tu");
+                await _tts.PlayAsync(text, lang);
+                Console.WriteLine("[log] - PlayAsync xong");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[error] - PlayTTSAsync: {ex}");
+            }
+            finally
+            {
+                _isTTSPlaying = false;
+                UpdateTTSButton();
+            }
         }
 
-        private async Task PauseAsync()
-        {
-            await _tts.PauseAsync();
-            PlayerState = PlayerState.Paused;
-            RefreshCommands();
-        }
-
-        private async Task ResumeAsync() => await PlayAsync();
-
-        private async Task StopAsync()
-        {
-            await _tts.StopAsync();
-            PlayerState = PlayerState.Stopped;
-            RefreshCommands();
-        }
-
-        private void RefreshCommands()
-        {
-            OnPropertyChanged(nameof(IsPlaying));
-            OnPropertyChanged(nameof(IsPaused));
-            OnPropertyChanged(nameof(CanPlay));
-            (PlayCommand as Command)?.ChangeCanExecute();
-            (PauseCommand as Command)?.ChangeCanExecute();
-            (ResumeCommand as Command)?.ChangeCanExecute();
-            (StopCommand as Command)?.ChangeCanExecute();
-        }
-
+        // ── Helpers ──────────────────────────────────────────────────
         private static string GetLangFlag(string code) => code switch
         {
             "vi" => "🇻🇳",
@@ -193,14 +221,14 @@ namespace TravelGuide.Views
             _ => "🌐"
         };
 
-        public new event PropertyChangedEventHandler? PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string? name = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        private void Set<T>(ref T field, T value, [CallerMemberName] string? name = null)
+        private new void OnPropertyChanged([CallerMemberName] string? name = null)
+            => base.OnPropertyChanged(name);
+        private bool Set<T>(ref T field, T value, [CallerMemberName] string? name = null)
         {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return;
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
             field = value;
             OnPropertyChanged(name);
+            return true;
         }
     }
 }

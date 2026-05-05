@@ -82,8 +82,6 @@ public partial class ScanPage : ContentPage
         if (ScanInstructionLabel != null) ScanInstructionLabel.Text = L["Scan_Instruction"];
         if (LoadingLabel != null) LoadingLabel.Text = L["Scan_Loading"];
         if (RetryBtn != null) RetryBtn.Text = L["Common_Retry"];
-        if (PlayBtn != null) PlayBtn.Text = L["TTS_Play"];
-        if (PauseBtn != null) PauseBtn.Text = L["TTS_Pause"];
         if (TTSSectionLabel != null) TTSSectionLabel.Text = L["TTS_Section"];
         if (ContentSectionLabel != null) ContentSectionLabel.Text = L["Content_Section"];
         if (ScanAgainBtn != null) ScanAgainBtn.Text = L["Scan_Again"];
