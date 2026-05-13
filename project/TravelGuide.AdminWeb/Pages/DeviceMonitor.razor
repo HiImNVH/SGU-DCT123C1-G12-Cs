@@ -15,317 +15,210 @@
     return;
 }
 
-<!-- ── Header ─────────────────────────────────────────── -->
-<MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-4">
-    <MudText Typo="Typo.h5">📱 Theo dõi thiết bị</MudText>
-    <MudStack Row="true" Spacing="2">
-        <MudText Typo="Typo.caption" Color="Color.Secondary" Class="align-self-center">
-            Cập nhật lúc @_lastRefresh.ToString("HH:mm:ss")
-        </MudText>
-        <MudButton Variant="Variant.Outlined"
-                   Color="Color.Primary"
-                   StartIcon="@Icons.Material.Filled.Refresh"
-                   OnClick="LoadData"
-                   Disabled="_isLoading">
-            Làm mới
-        </MudButton>
-    </MudStack>
-</MudStack>
+<MudContainer MaxWidth="MaxWidth.Large" Class="mx-auto pa-6">
 
-@if (_isLoading)
-{
-    <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mb-4" />
-}
-else if (_stats == null)
-{
-    <MudAlert Severity="Severity.Error" Class="mb-4">
-        Không thể tải dữ liệu. Kiểm tra API đang chạy chưa.
-    </MudAlert>
-}
-else
-{
-    <!-- ── Stat Cards ──────────────────────────────────── -->
-    <MudGrid Class="mb-6">
+    <!-- HEADER -->
+    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-4">
+        <MudText Typo="Typo.h5">📱 Theo dõi thiết bị</MudText>
 
-        <MudItem xs="12" sm="6" md="3">
-            <MudCard Elevation="2">
-                <MudCardContent>
-                    <MudStack AlignItems="AlignItems.Center">
-                        <MudIcon Icon="@Icons.Material.Filled.Devices"
-                                 Color="Color.Primary" Size="Size.Large" />
-                        <MudText Typo="Typo.h3" Color="Color.Primary">
-                            @_stats.TotalDevices
-                        </MudText>
-                        <MudText Typo="Typo.body2" Color="Color.Secondary">
-                            Tổng thiết bị
-                        </MudText>
-                    </MudStack>
-                </MudCardContent>
-            </MudCard>
-        </MudItem>
+        <MudStack Row="true" Spacing="2">
+            <MudText Typo="Typo.caption" Color="Color.Secondary" Class="align-self-center">
+                Cập nhật lúc @_lastRefresh.ToString("HH:mm:ss")
+            </MudText>
 
-        <MudItem xs="12" sm="6" md="3">
-            <MudCard Elevation="2" Style="border-left: 4px solid #4CAF50">
-                <MudCardContent>
-                    <MudStack AlignItems="AlignItems.Center">
-                        <MudIcon Icon="@Icons.Material.Filled.FiberManualRecord"
-                                 Color="Color.Success" Size="Size.Large" />
-                        <MudText Typo="Typo.h3" Color="Color.Success">
-                            @_stats.ActiveToday
-                        </MudText>
-                        <MudText Typo="Typo.body2" Color="Color.Secondary">
-                            Đang hoạt động
-                        </MudText>
-                    </MudStack>
-                </MudCardContent>
-            </MudCard>
-        </MudItem>
-
-        <MudItem xs="12" sm="6" md="3">
-            <MudCard Elevation="2" Style="border-left: 4px solid #FF9800">
-                <MudCardContent>
-                    <MudStack AlignItems="AlignItems.Center">
-                        <MudIcon Icon="@Icons.Material.Filled.DateRange"
-                                 Color="Color.Warning" Size="Size.Large" />
-                        <MudText Typo="Typo.h3" Color="Color.Warning">
-                            @_stats.ActiveThisWeek
-                        </MudText>
-                        <MudText Typo="Typo.body2" Color="Color.Secondary">
-                            Hoạt động 7 ngày
-                        </MudText>
-                    </MudStack>
-                </MudCardContent>
-            </MudCard>
-        </MudItem>
-
-        <MudItem xs="12" sm="6" md="3">
-            <MudCard Elevation="2" Style="border-left: 4px solid #2196F3">
-                <MudCardContent>
-                    <MudStack AlignItems="AlignItems.Center">
-                        <MudIcon Icon="@Icons.Material.Filled.QrCodeScanner"
-                                 Color="Color.Info" Size="Size.Large" />
-                        <MudText Typo="Typo.h3" Color="Color.Info">
-                            @_stats.TotalScans
-                        </MudText>
-                        <MudText Typo="Typo.body2" Color="Color.Secondary">
-                            Tổng lượt scan QR
-                        </MudText>
-                    </MudStack>
-                </MudCardContent>
-            </MudCard>
-        </MudItem>
-
-    </MudGrid>
-
-    <!-- ── Charts row ─────────────────────────────────── -->
-    <MudGrid Class="mb-6">
-
-        <!-- Đăng nhập vs Khách -->
-        <MudItem xs="12" md="4">
-            <MudCard Elevation="2" Class="pa-3">
-                <MudText Typo="Typo.subtitle1" Class="mb-3">
-                    <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" Class="mr-1" />
-                     Tổng quan
-                </MudText>
-                <MudStack Spacing="2">
-                    <MudStack Row="true" Justify="Justify.SpaceBetween">
-                        <MudText Typo="Typo.body2">Thiết bị</MudText>
-                        <MudChip T="string" Color="Color.Default" Size="Size.Small">
-                            @_stats.GuestDevices
-                        </MudChip>
-                    </MudStack>
-                    <MudProgressLinear Value="@GetPercent(_stats.GuestDevices, _stats.TotalDevices)"
-                                       Color="Color.Default" Rounded="true" Size="Size.Medium" />
-                    <MudDivider Class="my-1" />
-                    <MudStack Row="true" Justify="Justify.SpaceBetween">
-                        <MudText Typo="Typo.body2">📅 Hoạt động 30 ngày</MudText>
-                        <MudChip T="string" Color="Color.Secondary" Size="Size.Small">
-                            @_stats.ActiveThisMonth
-                        </MudChip>
-                    </MudStack>
-                </MudStack>
-            </MudCard>
-        </MudItem>
-
-        <!-- Ngôn ngữ -->
-        <MudItem xs="12" md="4">
-            <MudCard Elevation="2" Class="pa-3">
-                <MudText Typo="Typo.subtitle1" Class="mb-3">
-                    <MudIcon Icon="@Icons.Material.Filled.Language" Size="Size.Small" Class="mr-1" />
-                    Ngôn ngữ đang dùng
-                </MudText>
-                @foreach (var lang in _stats.ByLanguage)
-                {
-                    <MudStack Row="true" Justify="Justify.SpaceBetween" Class="mb-1">
-                        <MudText Typo="Typo.body2">@GetLangFlag(lang.LanguageCode) @GetLangName(lang.LanguageCode)</MudText>
-                        <MudChip T="string" Color="Color.Primary" Size="Size.Small">@lang.Count</MudChip>
-                    </MudStack>
-                    <MudProgressLinear Value="@GetPercent(lang.Count, _stats.TotalDevices)"
-                                       Color="Color.Primary" Rounded="true" Size="Size.Small" Class="mb-2" />
-                }
-            </MudCard>
-        </MudItem>
-
-        <!-- Platform -->
-        <MudItem xs="12" md="4">
-            <MudCard Elevation="2" Class="pa-3">
-                <MudText Typo="Typo.subtitle1" Class="mb-3">
-                    <MudIcon Icon="@Icons.Material.Filled.PhoneAndroid" Size="Size.Small" Class="mr-1" />
-                    Nền tảng
-                </MudText>
-                @foreach (var plat in _stats.ByPlatform)
-                {
-                    <MudStack Row="true" Justify="Justify.SpaceBetween" Class="mb-1">
-                        <MudText Typo="Typo.body2">@GetPlatformIcon(plat.Platform) @plat.Platform</MudText>
-                        <MudChip T="string" Color="Color.Secondary" Size="Size.Small">@plat.Count</MudChip>
-                    </MudStack>
-                    <MudProgressLinear Value="@GetPercent(plat.Count, _stats.TotalDevices)"
-                                       Color="Color.Secondary" Rounded="true" Size="Size.Small" Class="mb-2" />
-                }
-            </MudCard>
-        </MudItem>
-
-    </MudGrid>
-
-    <!-- ── Bảng thiết bị gần đây ──────────────────────── -->
-    <MudText Typo="Typo.h6" Class="mb-3">
-        <MudIcon Icon="@Icons.Material.Filled.List" Size="Size.Small" Class="mr-1" />
-        Thiết bị hoạt động gần đây (50 mới nhất)
-    </MudText>
-
-    <!-- Filter bar -->
-    <MudStack Row="true" Spacing="2" Class="mb-3" Wrap="Wrap.Wrap">
-        <MudTextField @bind-Value="_searchText"
-                      Placeholder="Tìm theo DeviceId, username..."
-                      Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search"
-                      Clearable="true"
-                      Immediate="true"
-                      Style="min-width:260px" />
-        <MudSelect T="string" @bind-Value="_filterPlatform"
-                   Label="Platform" Style="min-width:140px">
-            <MudSelectItem Value="@("")">Tất cả</MudSelectItem>
-            @foreach (var p in _stats.ByPlatform.Select(x => x.Platform))
-            {
-                <MudSelectItem Value="@p">@p</MudSelectItem>
-            }
-        </MudSelect>
-        <MudSelect T="string" @bind-Value="_filterStatus"
-           Label="Trạng thái" Style="min-width:140px">
-            <MudSelectItem Value="@("")">Tất cả</MudSelectItem>
-    <MudSelectItem Value="@("online")">🟢 Online</MudSelectItem>
-    <MudSelectItem Value="@("offline")">⚫ Offline</MudSelectItem>
-    <MudSelectItem Value="@("loggedin")">👤 Đăng nhập</MudSelectItem>
-    <MudSelectItem Value="@("guest")">🙍 Khách</MudSelectItem>
-</MudSelect>
+            <MudButton Variant="Variant.Outlined"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Refresh"
+                       OnClick="LoadData"
+                       Disabled="_isLoading">
+                Làm mới
+            </MudButton>
+        </MudStack>
     </MudStack>
 
-    <MudTable Items="@FilteredDevices"
-              Hover="true" Striped="true" Dense="true" Elevation="2"
-              RowsPerPage="20">
-        <HeaderContent>
-            <MudTh>Trạng thái</MudTh>
-            <MudTh>DeviceId</MudTh>
-            <MudTh>Người dùng</MudTh>
-            <MudTh>Platform</MudTh>
-            <MudTh>Ngôn ngữ</MudTh>
-            <MudTh>Scan QR</MudTh>
-            <MudTh>Phiên</MudTh>
-            <MudTh>Lần đầu</MudTh>
-            <MudTh>Hoạt động gần nhất</MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <!-- Trạng thái online -->
-            <MudTd>
-                @if (context.IsOnline)
-                {
-                    <MudChip T="string" Color="Color.Success" Size="Size.Small"
-                             Icon="@Icons.Material.Filled.Circle">
-                        Online
-                    </MudChip>
-                }
-                else
-                {
-                    <MudChip T="string" Color="Color.Default" Size="Size.Small">Offline</MudChip>
-                }
-            </MudTd>
+    @if (_isLoading)
+    {
+        <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mb-4" />
+    }
+    else if (_stats == null)
+    {
+        <MudAlert Severity="Severity.Error" Class="mb-4">
+            Không thể tải dữ liệu. Kiểm tra API đang chạy chưa.
+        </MudAlert>
+    }
+    else
+    {
+        <!-- STAT CARDS -->
+        <MudGrid Class="mb-6">
 
-            <!-- DeviceId (hiển thị rút gọn) -->
-            <MudTd>
-                <MudTooltip Text="@context.DeviceId">
-                    <MudText Typo="Typo.caption" Style="font-family:monospace">
-                        @context.DeviceId[..Math.Min(8, context.DeviceId.Length)]…
-                    </MudText>
-                </MudTooltip>
-            </MudTd>
+            <MudItem xs="12" sm="6" md="4">
+                <MudCard Elevation="2">
+                    <MudCardContent>
+                        <MudStack AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@Icons.Material.Filled.Devices" Color="Color.Primary" Size="Size.Large" />
+                            <MudText Typo="Typo.h3" Color="Color.Primary">@_stats.TotalDevices</MudText>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">Tổng thiết bị</MudText>
+                        </MudStack>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
 
-            <!-- Người dùng -->
-            <MudTd>
-                @if (context.Username != null)
-                {
-                    <MudChip T="string" Color="Color.Primary" Size="Size.Small"
-                             Icon="@Icons.Material.Filled.Person">
-                        @context.Username
-                    </MudChip>
-                }
-                else
-                {
-                    <MudText Typo="Typo.caption" Color="Color.Secondary">Guest</MudText>
-                }
-            </MudTd>
+            <MudItem xs="12" sm="6" md="4">
+                <MudCard Elevation="2" Style="border-left:4px solid #4CAF50">
+                    <MudCardContent>
+                        <MudStack AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@Icons.Material.Filled.FiberManualRecord" Color="Color.Success" Size="Size.Large" />
+                            <MudText Typo="Typo.h3" Color="Color.Success">@_stats.ActiveToday</MudText>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">Đang hoạt động</MudText>
+                        </MudStack>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
 
-            <!-- Platform + OS -->
-            <MudTd>
-                <MudText Typo="Typo.body2">@GetPlatformIcon(context.Platform) @context.Platform</MudText>
-                <MudText Typo="Typo.caption" Color="Color.Secondary">@context.OsVersion</MudText>
-            </MudTd>
+            <MudItem xs="12" sm="6" md="4">
+                <MudCard Elevation="2" Style="border-left:4px solid #2196F3">
+                    <MudCardContent>
+                        <MudStack AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@Icons.Material.Filled.QrCodeScanner" Color="Color.Info" Size="Size.Large" />
+                            <MudText Typo="Typo.h3" Color="Color.Info">@_stats.TotalScans</MudText>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">Tổng lượt scan QR</MudText>
+                        </MudStack>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+
+        </MudGrid>
+
+        <!-- CHARTS -->
+        <MudGrid Class="mb-6">
+
+            <!-- Tổng quan -->
+            <MudItem xs="12" md="4">
+                <MudCard Class="pa-3">
+                    <MudText Typo="Typo.subtitle1" Class="mb-3">👤 Tổng quan</MudText>
+
+                    <MudStack Row="true" Justify="Justify.SpaceBetween">
+                        <MudText>Thiết bị</MudText>
+                        <MudChip>@_stats.GuestDevices</MudChip>
+                    </MudStack>
+
+                    <MudProgressLinear Value="@GetPercent(_stats.GuestDevices, _stats.TotalDevices)" />
+
+                    <MudDivider Class="my-2" />
+
+                    <MudStack Row="true" Justify="Justify.SpaceBetween">
+                        <MudText>📅 30 ngày</MudText>
+                        <MudChip Color="Color.Secondary">@_stats.ActiveThisMonth</MudChip>
+                    </MudStack>
+                </MudCard>
+            </MudItem>
 
             <!-- Ngôn ngữ -->
-            <MudTd>
-                @GetLangFlag(context.LanguageCode) @context.LanguageCode.ToUpper()
-            </MudTd>
+            <MudItem xs="12" md="4">
+                <MudCard Class="pa-3">
+                    <MudText Typo="Typo.subtitle1" Class="mb-3">🌐 Ngôn ngữ</MudText>
 
-            <!-- Scan count -->
-            <MudTd>
-                <MudChip T="string" Color="@(context.ScanCount > 0 ? Color.Info : Color.Default)"
-                         Size="Size.Small"
-                         Icon="@Icons.Material.Filled.QrCodeScanner">
-                    @context.ScanCount
-                </MudChip>
-            </MudTd>
+                    @foreach (var lang in _stats.ByLanguage)
+                    {
+                        <MudStack Row="true" Justify="Justify.SpaceBetween">
+                            <MudText>@GetLangFlag(lang.LanguageCode) @GetLangName(lang.LanguageCode)</MudText>
+                            <MudChip Color="Color.Primary">@lang.Count</MudChip>
+                        </MudStack>
 
-            <!-- Session count -->
-            <MudTd>@context.SessionCount</MudTd>
+                        <MudProgressLinear Value="@GetPercent(lang.Count, _stats.TotalDevices)" Class="mb-2" />
+                    }
+                </MudCard>
+            </MudItem>
 
-            <!-- First seen -->
-            <MudTd>
-                <MudText Typo="Typo.caption">
-                    @context.FirstSeenAt.ToLocalTime().ToString("dd/MM/yyyy")
-                </MudText>
-            </MudTd>
+            <!-- Platform -->
+            <MudItem xs="12" md="4">
+                <MudCard Class="pa-3">
+                    <MudText Typo="Typo.subtitle1" Class="mb-3">📱 Platform</MudText>
 
-            <!-- Last seen -->
-            <MudTd>
-                <MudText Typo="Typo.caption">
-                    @GetTimeAgo(context.LastSeenAt)
-                </MudText>
-            </MudTd>
-        </RowTemplate>
-        <PagerContent>
-            <MudTablePager PageSizeOptions="new int[] { 10, 20, 50 }" />
-        </PagerContent>
-    </MudTable>
-}
+                    @foreach (var plat in _stats.ByPlatform)
+                    {
+                        <MudStack Row="true" Justify="Justify.SpaceBetween">
+                            <MudText>@GetPlatformIcon(plat.Platform) @plat.Platform</MudText>
+                            <MudChip Color="Color.Secondary">@plat.Count</MudChip>
+                        </MudStack>
+
+                        <MudProgressLinear Value="@GetPercent(plat.Count, _stats.TotalDevices)" Class="mb-2" />
+                    }
+                </MudCard>
+            </MudItem>
+
+        </MudGrid>
+
+        <!-- TABLE -->
+        <MudPaper Class="pa-4">
+
+            <MudText Typo="Typo.h6" Class="mb-3">
+                📋 Thiết bị gần đây
+            </MudText>
+
+            <MudTable Items="@FilteredDevices"
+                      Hover="true"
+                      Dense="true"
+                      RowsPerPage="20">
+
+                <HeaderContent>
+                    <MudTh>Trạng thái</MudTh>
+                    <MudTh>DeviceId</MudTh>
+                    <MudTh>Người dùng</MudTh>
+                    <MudTh>Platform</MudTh>
+                    <MudTh>Ngôn ngữ</MudTh>
+                    <MudTh>Scan</MudTh>
+                    <MudTh>Phiên</MudTh>
+                    <MudTh>Lần đầu</MudTh>
+                    <MudTh>Gần nhất</MudTh>
+                </HeaderContent>
+
+                <RowTemplate>
+                    <MudTd>
+                        @if (context.IsOnline)
+                        {
+                            <MudChip Color="Color.Success">Online</MudChip>
+                        }
+                        else
+                        {
+                            <MudChip>Offline</MudChip>
+                        }
+                    </MudTd>
+
+                    <MudTd>@context.DeviceId[..8]...</MudTd>
+
+                    <MudTd>
+                        @if (context.Username != null)
+                        {
+                            <MudChip Color="Color.Primary">@context.Username</MudChip>
+                        }
+                        else
+                        {
+                            <MudText>Guest</MudText>
+                        }
+                    </MudTd>
+
+                    <MudTd>@context.Platform</MudTd>
+                    <MudTd>@context.LanguageCode</MudTd>
+                    <MudTd>@context.ScanCount</MudTd>
+                    <MudTd>@context.SessionCount</MudTd>
+                    <MudTd>@context.FirstSeenAt.ToString("dd/MM")</MudTd>
+                    <MudTd>@GetTimeAgo(context.LastSeenAt)</MudTd>
+
+                </RowTemplate>
+
+            </MudTable>
+
+        </MudPaper>
+    }
+
+</MudContainer>
 
 @code {
-    private DeviceStatsDto?  _stats;
-    private bool             _isLoading   = true;
-    private DateTime         _lastRefresh = DateTime.Now;
-    private string           _searchText  = "";
-    private string           _filterPlatform = "";
-    private string           _filterStatus   = "";
+    private DeviceStatsDto? _stats;
+    private bool _isLoading = true;
+    private DateTime _lastRefresh = DateTime.Now;
 
-    // ── Lifecycle ────────────────────────────────────────────────────
     protected override async Task OnInitializedAsync()
     {
         if (!AuthService.GetSession().IsLoggedIn)
@@ -333,86 +226,50 @@ else
             Navigation.NavigateTo("/login");
             return;
         }
+
         await LoadData();
     }
 
     private async Task LoadData()
     {
         _isLoading = true;
-        StateHasChanged();
 
         var token = AuthService.GetSession().Token ?? "";
-        _stats       = await DeviceService.GetStatsAsync(token);
+        _stats = await DeviceService.GetStatsAsync(token);
+
         _lastRefresh = DateTime.Now;
-        _isLoading   = false;
-
-        if (_stats == null)
-            Snackbar.Add("Không thể tải dữ liệu thiết bị. Kiểm tra API.", Severity.Error);
+        _isLoading = false;
     }
 
-    // ── Filter ───────────────────────────────────────────────────────
-    private IEnumerable<DeviceListItemDto> FilteredDevices
-    {
-        get
-        {
-            if (_stats == null) return Enumerable.Empty<DeviceListItemDto>();
+    private IEnumerable<DeviceListItemDto> FilteredDevices =>
+        _stats?.RecentDevices ?? Enumerable.Empty<DeviceListItemDto>();
 
-            var items = _stats.RecentDevices.AsEnumerable();
-
-            if (!string.IsNullOrWhiteSpace(_searchText))
-                items = items.Where(d =>
-                    d.DeviceId.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ||
-                    (d.Username?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false));
-
-            if (!string.IsNullOrEmpty(_filterPlatform))
-                items = items.Where(d => d.Platform == _filterPlatform);
-
-            items = _filterStatus switch
-            {
-                "online"   => items.Where(d => d.IsOnline),
-                "offline"  => items.Where(d => !d.IsOnline),
-                "loggedin" => items.Where(d => d.Username != null),
-                "guest"    => items.Where(d => d.Username == null),
-                _          => items
-            };
-
-            return items;
-        }
-    }
-
-    // ── Helpers ──────────────────────────────────────────────────────
     private static double GetPercent(int value, int total)
-        => total == 0 ? 0 : Math.Round((double)value / total * 100, 1);
+        => total == 0 ? 0 : (double)value / total * 100;
 
     private static string GetLangFlag(string code) => code switch
     {
-        "vi" => "🇻🇳", "en" => "🇺🇸", "ja" => "🇯🇵",
-        "ko" => "🇰🇷", "zh" => "🇨🇳", "fr" => "🇫🇷",
-        _    => "🌐"
+        "vi" => "🇻🇳",
+        "en" => "🇺🇸",
+        "ja" => "🇯🇵",
+        _ => "🌐"
     };
 
-    private static string GetLangName(string code) => code switch
-    {
-        "vi" => "Tiếng Việt", "en" => "English",  "ja" => "日本語",
-        "ko" => "한국어",      "zh" => "中文",      "fr" => "Français",
-        _    => code
-    };
+    private static string GetLangName(string code) => code;
 
-    private static string GetPlatformIcon(string platform) => platform.ToLower() switch
+    private static string GetPlatformIcon(string p) => p.ToLower() switch
     {
         "android" => "🤖",
-        "ios"     => "🍎",
-        "windows" => "🪟",
-        _         => "📱"
+        "ios" => "🍎",
+        _ => "📱"
     };
 
     private static string GetTimeAgo(DateTime dt)
     {
         var diff = DateTime.UtcNow - dt;
-        if (diff.TotalMinutes < 1)   return "vừa xong";
-        if (diff.TotalMinutes < 60)  return $"{(int)diff.TotalMinutes} phút trước";
-        if (diff.TotalHours < 24)    return $"{(int)diff.TotalHours} giờ trước";
-        if (diff.TotalDays < 7)      return $"{(int)diff.TotalDays} ngày trước";
-        return dt.ToLocalTime().ToString("dd/MM/yyyy HH:mm");
+        if (diff.TotalMinutes < 1) return "vừa xong";
+        if (diff.TotalHours < 1) return $"{(int)diff.TotalMinutes}p";
+        if (diff.TotalDays < 1) return $"{(int)diff.TotalHours}h";
+        return $"{(int)diff.TotalDays}d";
     }
 }
