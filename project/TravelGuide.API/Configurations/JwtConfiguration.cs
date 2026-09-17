@@ -8,8 +8,13 @@ public static class JwtConfiguration
 {
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        var jwtKey = configuration["Jwt:Key"]
-            ?? throw new InvalidOperationException("[error] - Jwt:Key chua duoc cau hinh trong appsettings");
+        var jwtKey = configuration["Jwt:Key"];
+        if (string.IsNullOrWhiteSpace(jwtKey) || jwtKey.Length < 32)
+        {
+            throw new InvalidOperationException(
+                "Jwt:Key chua duoc cau hinh hoac ngan hon 32 ky tu. " +
+                "Hay dung User Secrets hoac bien moi truong Jwt__Key.");
+        }
 
         var jwtIssuer = configuration["Jwt:Issuer"] ?? "TravelGuide";
         var jwtAudience = configuration["Jwt:Audience"] ?? "TravelGuide";

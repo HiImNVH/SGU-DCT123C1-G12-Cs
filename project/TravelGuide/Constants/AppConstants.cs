@@ -4,7 +4,17 @@ namespace TravelGuide.Constants
     {
         // Android Emulator: 10.0.2.2 = localhost của máy host
         // Thiết bị thật: đổi thành IP máy tính, ví dụ "http://192.168.1.x:5171"
-        public const string BaseUrl          = "https://glitter-amiable-ebay.ngrok-free.dev";
+        public static string BaseUrl =>
+            Environment.GetEnvironmentVariable("TRAVELGUIDE_API_BASE_URL")
+            ?? "http://10.0.2.2:5171";
+
+        public static string GoongMaptileKey =>
+            Environment.GetEnvironmentVariable("TRAVELGUIDE_GOONG_MAPTILE_KEY")
+            ?? string.Empty;
+
+        public static string GoongApiKey =>
+            Environment.GetEnvironmentVariable("TRAVELGUIDE_GOONG_API_KEY")
+            ?? string.Empty;
         // Note: Thay bằng IPv4 của máy host nếu chạy trên thiết bị thật
         // Endpoints khớp với API thực tế
         public const string ApiPoi           = "/api/poi";

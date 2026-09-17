@@ -225,8 +225,6 @@
     private bool _mapInitialized = false;
     private DotNetObjectReference<POIEdit>? _dotNetRef;
 
-    // Goong Maptile Key — hardcode để fallback khi config thiếu
-    private const string _fallbackMaptileKey = "POdfxjueKxYZ09MjbKKLCKkxeNLfhFpsXaOfT3Rn";
 
     private readonly Dictionary<string, string> _otherLanguages = new()
     {
@@ -319,7 +317,10 @@
 
             var maptileKey = Configuration["GoongSettings:MaptileKey"];
             if (string.IsNullOrWhiteSpace(maptileKey))
-                maptileKey = _fallbackMaptileKey;
+            {
+                Snackbar.Add("Chưa cấu hình GoongSettings:MaptileKey.", Severity.Error);
+                return;
+            }
 
             // Parse tọa độ hiện tại (nếu có), mặc định về TP.HCM
             double lat = 10.7769, lng = 106.7009;

@@ -362,3 +362,12 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 PRD_TravelGuide.pdf
+
+# Local secrets and developer-only configuration
+**/appsettings.Local.json
+**/appsettings.*.local.json
+.env
+.env.*
+!.env.example
+secrets.json
+**/Platforms/Android/environment.txt

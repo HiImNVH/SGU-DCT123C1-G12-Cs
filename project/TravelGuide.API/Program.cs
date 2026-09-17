@@ -97,7 +97,7 @@ try
     {
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var seedLogger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-        await DatabaseSeeder.SeedAsync(db, seedLogger);
+        await DatabaseSeeder.SeedAsync(db, builder.Configuration, seedLogger);
     }
 
     // ─────────────────────────────────────────────

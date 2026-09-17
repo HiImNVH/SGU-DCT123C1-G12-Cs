@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using TravelGuide.Models.DTOs;
 using TravelGuide.Services;
+using TravelGuide.Constants;
 
 namespace TravelGuide.Views
 {
@@ -22,10 +23,6 @@ namespace TravelGuide.Views
         private int _currentStep = 0;
         private CancellationTokenSource? _navCts;
 
-        // ── Goong API key ─────────────────────────────────────────────
-        // Dùng chung key với map tiles
-        private const string GoongMaptileKey = "POdfxjueKxYZ09MjbKKLCKkxeNLfhFpsXaOfT3Rn";
-        private const string GoongApiKey = "EP7ZJYCiahp2hKdjd7U8PJ7cvpD02sMqYVHr4cvS";
         private static readonly HttpClient _http = new();
 
         public MapPage(POIDataService poiData)
@@ -64,6 +61,12 @@ namespace TravelGuide.Views
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(AppConstants.GoongMaptileKey))
+                {
+                    await DisplayAlert("Thiếu cấu hình", "Chưa cấu hình Goong maptile key.", "OK");
+                    return;
+                }
+
                 var pois = await _poiData.GetAllActiveAsync();
                 Console.WriteLine($"[info] - Hien thi {pois.Count} POI tren ban do");
 
@@ -123,14 +126,14 @@ namespace TravelGuide.Views
 <body>
 <div id='map'></div>
 <script>
-  goongjs.accessToken = '{GoongMaptileKey}'
+  goongjs.accessToken = '{AppConstants.GoongMaptileKey}'
 
   var userLat = {lat};
   var userLng = {lng};
 
   var map = new goongjs.Map({{
     container: 'map',
-    style: 'https://tiles.goong.io/assets/goong_map_web.json?api_key={GoongMaptileKey}',
+    style: 'https://tiles.goong.io/assets/goong_map_web.json?api_key={AppConstants.GoongMaptileKey}',
     center: [userLng, userLat],
     zoom: 16
   }});
@@ -514,6 +517,12 @@ namespace TravelGuide.Views
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(AppConstants.GoongApiKey))
+                {
+                    Console.WriteLine("[nav] Goong REST API key is not configured");
+                    return null;
+                }
+
                 // ✅ FIX vehicle
                 var vehicle = mode == "walking" ? "bike" : "car";
 
@@ -523,9 +532,9 @@ namespace TravelGuide.Views
                           $"&destination={toLat.ToString(CultureInfo.InvariantCulture)}," +
                           $"{toLng.ToString(CultureInfo.InvariantCulture)}" +
                           $"&vehicle={vehicle}" +
-                          $"&api_key={GoongApiKey}";
+                          $"&api_key={AppConstants.GoongApiKey}";
 
-                Console.WriteLine($"[nav] URL: {url}");
+                Console.WriteLine("[nav] Requesting route from Goong Directions API");
 
                 var response = await _http.GetAsync(url);
 

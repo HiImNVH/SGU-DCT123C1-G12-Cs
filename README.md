@@ -1,68 +1,179 @@
-﻿# NHÓM 10
-# 3123411123 - NGUYỄN VŨ HUY
-# 3123411221 - PHẠM NGUYÊN PHÁT
+# Travel Guide – Ứng dụng hướng dẫn du lịch thông minh
 
-Note: ứng dụng nằm ở branch Master
-Mô tả dự án: Xây dựng hệ thống tự động thuyết minh thông tin du lịch (đa ngôn ngữ) khi người dùng di chuyển đến gần địa điểm (POI) hoặc quét mã QR, hoạt động tốt ngay cả khi offline (không có mạng).
+Hệ thống hướng dẫn du lịch đa nền tảng giúp người dùng khám phá địa điểm (POI), xem bản đồ, quét QR, nghe thuyết minh đa ngôn ngữ và tiếp tục sử dụng dữ liệu đã lưu khi mất mạng. Phiên bản đầy đủ hiện nằm trên nhánh **`main`**.
 
-PROJECT DOCUMENTATION: TRAVEL GUIDE APPLICATION
+## Thành viên
 
-1. Tổng quan dự án (Project Overview)
-Travel Guide là một ứng dụng nền tảng di động (Mobile Application) hỗ trợ người dùng cuối trong việc tra cứu, khám phá các địa điểm du lịch và di tích lịch sử. Ứng dụng tập trung vào việc tối ưu hóa trải nghiệm người dùng dựa trên dữ liệu vị trí địa lý thực tế (Geospatial data) để cung cấp các gợi ý hành trình chính xác tại Việt Nam.
-- Tên dự án: Travel Guide
-- Phạm vi triển khai: Thành phố Hồ Chí Minh.
-- Đối tượng mục tiêu: Người dùng nội địa và khách du lịch quốc tế.
+| MSSV | Thành viên | Phụ trách chính |
+| --- | --- | --- |
+| 3123411123 | Nguyễn Vũ Huy | Thiết kế giao diện, sơ đồ PRD và phát triển Frontend |
+| 3123411221 | Phạm Nguyên Phát | Phát triển Backend và xây dựng nội dung, thông tin PRD |
 
-2. Kiến trúc hệ thống và Công nghệ (Tech Stack)
-Để đảm bảo tính mở rộng và hiệu suất, dự án được đề xuất xây dựng trên các công nghệ sau:
-- Frontend: C#/Xaml + html
-- Backend: html (chưa phát triển)
-- Database: MySql/MsSql (chưa phát triển)
-- Maps Integration: Goong.io api
+Đây là project nhóm 2 người. Quy ước làm việc và phạm vi phụ trách của từng thành viên được ghi trong [CONTRIBUTING.md](CONTRIBUTING.md).
 
-3. Luồng nghiệp vụ (Business Logic & User Flow) (đang phát triển)
-3.1. Quy trình Xác thực (Authentication Flow)
-a. Người dùng khởi tạo tài khoản qua Email và số điện thoại.
-b. Hệ thống xác thực thông tin và cấp quyền truy cập.
-c. Duy trì trạng thái đăng nhập qua Access Token.
+## Kiến trúc và công nghệ
 
-3.2. Quy trình Khám phá (Discovery Flow)
-a. Ứng dụng yêu cầu quyền truy cập vị trí (GPS).
-b. Hệ thống tính toán khoảng cách từ vị trí hiện tại đến các POI (Point of Interest) trong database.
-c. Hiển thị danh sách địa điểm theo thứ tự ưu tiên khoảng cách hoặc mức độ phổ biến.
+- **Mobile:** C#, .NET MAUI, XAML, ZXing.Net.Maui, SQLite, Text-to-Speech.
+- **REST API:** ASP.NET Core 8, Controller–Service–Repository, JWT Bearer, BCrypt.
+- **Admin Web:** Blazor Server, MudBlazor.
+- **Dữ liệu:** SQL Server, Entity Framework Core, migrations; SQLite dùng cho cache offline trên mobile.
+- **Tích hợp:** Goong Maps/Direction API, QR code, REST/JSON, nội dung đa ngôn ngữ.
+- **Kiểm thử:** xUnit cho các luồng xác thực, phân quyền và POI tiêu biểu.
 
-4. Đặc tả tính năng (Functional Requirements)
-4.1. Module Người dùng
-- Đăng ký/Đăng nhập: Hỗ trợ tạo tài khoản, xác thực thông tin cơ bản.
-- Quản lý Profile: Cập nhật thông tin cá nhân (Họ tên, Email, Ảnh đại diện).
-- Cài đặt hệ thống: Tùy chọn ngôn ngữ (Tiếng Anh/Tiếng Việt) và cấu hình thông báo.
+```text
+.NET MAUI / Blazor Admin
+          │ REST + JWT
+          ▼
+ASP.NET Core Controllers
+          ▼
+       Services
+          ▼
+     Repositories / EF Core
+          ▼
+       SQL Server
+```
 
-4.2. Module Địa điểm và Bản đồ
-- Trang chủ (Dashboard): Hiển thị danh sách địa điểm dưới dạng Card View với hình ảnh độ phân giải cao và mô tả tóm tắt.
-- Tìm kiếm & Bộ lọc: Cho phép truy vấn địa điểm theo từ khóa hoặc danh mục (Di tích, Giải trí, Kiến trúc).
-- Bản đồ tương tác (Interactive Map): - Hiển thị các Marker địa lý.
-- Tích hợp Info Window hiển thị thông tin nhanh khi người dùng tương tác với Marker.
-- Chi tiết địa điểm: Cung cấp thông tin chuyên sâu gồm lịch sử, hình ảnh toàn cảnh và tọa độ chính xác.
+## Tính năng chính
 
-5. Yêu cầu phi chức năng (Non-Functional Requirements)
-5.1. Hiệu năng (Performance)
-- Thời gian phản hồi API không quá 200ms cho các truy vấn cơ bản.
-- Tối ưu hóa bộ nhớ đệm (Caching) cho hình ảnh để giảm thiểu dung lượng dữ liệu di động.
+- Đăng ký, đăng nhập bằng JWT; mật khẩu được băm bằng BCrypt.
+- Phân quyền User/Admin; API quản trị POI yêu cầu role Admin.
+- Xem danh sách và chi tiết địa điểm theo ngôn ngữ, fallback về tiếng Việt.
+- Bản đồ, vị trí hiện tại và chỉ đường qua Goong.
+- Quét QR/deep link để mở địa điểm.
+- Thuyết minh bằng giọng nói và cache SQLite phục vụ chế độ offline.
+- Admin Web quản lý POI, nội dung đa ngôn ngữ, QR và thiết bị.
+- Swagger/OpenAPI cho việc xem và thử API.
 
-5.2. Giao diện (UI/UX)
-- Thiết kế theo ngôn ngữ Material Design hoặc Human Interface Guidelines.
-- Đảm bảo tính nhất quán về thuật ngữ ngôn ngữ trên toàn bộ các màn hình.
+## Yêu cầu môi trường
 
-5.3. Độ tin cậy (Reliability)
-- Độ chính xác của vị trí địa lý phải được đảm bảo trong sai số cho phép của GPS (10m - 20m).
+- Git.
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0).
+- Visual Studio 2022 với workload **.NET Multi-platform App UI development** để chạy MAUI.
+- SQL Server LocalDB (Windows) hoặc một SQL Server có thể truy cập.
+- Goong Maptile key và REST API key của riêng bạn.
 
-6. Kế hoạch hoàn thiện và Khắc phục lỗi (Development Roadmap)
-6.1. Ưu tiên cấp thiết (High Priority)
-- Data Integrity: Khắc phục lỗi logic truyền dữ liệu gây hiển thị giá trị undefined trên các Pop-up bản đồ.
-- Localization: Chuẩn hóa toàn bộ chuỗi ký tự (Strings) sang hệ thống đa ngôn ngữ hoàn chỉnh, tránh tình trạng trộn lẫn ngôn ngữ giữa các màn hình.
-- Completion: Hoàn thiện các logic mapping.
+Không sử dụng lại key từng xuất hiện trong lịch sử Git. Hãy thu hồi/rotate chúng trên Goong Dashboard trước khi chạy project.
 
-6.2. Tính năng cần phát triển
-- Giao diện và logic admin
-- TTS (Text to speech)
-- Nâng cấp UX/UI
+## Chạy dự án cục bộ
+
+### 1. Clone và restore
+
+```powershell
+git clone https://github.com/HiImNVH/SGU-DCT123C1-G12-Cs.git
+cd SGU-DCT123C1-G12-Cs
+git switch main
+dotnet restore project/TravelGuide.sln
+```
+
+### 2. Cấu hình API an toàn
+
+Project không còn lưu JWT signing key hoặc mật khẩu admin trong source. Dùng .NET User Secrets:
+
+```powershell
+cd project/TravelGuide.API
+dotnet user-secrets set "Jwt:Key" "<random-secret-it-nhat-32-ky-tu>"
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=(localdb)\MSSQLLocalDB;Database=TravelGuideDb;Trusted_Connection=True;TrustServerCertificate=True;"
+```
+
+Nếu cần một tài khoản demo cục bộ, bật seeder bằng credential chỉ dành cho demo:
+
+```powershell
+dotnet user-secrets set "SeedAdmin:Enabled" "true"
+dotnet user-secrets set "SeedAdmin:Username" "demo-admin"
+dotnet user-secrets set "SeedAdmin:Password" "<demo-password-rieng>"
+```
+
+Seeder không ghi mật khẩu ra log. Mẫu đầy đủ nằm tại `project/TravelGuide.API/appsettings.Example.json`.
+
+### 3. Tạo/cập nhật database và chạy API
+
+Từ thư mục `project/TravelGuide.API`:
+
+```powershell
+dotnet tool install --global dotnet-ef
+dotnet ef database update
+dotnet run
+```
+
+API lắng nghe tại `http://localhost:5171`. Khi chạy ở môi trường Development, Swagger mở tại [http://localhost:5171](http://localhost:5171).
+
+### 4. Cấu hình và chạy Admin Web
+
+Mở terminal khác:
+
+```powershell
+cd project/TravelGuide.AdminWeb
+dotnet user-secrets set "ApiSettings:BaseUrl" "http://localhost:5171"
+dotnet user-secrets set "GoongSettings:MaptileKey" "<goong-maptile-key-moi>"
+dotnet run
+```
+
+URL của Admin Web được in ra console khi khởi động. Đăng nhập bằng tài khoản demo đã tự cấu hình ở bước 2; repo không cung cấp mật khẩu mặc định dùng chung.
+
+### 5. Cấu hình và chạy Mobile
+
+Giá trị mặc định của API trên Android Emulator là `http://10.0.2.2:5171`. Với thiết bị thật, đặt `TRAVELGUIDE_API_BASE_URL` thành địa chỉ IP LAN của máy chạy API và bảo đảm firewall cho phép cổng 5171.
+
+Mobile đọc ba biến sau, xem [.env.example](.env.example):
+
+```text
+TRAVELGUIDE_API_BASE_URL
+TRAVELGUIDE_GOONG_MAPTILE_KEY
+TRAVELGUIDE_GOONG_API_KEY
+```
+
+Trong cấu hình debug Android, có thể sao chép `project/TravelGuide/Platforms/Android/environment.txt.example` thành `environment.txt`, điền key riêng rồi build. File thật đã bị Git ignore. Key nhúng trong ứng dụng client vẫn có thể bị trích xuất, vì vậy phải dùng key giới hạn domain/app/quota; với production nên proxy Directions API qua backend.
+
+Chạy bằng Visual Studio hoặc:
+
+```powershell
+dotnet build project/TravelGuide/TravelGuide.csproj -f net8.0-android
+```
+
+## Chạy unit test
+
+```powershell
+dotnet test project/TravelGuide.Tests/TravelGuide.Tests.csproj
+```
+
+Bộ test hiện kiểm tra đăng ký trùng username, đăng nhập sai mật khẩu, token/role Admin, phân quyền Admin Controller, POI không tồn tại, fallback ngôn ngữ và lọc POI đang hoạt động.
+
+## Demo và tài liệu
+
+- Danh sách ảnh minh họa của hệ thống: [docs/DEMO.md](docs/DEMO.md).
+- Phân công nhóm, quy ước commit và luồng kỹ thuật chính: [CONTRIBUTING.md](CONTRIBUTING.md).
+- PRD: [PRD/PRD.pdf](PRD/PRD.pdf).
+- Sơ đồ UML: thư mục [`UML img`](UML%20img).
+
+### Ảnh ứng dụng Android
+
+| Đăng nhập | Trang chủ | Bản đồ Goong |
+| --- | --- | --- |
+| <img src="docs/screenshots/mobile-login.png" width="240" alt="Màn hình đăng nhập Travel Guide"> | <img src="docs/screenshots/mobile-home.png" width="240" alt="Trang chủ hiển thị các địa điểm tại Thành phố Hồ Chí Minh"> | <img src="docs/screenshots/mobile-map.png" width="240" alt="Bản đồ Goong hiển thị marker địa điểm"> |
+
+| Quét QR | Chi tiết địa điểm | Hồ sơ |
+| --- | --- | --- |
+| <img src="docs/screenshots/mobile-qr-scanner.png" width="240" alt="Màn hình quét mã QR tại địa điểm"> | <img src="docs/screenshots/mobile-poi-detail.png" width="240" alt="Chi tiết Dinh Độc Lập và nội dung thuyết minh"> | <img src="docs/screenshots/mobile-profile.png" width="240" alt="Màn hình hồ sơ và ngôn ngữ thuyết minh"> |
+
+### Ảnh Admin Web
+
+| Quản lý địa điểm | Chỉnh sửa vị trí trên bản đồ |
+| --- | --- |
+| <img src="docs/screenshots/admin-poi-management.png" width="480" alt="Danh sách quản lý các địa điểm trên Admin Web"> | <img src="docs/screenshots/admin-poi-map-edit.png" width="480" alt="Chỉnh sửa tọa độ địa điểm trực tiếp trên bản đồ Goong"> |
+
+| Nội dung thuyết minh đa ngôn ngữ | Theo dõi thiết bị |
+| --- | --- |
+| <img src="docs/screenshots/admin-multilingual-content.png" width="480" alt="Quản lý và dịch nội dung thuyết minh đa ngôn ngữ"> | <img src="docs/screenshots/admin-device-monitoring.png" width="480" alt="Trang thống kê và theo dõi thiết bị Android"> |
+
+Đây là ảnh chụp trực tiếp từ ứng dụng Android và Admin Web đang chạy với dữ liệu cục bộ.
+
+## Bảo mật
+
+- Không commit key, password, connection string production hoặc file cấu hình cục bộ.
+- Dùng User Secrets khi phát triển và secret manager của nền tảng khi deploy.
+- Nếu một secret từng được commit, xóa ở commit mới là chưa đủ: phải rotate secret và cân nhắc làm sạch lịch sử Git.
+- Quy trình chi tiết xem [SECURITY.md](SECURITY.md).
+
+## Trạng thái project
+
+Đây là sản phẩm học tập do nhóm 2 thành viên phát triển. Backend, database, migration, authentication, Admin Web và các luồng chính trên mobile đã được triển khai. Repo đã có bộ ảnh ứng dụng Android và Admin Web; deployment production chưa hoàn thành.

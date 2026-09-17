@@ -1,0 +1,3 @@
+TRAVELGUIDE_API_BASE_URL=http://10.0.2.2:5171
+TRAVELGUIDE_GOONG_MAPTILE_KEY=replace-with-a-restricted-goong-maptile-key
+TRAVELGUIDE_GOONG_API_KEY=replace-with-a-restricted-goong-rest-api-key

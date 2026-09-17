@@ -86,4 +86,7 @@
     <Generator>MSBuild:Compile</Generator>
   </MauiXaml>
 </ItemGroup>
+<ItemGroup Condition="Exists('Platforms\Android\environment.txt')">
+  <AndroidEnvironment Include="Platforms\Android\environment.txt" />
+</ItemGroup>
 </Project>

@@ -124,7 +124,7 @@ namespace TravelGuide.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Chưa có gian hàng nào.
+        ///   Looks up a localized string similar to Chưa có địa điểm nào.
         /// </summary>
         public static string Home_Empty {
             get {
@@ -142,7 +142,7 @@ namespace TravelGuide.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Gian hàng gần đây.
+        ///   Looks up a localized string similar to Địa điểm gần đây.
         /// </summary>
         public static string Home_Nearby {
             get {
@@ -151,7 +151,7 @@ namespace TravelGuide.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Nhấn để quét gian hàng.
+        ///   Looks up a localized string similar to Nhấn để quét địa điểm.
         /// </summary>
         public static string Home_ScanHint {
             get {
@@ -556,7 +556,7 @@ namespace TravelGuide.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Quét gian hàng khác.
+        ///   Looks up a localized string similar to Quét địa điểm khác.
         /// </summary>
         public static string Scan_Again {
             get {
@@ -565,7 +565,7 @@ namespace TravelGuide.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hướng camera vào mã QR tại gian hàng.
+        ///   Looks up a localized string similar to Hướng camera vào mã QR tại địa điểm.
         /// </summary>
         public static string Scan_Instruction {
             get {
@@ -574,7 +574,7 @@ namespace TravelGuide.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Không nhận diện được gian hàng. Vui lòng thử lại..
+        ///   Looks up a localized string similar to Không nhận diện được địa điểm. Vui lòng thử lại..
         /// </summary>
         public static string Scan_InvalidQR {
             get {
@@ -592,7 +592,7 @@ namespace TravelGuide.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Không tìm thấy thông tin gian hàng..
+        ///   Looks up a localized string similar to Không tìm thấy thông tin địa điểm..
         /// </summary>
         public static string Scan_NotFound {
             get {

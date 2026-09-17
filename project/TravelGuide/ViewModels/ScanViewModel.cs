@@ -92,7 +92,7 @@ namespace TravelGuide.ViewModels
             if (poiId == null)
             {
                 Console.WriteLine("[error] - QR khong hop le");
-                SetError("Không nhận diện được gian hàng. Vui lòng thử lại.");
+                SetError("Không nhận diện được địa điểm. Vui lòng thử lại.");
                 return;
             }
 
@@ -103,7 +103,7 @@ namespace TravelGuide.ViewModels
             if (dto == null)
             {
                 var msg = Helpers.NetworkHelper.IsConnected
-                    ? "Không tìm thấy thông tin gian hàng."
+                    ? "Không tìm thấy thông tin địa điểm."
                     : "Ngoại tuyến - không có dữ liệu. Vui lòng kết nối mạng và thử lại.";
                 Console.WriteLine("[error] - Khong tai duoc POI");
                 SetError(msg);
